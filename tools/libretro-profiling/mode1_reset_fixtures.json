@@ -1,0 +1,61 @@
+{
+  "busy_slave_vres": {
+    "accepted": false,
+    "frame": 1280,
+    "status": "UNPROVEN_BASELINE_PICODRIVE_RESET_DEFECT"
+  },
+  "capture_matrix": {
+    "arms": [
+      "active",
+      "control"
+    ],
+    "independent_run_count": 8,
+    "repeats_per_arm_route": 2,
+    "routes": [
+      "normal",
+      "name"
+    ]
+  },
+  "non_promotable": true,
+  "organic_gameplay": false,
+  "reset_diagnostic": {
+    "path": "analysis/evidence/vr60-q020-mode1-cmdint-gate/reset-diagnostics/run.json",
+    "sha256": "cf5bde5bfbf037dbc8bd8b8edcc4c6d0bdc9c7ec1f91f93236a79ed4089ba662"
+  },
+  "roms": {
+    "active": "963658608b13a96981b8bca60c5e7225df7cf148b138cdf1a1d6982487ff4470",
+    "control": "391774569d17d2461decad5d002c9215914a84649b094b10a051b21b5348e9fd",
+    "default": "6f2768f2cffc85cdc815a67c9f13837112829edac3f0921a57454e79e2523900"
+  },
+  "routes": {
+    "name": {
+      "chain": "00891822->0089C914->C80E_bit3->00884C98->00885618",
+      "fixture": "SEEDED_DIAGNOSTIC_NOT_ORGANIC",
+      "hook_flag_writer": "FORBIDDEN",
+      "transport": "FORBIDDEN",
+      "wrapper_flag_writer": "0089C916:1->0"
+    },
+    "normal": {
+      "chain": "0088E0D4->0089C914->00884C6A->00884CBC",
+      "hook_flag_writer": "0001C8CA:0->1",
+      "transport": "ACTIVE_ONLY"
+    }
+  },
+  "runtime_capture": {
+    "path": "analysis/evidence/vr60-q020-mode1-cmdint-gate/runtime/run.json",
+    "sha256": "6d524ae54e982e8148b58eca634497c4cd8f6b76b9053c56ae11d501554c1f66"
+  },
+  "runtime_result": {
+    "path": "analysis/evidence/vr60-q020-mode1-cmdint-gate/runtime/result.json",
+    "sha256": "fc1b3caa45bdb3fcfa17c0d5b02a39871df8f13eaf2d26ce3c779d5d382959c4"
+  },
+  "safe_vres": {
+    "frame": 1241,
+    "init_count": "1->3",
+    "scope": "PINNED_STOCK_SAFE_BOUNDARY_ONLY",
+    "vres_count": 1
+  },
+  "schema": "vrd-vr60-q020-mode1-lifecycle-v2",
+  "status": "VALIDATION_STAGE_PASS",
+  "validation_stage_eligible": true
+}

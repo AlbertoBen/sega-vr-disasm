@@ -15,5 +15,9 @@ sfx_queue_sprite_check_advance_game_state:
         jsr     sound_update_disp+244(pc); $4EBA $CC0E
         jsr     sh2_comm_check_cond_guard(pc); $4EBA $0348
         addq.w  #4,($FFFFC87E).w               ; $0055C2: $5878 $C87E — advance game state
+        ifd     VR60_30_DEMO
+        move.w  #$0048,$00FF0008                ; 30-FPS V-INT after state 4
+        else
         move.w  #$0010,$00FF0008                ; $0055C6: $33FC $0010 $00FF $0008 — 16 frame delay
+        endif
         rts                                     ; $0055CE: $4E75

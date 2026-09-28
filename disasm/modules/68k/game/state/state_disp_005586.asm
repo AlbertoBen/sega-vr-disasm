@@ -27,9 +27,17 @@ state_disp_005586:
         dc.l    $008855D0                       ; $005598  [8] → $0055D0 (past fn)
         dc.l    $008855FE                       ; $00559C  [C] → $0055FE (past fn)
 ; --- state 0 handler ---
+        ifd     VR60_30_DEMO
+        jsr     camera_snapshot_wrapper(pc)     ; 30-FPS AUTH launch (same as race)
+        else
         jsr     mars_dma_xfer_vdp_fill(pc); $4EBA $D320
+        endif
         jsr     sound_update_disp+244(pc); $4EBA $CC24
         jsr     sh2_handler_dispatch_scene_init+98(pc); $4EBA $031E
         addq.w  #4,($FFFFC87E).w               ; $0055AC  advance state
+        ifd     VR60_30_DEMO
+        move.w  #$0040,$00FF0008               ; 30-FPS V-INT after state 0
+        else
         move.w  #$0010,$00FF0008               ; $0055B0  SH2 COMM = $10
+        endif
         rts                                     ; $0055B8

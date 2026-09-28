@@ -4,8 +4,8 @@
 ; 63 JMP abs.l entries ($4EF9 + 32-bit address) that redirect exception
 ; vectors to their actual handlers in the main code region ($0088xxxx).
 ; Most point to $00880832 (generic exception handler); notable exceptions:
-;   $0002A2 → $0088170A (Level 6 V-INT handler)
-;   $0002AE → $00881684 (Level 4 H-INT handler)
+;   $0002A2 → $0088170A (Level 4 H-INT handler)
+;   $0002AE → $00881684 (Level 6 V-INT handler)
 ;
 ; Followed by 35 NOPs ($4E71) padding $00037A-$0003BE.
 ; ============================================================================
@@ -38,9 +38,13 @@ exception_vector_trampolines:
         jmp     $00880832.l      ; $000290
         jmp     $00880832.l      ; $000296
         jmp     $00880832.l      ; $00029C
-        jmp     $0088170A.l      ; $0002A2 - Level 6 V-INT handler
+        jmp     $0088170A.l      ; $0002A2 - Level 4 H-INT handler
         jmp     $00880832.l      ; $0002A8
-        jmp     $00881684.l      ; $0002AE - Level 4 H-INT handler
+        ifd     VR60_FPS_COUNTER
+        jmp     $00880000+vr60_fps_vint_wrapper ; $0002AE - every VBlank
+        else
+        jmp     $00881684.l      ; $0002AE - 32X V-INT trampoline
+        endif
         jmp     $00880832.l      ; $0002B4
         jmp     $00880832.l      ; $0002BA
         jmp     $00880832.l      ; $0002C0
@@ -57,7 +61,11 @@ exception_vector_trampolines:
         jmp     $00880832.l      ; $000302
         jmp     $00880832.l      ; $000308
         jmp     $00880832.l      ; $00030E
+        ifd     VR60_30_PREFETCH
+        jmp     $00880000+vr60_30_prefetch_trap ; $000314 - TRAP #15
+        else
         jmp     $00880832.l      ; $000314
+        endif
         jmp     $00880832.l      ; $00031A
         jmp     $00880832.l      ; $000320
         jmp     $00880832.l      ; $000326

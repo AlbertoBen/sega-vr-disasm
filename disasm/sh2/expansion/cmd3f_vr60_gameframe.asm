@@ -1,0 +1,402 @@
+/*
+ * cmd3f_vr60_gameframe — VR60 Game Frame Handler (Phase 2B: Async Block Copies)
+ * Expansion ROM Address: $301500 (SH2: $02301500)
+ *
+ * CURRENT INTEGRATION STATUS (2026-07-21): assembled and installed at Master
+ * command $3F, but the normal-1P trigger is disabled. Physics/AI work below is
+ * therefore dormant in current 1P gameplay and the 68000 remains authoritative.
+ * The current call site still selects sh2_render_state_patch (a verified no-op);
+ * the corrected C254 bridge_probe is assembled at .bridge_addr but is dormant.
+ *
+ * Phase 3B: Fire-and-forget handler + SH2 physics pipeline.
+ * 68K triggers cmd $3F and continues immediately. This handler performs:
+ *   1. Read COMM3-5 game state, write to SDRAM mailbox
+ *   2. Geometry block copy: $06038000 → $04012010, 144 words × 48 rows
+ *   3. Sprite block copy:   $0603B600 → $0401B010, 144 words × 24 rows
+ *   4. SH2 PHYSICS PIPELINE: 7 functions on entity at $0600F20C
+ *      - Set GBR = entity base, R13 = globals base
+ *      - JSR: speed_degrade → steering → force_integration → speed_clamp
+ *             → speed_accel → tilt_adjust
+ *   5. Post-physics canary at $2600FC00
+ *   6. COMM cleanup: COMM1_LO bit 0 = "frame done" signal
+ *
+ * Phase 3B: Physics runs in DUAL-PATH mode. 68K physics also runs on WRAM.
+ * SH2 physics results stay in SDRAM entity copy. Compare outputs to verify.
+ *
+ * Block copy algorithm reused from cmd22_single_shot.asm (longword path).
+ * All addresses are 4-byte aligned and width is even → always longword path.
+ * Row stride = $0200 (512 bytes, framebuffer line width).
+ * Source is contiguous in SDRAM; destination is strided in framebuffer.
+ *
+ * Synchronization: V-INT $54 (vdp_dma_frame_swap_037) polls COMM1_LO bit 0.
+ * When set, it swaps the frame buffer and resets $C87E. This gates state 0's
+ * DREQ DMA from firing while copies are still in progress.
+ * See: analysis/ASYNC_PIPELINE_ARCHITECTURE.md §6.3
+ *
+ * COMM protocol (follows cmd22 proven pattern):
+ *   R8 = $20004020 (COMM base, cache-through, set by dispatch loop)
+ *   Read COMM3  @(6,R8)  = frame_counter   → mailbox +$06
+ *   Read COMM4  @(8,R8)  = game_state      → mailbox +$08
+ *   Read COMM5  @(10,R8) = frame_toggle    → mailbox +$0A
+ *   THEN clear COMM0_LO (params consumed signal)
+ *
+ * Block copy parameters (constant during racing, hardcoded):
+ *   Geometry: src=$06038000 (SDRAM), dst=$04012010 (framebuffer)
+ *            144 words/row = 72 longwords/row, 48 rows, stride $0200
+ *   Sprites:  src=$0603B600 (SDRAM), dst=$0401B010 (framebuffer)
+ *            144 words/row = 72 longwords/row, 24 rows, stride $0200
+ *
+ * Entry: R8 = $20004020
+ * Clobbers: R0-R7 (R8 reloaded for cleanup)
+ * Preserves: R15
+ */
+
+.section .text
+.align 2
+
+cmd3f_vr60_gameframe:
+    /* Save PR */
+    /* offset  0 */ sts.l   pr,@-r15
+
+    /* === PARAM READ: read ALL COMM params BEFORE clearing COMM0_LO === */
+    /* offset  2 */ mov.w   @(6,r8),r0           /* R0 = COMM3 */
+    /* offset  4 */ mov     r0,r1                /* R1 = frame_counter */
+    /* offset  6 */ mov.w   @(8,r8),r0           /* R0 = COMM4 */
+    /* offset  8 */ mov     r0,r2                /* R2 = game_state */
+    /* offset 10 */ mov.w   @(10,r8),r0          /* R0 = COMM5 */
+    /* offset 12 */ mov     r0,r3                /* R3 = frame_toggle */
+
+    /* === PARAMS-CONSUMED SIGNAL === */
+    /* offset 14 */ mov     #0,r0
+    /* offset 16 */ mov.b   r0,@(1,r8)           /* COMM0_LO = $00 */
+
+    /* === MAILBOX WRITE (Q-023 source-selected; cmd $3F remains disabled) === */
+    /* offset 18 */ mov.l   @(.mailbox_addr,pc),r4
+    /* offset 20 */ mov     r1,r0                /* R0 = frame_counter */
+    /* offset 22 */ mov.w   r0,@(6,r4)           /* mailbox+$06 */
+    /* offset 24 */ mov     r2,r0                /* R0 = game_state */
+    /* offset 26 */ mov.w   r0,@(8,r4)           /* mailbox+$08 */
+    /* offset 28 */ mov     r3,r0                /* R0 = frame_toggle */
+    /* offset 30 */ mov.w   r0,@(10,r4)          /* mailbox+$0A */
+
+    /* === GEOMETRY BLOCK COPY: $06038000 → $04012010, 72 longs × 48 rows === */
+    /* Source is contiguous SDRAM (Slave rendered here during state 0).        */
+    /* Dest is strided framebuffer (stride = $0200 = 512 bytes/line).          */
+    /* offset 32 */ mov.l   @(.geo_src,pc),r3    /* R3 = $06038000 (src, auto-inc) */
+    /* offset 34 */ mov.l   @(.geo_dst,pc),r0    /* R0 = $04012010 (dest base) */
+    /* offset 36 */ mov     #2,r6                /* Build stride: R6 = 2 */
+    /* offset 38 */ shll8   r6                   /* R6 = $0200 (512) */
+    /* offset 40 */ mov     #48,r2               /* R2 = 48 rows */
+.geo_row:
+    /* offset 42 */ mov     r0,r4                /* R4 = dest row start */
+    /* offset 44 */ mov     #72,r5               /* R5 = 72 longwords/row */
+.geo_copy:
+    /* offset 46 */ mov.l   @r3+,r7              /* R7 = *src++ */
+    /* offset 48 */ mov.l   r7,@r4               /* *dest = R7 */
+    /* offset 50 */ dt      r5                   /* R5-- and test */
+    /* offset 52 */ bf/s    .geo_copy            /* loop if not zero */
+    /* offset 54 */ add     #4,r4                /* [delay slot] dest += 4 */
+    /* offset 56 */ dt      r2                   /* row-- */
+    /* offset 58 */ bf/s    .geo_row             /* next row */
+    /* offset 60 */ add     r6,r0                /* [delay slot] dest base += stride */
+
+    /* === SPRITE BLOCK COPY: $0603B600 → $0401B010, 72 longs × 24 rows === */
+    /* R6 = $0200 (stride preserved from geometry copy) */
+    /* offset 62 */ mov.l   @(.spr_src,pc),r3    /* R3 = $0603B600 (src) */
+    /* offset 64 */ mov.l   @(.spr_dst,pc),r0    /* R0 = $0401B010 (dest base) */
+    /* offset 66 */ mov     #24,r2               /* R2 = 24 rows */
+.spr_row:
+    /* offset 68 */ mov     r0,r4                /* R4 = dest row start */
+    /* offset 70 */ mov     #72,r5               /* R5 = 72 longwords/row */
+.spr_copy:
+    /* offset 72 */ mov.l   @r3+,r7              /* R7 = *src++ */
+    /* offset 74 */ mov.l   r7,@r4               /* *dest = R7 */
+    /* offset 76 */ dt      r5                   /* R5-- and test */
+    /* offset 78 */ bf/s    .spr_copy            /* loop if not zero */
+    /* offset 80 */ add     #4,r4                /* [delay slot] dest += 4 */
+    /* offset 82 */ dt      r2                   /* row-- */
+    /* offset 84 */ bf/s    .spr_row             /* next row */
+    /* offset 86 */ add     r6,r0                /* [delay slot] dest base += stride */
+
+    /* === PHASE 3B: RUN SH2 PHYSICS ON ENTITY DATA === */
+    /* Entity data at $0600F20C (transferred by cmd $3E via DREQ).            */
+    /* Globals at $0600F30C (also transferred by cmd $3E).                    */
+    /* Set GBR = entity base, R13 = globals base, then call physics.          */
+
+    /* Set GBR = entity base pointer */
+    mov.l   @(.ent_dst,pc),r0       /* R0 = $0600F20C */
+    ldc     r0,gbr                  /* GBR = entity base */
+
+    /* Set R13 = globals base (entity + 256 = $0600F30C) */
+    mov.l   @(.globals_base,pc),r13 /* R13 = $0600F30C */
+
+    /* Save pre-physics positions for render state patcher delta computation */
+    mov.w   @(0x30,gbr),r0         /* current world X */
+    mov.w   r0,@(0xEC,gbr)         /* save to entity+$EC */
+    mov.w   @(0x34,gbr),r0         /* current world Y */
+    mov.w   r0,@(0xEE,gbr)         /* save to entity+$EE */
+
+    /* Call physics + timer/guard functions in orchestrator order via JSR @Rn.
+     * Order matches 68K entity_render_pipeline Variant A (lines 27-40):
+     *   speed_degrade → effect_timer → timer_expire → field_guard
+     *   → timer_decrement → steering → force_integration → speed_clamp
+     *   → speed_accel → tilt_adjust → anim_timer_speed_clear
+     * tire_squeal_check stays on 68K (writes globals, not entity fields).
+     */
+
+    /* 1. speed_degrade_calc */
+    mov.l   @(.phys_f1,pc),r0
+    jsr     @r0
+    nop
+
+    /* T1. effect_timer_mgmt */
+    mov.l   @(.tmr_et,pc),r0
+    jsr     @r0
+    nop
+
+    /* T2. timer_expire_reset */
+    mov.l   @(.tmr_te,pc),r0
+    jsr     @r0
+    nop
+
+    /* T3. field_check_guard (sets R2 = lateral flag) */
+    mov.l   @(.tmr_fg,pc),r0
+    jsr     @r0
+    nop
+
+    /* T4. timer_decrement_multi */
+    mov.l   @(.tmr_td,pc),r0
+    jsr     @r0
+    nop
+
+    /* 2. steering_input */
+    mov.l   @(.phys_f2,pc),r0
+    jsr     @r0
+    nop
+
+    /* 3. force_integration (inlines speed_calc_chain + speed_modifier) */
+    mov.l   @(.phys_f3,pc),r0
+    jsr     @r0
+    nop
+
+    /* 5. entity_speed_clamp */
+    mov.l   @(.phys_f5,pc),r0
+    jsr     @r0
+    nop
+
+    /* 6. speed_accel_braking */
+    mov.l   @(.phys_f6,pc),r0
+    jsr     @r0
+    nop
+
+    /* 7. tilt_adjust */
+    mov.l   @(.phys_f7,pc),r0
+    jsr     @r0
+    nop
+
+    /* 8. drift_physics (Phase 3C: camera follow + heading drift) */
+    mov.l   @(.phys_f8,pc),r0
+    jsr     @r0
+    nop
+
+    /* 9. suspension_damping (Phase 3C: dispatches to lateral_drift_A or B) */
+    mov.l   @(.phys_f9,pc),r0
+    jsr     @r0
+    nop
+
+    /* T5. anim_timer_speed_clear */
+    mov.l   @(.tmr_ac,pc),r0
+    jsr     @r0
+    nop
+
+    /* 12. entity_pos_update (Phase 3D: 16.16 fixed-point position) */
+    mov.l   @(.phys_f12,pc),r0
+    jsr     @r0
+    nop
+
+    /* === PHASE 4: AI ENTITY LOOP === */
+    /* Process 15 AI entities: for each, set GBR/R14, call orchestrator + physics */
+    /* AI entities are at SDRAM $06010000 (15 × 256B, staged first frame) */
+    mov.l   @(.ai_ent_base,pc),r11 /* R11 = AI entity base ($06010000) */
+    mov     #15,r12                /* R12 = entity count */
+.ai_loop:
+    /* Set GBR and R14 to current AI entity */
+    mov     r11,r0
+    ldc     r0,gbr                 /* GBR = AI entity */
+    mov     r11,r14                /* R14 = same (for indexed access) */
+
+    /* Call AI orchestrator (spawn/steering/speed/position) */
+    mov.l   @(.ai_orch_addr,pc),r0
+    jsr     @r0                    /* sh2_ai_orch_main */
+    nop
+
+    /* Call shared physics subset for AI entity */
+    /* Same functions as player but entity fields now point to AI entity */
+    mov.l   @(.phys_f6,pc),r0     /* speed_accel_braking */
+    jsr     @r0
+    nop
+    mov.l   @(.phys_f7,pc),r0     /* tilt_adjust */
+    jsr     @r0
+    nop
+    mov.l   @(.phys_f9,pc),r0     /* suspension_damping */
+    jsr     @r0
+    nop
+
+    /* Advance to next entity (256B stride) */
+    mov.w   @(.ai_stride,pc),r0
+    add     r0,r11                 /* R11 += 256 */
+    dt      r12                    /* count-- */
+    bf      .ai_loop               /* loop if not zero */
+
+    /* Restore player entity GBR for relay section */
+    mov.l   @(.ent_dst,pc),r0
+    ldc     r0,gbr
+
+    /* === RENDER BRIDGE SELECTION ===========================================
+     * CURRENT: calls .patcher_addr (sh2_render_state_patch), known to have no
+     * effect on the renderer-consumed inputs.
+     *
+     * DORMANT DIAGNOSTIC: .bridge_addr selects the corrected Run-C probe, which
+     * clears 56 visibility words in the live cmd-$02 descriptor family at
+     * cache-through $2600C254. The older C218 probe/spec is superseded.
+     * Do not select the probe until a trustworthy 1P control fixture exists
+     * and cmd $3F has independently passed shadow-mode validation.
+     */
+    mov.l   @(.patcher_addr,pc),r0
+    jsr     @r0                    /* sh2_render_state_patch; corrected probe dormant */
+    nop
+    /* --- bridge_probe (restore for Phase 2): -------------------------------------
+     * mov.l   @(.bridge_addr,pc),r0
+     * jsr     @r0                    ; bridge_probe
+     * nop
+     * --------------------------------------------------------------------- */
+
+    /* === CANARY: write entity first longword to verify physics ran === */
+    mov.l   @(.ent_dst,pc),r4       /* R4 = entity base (re-read, GBR may differ) */
+    mov.l   @r4,r0                  /* R0 = entity[0..3] (post-physics) */
+    mov.l   @(.canary_addr,pc),r4
+    mov.l   r0,@r4                  /* canary = entity first longword */
+    mov.l   @(.canary_val,pc),r0
+    mov.l   r0,@(4,r4)             /* canary+4 = $DEADBEEF */
+
+    /* === SOUND TRIGGER RELAY: globals+$2C → COMM6_HI === */
+    /* Physics functions write sound codes ($B1/$B4/$B2) to globals+$2C. */
+    /* Read it and relay to COMM6_HI for 68K V-INT pickup. */
+    mov     #0x2C,r0
+    mov.b   @(r0,r13),r0          /* R0 = globals[+$2C] (sound byte) */
+    /* R8 was clobbered — reload before COMM write */
+    mov.l   @(.comm_base,pc),r8   /* R8 = $20004020 */
+    mov.b   r0,@(12,r8)           /* COMM6_HI = sound byte */
+    mov.b   @(12,r8),r0           /* dummy read — flush SH2 write buffer */
+    /* Clear the sound trigger in globals so it doesn't repeat next frame */
+    mov     #0x2C,r0
+    mov     #0,r1
+    mov.b   r1,@(r0,r13)          /* globals[+$2C] = 0 */
+
+    /* === VIEWPORT SHIMMER RELAY: entity+$F8/$FA → COMM4/COMM5 === */
+    /* lateral_drift_B writes viewport left/right to entity+$F8/+$FA. */
+    /* Relay to COMM4/5 for 68K state4_epilogue pickup. */
+    /* COMM4/5 were used for input (frame metadata) but consumed at entry. */
+    mov.w   @(0xF8,gbr),r0        /* entity[+$F8] left viewport */
+    mov.w   r0,@(8,r8)            /* COMM4 = left viewport */
+    mov.w   @(8,r8),r0            /* dummy read — flush write buffer */
+    mov.w   @(0xFA,gbr),r0        /* entity[+$FA] right viewport */
+    mov.w   r0,@(10,r8)           /* COMM5 = right viewport */
+    mov.w   @(10,r8),r0           /* dummy read — flush write buffer */
+
+    /* === SLAVE RE-TRIGGER: render with patched entity states === */
+    /* Must happen AFTER render_state_patcher so Slave sees updated positions. */
+    /* Writing from Master SH2 side (not 68K) ensures correct sequencing. */
+    mov     #2,r0
+    mov.b   r0,@(4,r8)             /* COMM2_HI = $02 (trigger Slave cmd $02) */
+    mov.b   @(4,r8),r0             /* dummy read — flush write buffer */
+
+    /* === COMPLETION: inline COMM cleanup (func_084 equivalent) === */
+
+    /* Clear COMM1, set "command done" bit */
+    mov    #0,r0
+    mov.w  r0,@(2,r8)             /* COMM1 = $0000 */
+    mov.w  @(2,r8),r0             /* dummy read — flush write buffer */
+    mov.b  @(3,r8),r0             /* R0 = COMM1_LO (0) */
+    or     #1,r0                  /* R0 |= 1 */
+    mov.b  r0,@(3,r8)             /* COMM1_LO = 1 ("done") */
+    mov.b  @(3,r8),r0             /* dummy read — flush write buffer */
+
+    /* Clear COMM0_HI (idle — allows next COMM0 command) */
+    mov    #0,r0
+    mov.b  r0,@(0,r8)             /* COMM0_HI = 0 */
+    mov.b  @(0,r8),r0             /* dummy read — flush write buffer */
+
+    /* === RETURN === */
+    /* offset 126 */ lds.l  @r15+,pr
+    /* offset 128 */ rts
+    /* offset 130 */ nop                         /* delay slot */
+
+/* === LITERAL POOL ===
+ * Code ends at offset 132.
+ * All longword entries must be 4-byte aligned.
+ */
+.align 2
+.mailbox_addr:
+    /* Q-023 corrects only this dormant literal in a validation-only artifact.
+     * The ordinary arm remains the byte-exact accepted default and serves as
+     * the source-built stage control. Neither arm enables cmd $3F. */
+.ifdef VR60_Q023_MAILBOX_CORRECTED
+    .long   0x2600BC00              /* Cache-through SDRAM mailbox. */
+.else
+    .long   0x2200BC00              /* Legacy cache-through ROM alias. */
+.endif
+.geo_src:
+    .long   0x06038000              /* Geometry source (SDRAM, native read) */
+.geo_dst:
+    .long   0x04012010              /* Geometry dest (framebuffer, cached write) */
+.spr_src:
+    .long   0x0603B600              /* Sprite source (SDRAM, native read) */
+.spr_dst:
+    .long   0x0401B010              /* Sprite dest (framebuffer, cached write) */
+.ent_dst:
+    .long   0x0600F20C              /* Entity working copy (native SDRAM) */
+.globals_base:
+    .long   0x0600F30C              /* Globals block (native SDRAM, entity + 256) */
+.canary_addr:
+    .long   0x2600FC00              /* Validation canary location (SDRAM cache-through; was
+                                       0x2200FC00 = cache-through CARTRIDGE ROM, a silent no-op
+                                       that made every prior "canary verified" claim meaningless
+                                       — see analysis/VR60_IMPLEMENTATION_AUDIT.md) */
+.canary_val:
+    .long   0xDEADBEEF              /* Canary value */
+.comm_base:
+    .long   0x20004020              /* COMM register base (cache-through) */
+
+/* Physics function addresses (Phase 4 layout) */
+/* g1=$301780, g2=$301B00, tmr=$301D00, pos=$301E20, drift=$301EE0 */
+.phys_f1:   .long   0x023017C0     /* speed_degrade (g1+$000) */
+.phys_f2:   .long   0x02301820     /* steering_input (g1+$060) */
+.phys_f3:   .long   0x0230189C     /* force_integration (g1+$0DC) */
+.phys_f5:   .long   0x023017F2     /* speed_clamp (g1+$032) */
+.phys_f6:   .long   0x02301B40     /* speed_accel (g2+$000) */
+.phys_f7:   .long   0x02301CBC     /* tilt_adjust (g2+$17C) */
+.tmr_td:    .long   0x02301D40     /* timer_decrement (tmr+$000) */
+.tmr_et:    .long   0x02301D94     /* effect_timer (tmr+$054) */
+.tmr_te:    .long   0x02301E00     /* timer_expire (tmr+$0C0) */
+.tmr_fg:    .long   0x02301E20     /* field_guard (tmr+$0E0) */
+.tmr_ac:    .long   0x02301E2E     /* anim_clear (tmr+$0EE) */
+.phys_f12:  .long   0x02301E60     /* pos_update (pos+$000) */
+.phys_f8:   .long   0x02301F20     /* drift_physics (drift+$000) */
+.phys_f9:   .long   0x02302158     /* suspension_damping (drift+$238) */
+
+/* Phase 4: AI entity loop addresses */
+.ai_ent_base:   .long   0x06010000 /* AI entity SDRAM base */
+.ai_orch_addr:  .long   0x02302700 /* sh2_ai_orch_main */
+
+/* Phase 7: Render state patcher */
+.patcher_addr:  .long   0x02302B00 /* sh2_render_state_patch (render_state_patcher.asm) */
+
+/* Phase 5F-1b: bridge validation probe (DIAGNOSTIC, revertable) */
+.bridge_addr:   .long   0x023039E0 /* bridge_probe (bridge_probe.asm) */
+
+.ai_stride:     .short  0x0100     /* 256 bytes per entity */
+
+/* Total: ~290 bytes code + 96 bytes pool = ~386 bytes */
+
+.global cmd3f_vr60_gameframe

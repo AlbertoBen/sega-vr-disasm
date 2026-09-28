@@ -15,6 +15,165 @@ DISASM_DIR = disasm
 TOOLS_DIR = tools
 ORIGINAL_ROM = Virtua Racing Deluxe (USA).32x
 OUTPUT_ROM = $(BUILD_DIR)/vr_rebuild.32x
+ARES_ROM = $(BUILD_DIR)/vr_rebuild_ares.32x
+ARES_ROM_TOOL = $(TOOLS_DIR)/make_ares_rom.py
+EXPERIMENTAL_60FPS_ROUTING_ROM = $(BUILD_DIR)/vr60_experimental_60fps_routing.32x
+EXPERIMENTAL_60FPS_ROUTING_ARES_ROM = $(BUILD_DIR)/vr60_experimental_60fps_routing_ares.32x
+EXPERIMENTAL_30FPS_MERGE_ROM = $(BUILD_DIR)/vr60_experimental_30fps_merge.32x
+EXPERIMENTAL_30FPS_MERGE_ARES_ROM = $(BUILD_DIR)/vr60_experimental_30fps_merge_ares.32x
+EXPERIMENTAL_30HZ_LOD_ROM = $(BUILD_DIR)/vr60_experimental_30hz_lod.32x
+EXPERIMENTAL_30HZ_LOD_ARES_ROM = $(BUILD_DIR)/vr60_experimental_30hz_lod_ares.32x
+EXPERIMENTAL_60FPS_BURST_ROM = $(BUILD_DIR)/vr60_experimental_60fps_burst.32x
+EXPERIMENTAL_60FPS_BURST_ARES_ROM = $(BUILD_DIR)/vr60_experimental_60fps_burst_ares.32x
+FPS_ROM = $(BUILD_DIR)/vr_rebuild_fps.32x
+FPS_ARES_ROM = $(BUILD_DIR)/vr_rebuild_fps_ares.32x
+EXPERIMENTAL_60FPS_ROUTING_FPS_ROM = $(BUILD_DIR)/vr60_experimental_60fps_routing_fps.32x
+EXPERIMENTAL_60FPS_ROUTING_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_60fps_routing_fps_ares.32x
+EXPERIMENTAL_30FPS_MERGE_FPS_ROM = $(BUILD_DIR)/vr60_experimental_30fps_merge_fps.32x
+EXPERIMENTAL_30FPS_MERGE_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_30fps_merge_fps_ares.32x
+EXPERIMENTAL_30HZ_LOD_FPS_ROM = $(BUILD_DIR)/vr60_experimental_30hz_lod_fps.32x
+EXPERIMENTAL_30HZ_LOD_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_30hz_lod_fps_ares.32x
+EXPERIMENTAL_60FPS_BURST_FPS_ROM = $(BUILD_DIR)/vr60_experimental_60fps_burst_fps.32x
+EXPERIMENTAL_60FPS_BURST_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_60fps_burst_fps_ares.32x
+EXPERIMENTAL_40FPS_INTERP_FPS_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_fps.32x
+EXPERIMENTAL_40FPS_INTERP_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_fps_ares.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SPLIT_FPS_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_split_fps.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SPLIT_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_split_fps_ares.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_HANDOFF_FPS_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_handoff_fps.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_HANDOFF_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_handoff_fps_ares.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_PRETRANSFORM_FPS_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_pretransform_fps.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_PRETRANSFORM_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_pretransform_fps_ares.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_FPS_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_shadow_fps.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_shadow_fps_ares.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_STAGE1_FPS_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_shadow_stage1_fps.32x
+EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_STAGE1_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_family_a_shadow_stage1_fps_ares.32x
+EXPERIMENTAL_40FPS_INTERP_SCANLINE_PAIR_FPS_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_scanline_pair_fps.32x
+EXPERIMENTAL_40FPS_INTERP_SCANLINE_PAIR_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_scanline_pair_fps_ares.32x
+EXPERIMENTAL_RASTER_ARITHMETIC_ROM = $(BUILD_DIR)/vr60_experimental_raster_arithmetic.32x
+EXPERIMENTAL_RASTER_ARITHMETIC_ARES_ROM = $(BUILD_DIR)/vr60_experimental_raster_arithmetic_ares.32x
+EXPERIMENTAL_40FPS_INTERP_RLE_DIRECT_FPS_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_rle_direct_fps.32x
+EXPERIMENTAL_40FPS_INTERP_RLE_DIRECT_FPS_ARES_ROM = $(BUILD_DIR)/vr60_experimental_40fps_interp_rle_direct_fps_ares.32x
+FPS_ARES_ROMS = $(FPS_ARES_ROM) \
+	$(EXPERIMENTAL_60FPS_ROUTING_FPS_ARES_ROM) \
+	$(EXPERIMENTAL_30FPS_MERGE_FPS_ARES_ROM) \
+	$(EXPERIMENTAL_30HZ_LOD_FPS_ARES_ROM) \
+	$(EXPERIMENTAL_60FPS_BURST_FPS_ARES_ROM)
+LEGACY_DEFAULT_ROM = $(BUILD_DIR)/vr60_legacy_default.32x
+CONTROL_ROM = $(BUILD_DIR)/vr60_control_bypass.32x
+CONTROL_REFERENCE_ROM = $(BUILD_DIR)/vr60_live_reference.32x
+CONTROL_ROM_MANIFEST = $(TOOLS_DIR)/libretro-profiling/control_rom_pair.json
+CONTROL_ROM_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_control_rom.py
+MODE0_ACTIVE_ROM = $(BUILD_DIR)/vr60_mode0_active.32x
+MODE0_CONTROL_ROM = $(BUILD_DIR)/vr60_mode0_stage_control.32x
+MODE0_DEFAULT_REFERENCE_ROM = $(BUILD_DIR)/vr60_mode0_default_reference.32x
+MODE0_ROM_MANIFEST = $(TOOLS_DIR)/libretro-profiling/mode0_rom_pair.json
+MODE0_ROM_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_mode0_rom_pair.py
+MODE0_DEFAULT_MANIFEST = $(TOOLS_DIR)/libretro-profiling/mode0_default.json
+MODE0_DEFAULT_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_mode0_default.py
+MODE1_ACTIVE_ROM = $(BUILD_DIR)/vr60_mode1_active.32x
+MODE1_CONTROL_ROM = $(BUILD_DIR)/vr60_mode1_stage_control.32x
+MODE1_ROM_MANIFEST = $(TOOLS_DIR)/libretro-profiling/mode1_rom_pair.json
+MODE1_ROM_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_mode1_rom_pair.py
+MODE1_LIFECYCLE_MANIFEST = $(TOOLS_DIR)/libretro-profiling/mode1_reset_fixtures.json
+MODE1_GATE_COMPOSITION = analysis/evidence/vr60-q020-mode1-cmdint-gate/composition.json
+MODE1_GATE_COMPOSITION_VERIFY = $(TOOLS_DIR)/libretro-profiling/validate_mode1_gate_composition.py
+MODE1_PROFILE_FRONTEND = $(Q020_PROFILE_DIR)/mode1_profiling_frontend
+MODE1_PROFILE_CORE = $(Q020_PROFILE_DIR)/mode1_picodrive_libretro.so
+MODE1_PICODRIVE_PREPARE = $(Q020_PROFILE_DIR)/prepare_mode1_picodrive.py
+MODE1_RUNTIME_TOOLS_VERIFY = $(Q020_PROFILE_DIR)/verify_mode1_runtime_tools.py
+MODE2_ACTIVE_ROM = $(BUILD_DIR)/vr60_mode2_active.32x
+MODE2_CONTROL_ROM = $(BUILD_DIR)/vr60_mode2_stage_control.32x
+MODE2_ROM_MANIFEST = $(TOOLS_DIR)/libretro-profiling/mode2_rom_pair.json
+MODE2_ROM_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_mode2_rom_pair.py
+MODE2_RUNTIME_CAPTURE = analysis/evidence/vr60-q021-mode2-cmdint-gate/runtime/run.json
+MODE2_RUNTIME_RESULT = analysis/evidence/vr60-q021-mode2-cmdint-gate/runtime/result.json
+MODE2_RUNTIME_VERIFY = $(TOOLS_DIR)/libretro-profiling/mode2_cmdint_runtime.py
+MODE2_GATE_COMPOSITION = analysis/evidence/vr60-q021-mode2-cmdint-gate/composition.json
+MODE2_GATE_COMPOSITION_VERIFY = $(TOOLS_DIR)/libretro-profiling/validate_mode2_gate_composition.py
+Q023_ACTIVE_ROM = $(BUILD_DIR)/vr60_q023_mailbox_active.32x
+Q023_CONTROL_ROM = $(BUILD_DIR)/vr60_q023_mailbox_stage_control.32x
+Q023_ROM_MANIFEST = $(TOOLS_DIR)/libretro-profiling/q023_mailbox_rom_pair.json
+Q023_ROM_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_q023_mailbox_rom_pair.py
+Q026_ACTIVE_ROM = $(BUILD_DIR)/vr60_q026_player_active.32x
+Q026_CONTROL_ROM = $(BUILD_DIR)/vr60_q026_player_stage_control.32x
+Q026_ROM_MANIFEST = $(TOOLS_DIR)/libretro-profiling/q026_player_rom_pair.json
+Q026_ROM_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_q026_player_rom_pair.py
+Q026_RUNTIME_CAPTURE = analysis/evidence/vr60-q026-player-cmdint-gate/runtime/run.json
+Q026_RUNTIME_RESULT = analysis/evidence/vr60-q026-player-cmdint-gate/runtime/result.json
+Q026_RUNTIME_VERIFY = $(TOOLS_DIR)/libretro-profiling/q026_player_runtime.py
+Q026_PROFILE_FRONTEND = $(Q020_PROFILE_DIR)/q026_profiling_frontend
+Q026_PROFILE_CORE = $(Q020_PROFILE_DIR)/q026_picodrive_libretro.so
+Q026_PICODRIVE_PREPARE = $(Q020_PROFILE_DIR)/prepare_q026_picodrive.py
+Q026_RUNTIME_TOOLS_VERIFY = $(Q020_PROFILE_DIR)/verify_q026_runtime_tools.py
+Q027_ACTIVE_ROM = $(BUILD_DIR)/vr60_q027_cmd3f_active.32x
+Q027_CONTROL_ROM = $(BUILD_DIR)/vr60_q027_cmd3f_stage_control.32x
+Q027_ROM_MANIFEST = $(TOOLS_DIR)/libretro-profiling/q027_cmd3f_rom_pair.json
+Q027_ROM_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_q027_cmd3f_rom_pair.py
+Q027_RUNTIME_CAPTURE = analysis/evidence/vr60-q027-cmd3f-transport-gate/runtime/run.json
+Q027_RUNTIME_RESULT = analysis/evidence/vr60-q027-cmd3f-transport-gate/runtime/result.json
+Q027_RUNTIME_VERIFY = $(TOOLS_DIR)/libretro-profiling/q027_cmd3f_runtime.py
+Q027_PROFILE_FRONTEND = $(Q020_PROFILE_DIR)/q027_profiling_frontend
+Q027_PROFILE_CORE = $(Q020_PROFILE_DIR)/q027_picodrive_libretro.so
+Q027_PICODRIVE_PREPARE = $(Q020_PROFILE_DIR)/prepare_q027_picodrive.py
+Q027_RUNTIME_TOOLS_VERIFY = $(Q020_PROFILE_DIR)/verify_q027_runtime_tools.py
+Q028_ROM_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_q028_renderer_probe_roms.py
+Q028_ROM_MANIFEST = $(TOOLS_DIR)/libretro-profiling/q028_renderer_probe_roms.json
+Q028_WRAPPER_SRC = disasm/sh2/validation/q028_renderer_bridge_probe.s
+Q028_FAMILIES = a b c
+Q028_A_BASELINE_ROM = $(BUILD_DIR)/vr60_q028_family_a_baseline.32x
+Q028_A_CONTROL_ROM = $(BUILD_DIR)/vr60_q028_family_a_control.32x
+Q028_A_ACTIVE_ROM = $(BUILD_DIR)/vr60_q028_family_a_active.32x
+Q028_B_BASELINE_ROM = $(BUILD_DIR)/vr60_q028_family_b_baseline.32x
+Q028_B_CONTROL_ROM = $(BUILD_DIR)/vr60_q028_family_b_control.32x
+Q028_B_ACTIVE_ROM = $(BUILD_DIR)/vr60_q028_family_b_active.32x
+Q028_C_BASELINE_ROM = $(BUILD_DIR)/vr60_q028_family_c_baseline.32x
+Q028_C_CONTROL_ROM = $(BUILD_DIR)/vr60_q028_family_c_control.32x
+Q028_C_ACTIVE_ROM = $(BUILD_DIR)/vr60_q028_family_c_active.32x
+Q028_A_ACTIVE_BIN = $(BUILD_DIR)/sh2/q028_family_a_active.bin
+Q028_A_CONTROL_BIN = $(BUILD_DIR)/sh2/q028_family_a_control.bin
+Q028_B_ACTIVE_BIN = $(BUILD_DIR)/sh2/q028_family_b_active.bin
+Q028_B_CONTROL_BIN = $(BUILD_DIR)/sh2/q028_family_b_control.bin
+Q028_C_ACTIVE_BIN = $(BUILD_DIR)/sh2/q028_family_c_active.bin
+Q028_C_CONTROL_BIN = $(BUILD_DIR)/sh2/q028_family_c_control.bin
+Q028_A_ACTIVE_INC = disasm/sh2/generated/q028_family_a_active.inc
+Q028_A_CONTROL_INC = disasm/sh2/generated/q028_family_a_control.inc
+Q028_B_ACTIVE_INC = disasm/sh2/generated/q028_family_b_active.inc
+Q028_B_CONTROL_INC = disasm/sh2/generated/q028_family_b_control.inc
+Q028_C_ACTIVE_INC = disasm/sh2/generated/q028_family_c_active.inc
+Q028_C_CONTROL_INC = disasm/sh2/generated/q028_family_c_control.inc
+# Q-026 ROM rules appear before the shared SH2 variable catalog, so their
+# complete source/generated layout must be defined before those rules expand.
+SH2_Q026_HANDLER_SRC = disasm/sh2/expansion/q026_player_shadow.s
+SH2_Q026_HANDLER_BIN = $(BUILD_DIR)/sh2/q026_player_shadow.bin
+SH2_Q026_HANDLER_INC = disasm/sh2/generated/q026_player_shadow.inc
+SH2_Q026_ISR_SRC = disasm/sh2/expansion/q026_external_isr.s
+SH2_Q026_ISR_BIN = $(BUILD_DIR)/sh2/q026_external_isr.bin
+SH2_Q026_ISR_CORE_BIN = $(BUILD_DIR)/sh2/q026_external_isr_core.bin
+SH2_Q026_ISR_INIT_BIN = $(BUILD_DIR)/sh2/q026_external_isr_init.bin
+SH2_Q026_ISR_CORE_INC = disasm/sh2/generated/q026_external_isr_core.inc
+SH2_Q026_ISR_INIT_INC = disasm/sh2/generated/q026_external_isr_init.inc
+SH2_Q027_HANDLER_SRC = disasm/sh2/expansion/q027_player_stock_dispatch.s
+SH2_Q027_HANDLER_BIN = $(BUILD_DIR)/sh2/q027_player_stock_dispatch.bin
+SH2_Q027_HANDLER_INC = disasm/sh2/generated/q027_player_stock_dispatch.inc
+SH2_Q027_ISR_SRC = disasm/sh2/expansion/q027_external_isr.s
+SH2_Q027_ISR_ACTIVE_CORE_BIN = $(BUILD_DIR)/sh2/q027_external_isr_active_core.bin
+SH2_Q027_ISR_CONTROL_CORE_BIN = $(BUILD_DIR)/sh2/q027_external_isr_control_core.bin
+SH2_Q027_ISR_PARK_BIN = $(BUILD_DIR)/sh2/q027_master_park.bin
+SH2_Q027_ISR_INIT_BIN = $(BUILD_DIR)/sh2/q027_external_isr_init.bin
+SH2_Q027_ISR_ACTIVE_CORE_INC = disasm/sh2/generated/q027_external_isr_active_core.inc
+SH2_Q027_ISR_CONTROL_CORE_INC = disasm/sh2/generated/q027_external_isr_control_core.inc
+SH2_Q027_ISR_PARK_INC = disasm/sh2/generated/q027_master_park.inc
+SH2_Q027_ISR_INIT_INC = disasm/sh2/generated/q027_external_isr_init.inc
+Q020_CMDINT_PROBE_ROM = $(BUILD_DIR)/vr60_q020_cmdint_probe.32x
+Q020_CMDINT_PROBE_MANIFEST = $(TOOLS_DIR)/libretro-profiling/q020_cmdint_probe.json
+Q020_CMDINT_PROBE_VERIFY = $(TOOLS_DIR)/libretro-profiling/verify_q020_cmdint_probe.py
+Q020_PROFILE_DIR = $(TOOLS_DIR)/libretro-profiling
+Q020_PROFILE_FRONTEND = $(Q020_PROFILE_DIR)/q020_profiling_frontend
+Q020_PROFILE_CORE = $(Q020_PROFILE_DIR)/q020_picodrive_libretro.so
+Q020_RUNTIME_TOOLS_VERIFY = $(Q020_PROFILE_DIR)/verify_q020_runtime_tools.py
+Q020_PICODRIVE_PREPARE = $(Q020_PROFILE_DIR)/prepare_q020_picodrive.py
+Q020_PICODRIVE_PARITY_PATCH = $(Q020_PROFILE_DIR)/libretro_q020_cmdint_irq_parity.patch
+Q020_PICODRIVE_DIR = third_party/picodrive
 
 # Assembly flags
 # -Fbin = binary output
@@ -25,24 +184,1130 @@ ASMFLAGS = -Fbin -m68000 -no-opt -spaces -quiet
 
 # Source files
 M68K_SRC = $(DISASM_DIR)/vrd.asm
-.PHONY: all clean disasm tools test profile-frame profile-pc
+VR60_1P_HOOK_SITE_SRC = $(DISASM_DIR)/modules/68k/game/scene/game_frame_orch_013.asm
+VR60_1P_STAGING_HOOK_SRC = $(DISASM_DIR)/modules/68k/sh2/vr60_1p_staging_hook.asm
+VR60_FPS_COUNTER_SRCS = \
+	$(DISASM_DIR)/modules/68k/vint/vr60_fps_counter.asm \
+	$(DISASM_DIR)/modules/68k/vint/vint_unified_60fps.asm \
+	$(DISASM_DIR)/modules/68k/boot/exception_vector_trampolines.asm \
+	$(DISASM_DIR)/sections/header.asm \
+	$(DISASM_DIR)/sections/code_1c200.asm \
+	$(DISASM_DIR)/vrd.asm
+VR60_EXPERIMENTAL_ROUTING_SRCS = \
+	$(DISASM_DIR)/modules/68k/vint/vr60_1p_scheduler_vint.asm \
+	$(DISASM_DIR)/modules/68k/game/state/input_dispatch_table_and_controller_port_init.asm \
+	$(DISASM_DIR)/modules/68k/game/state/state_disp_004cb8.asm \
+	$(DISASM_DIR)/modules/68k/game/menu/call_subs_advance_game_state.asm \
+	$(DISASM_DIR)/sections/code_1c200.asm
+VR60_EXPERIMENTAL_40FPS_INTERP_SRCS = \
+	$(DISASM_DIR)/modules/68k/vint/vr60_1p_interpolated_render.asm \
+	$(DISASM_DIR)/modules/68k/game/scene/game_frame_orch_013.asm \
+	$(DISASM_DIR)/modules/68k/game/state/input_dispatch_table_and_controller_port_init.asm \
+	$(DISASM_DIR)/modules/68k/game/state/state_disp_004cb8.asm \
+	$(DISASM_DIR)/modules/68k/game/menu/call_subs_advance_game_state.asm \
+	$(DISASM_DIR)/modules/68k/sh2/vr60_1p_staging_hook.asm \
+	$(DISASM_DIR)/sections/code_2200.asm \
+	$(DISASM_DIR)/sections/code_20200.asm \
+	$(DISASM_DIR)/sections/code_22200.asm \
+	$(DISASM_DIR)/sh2/experiments/frustum_cull_fused_callers.inc \
+	$(DISASM_DIR)/sh2/experiments/screen_bounds_visibility_fused.inc \
+	$(DISASM_DIR)/sh2/experiments/edge_scan_raster_exact.inc \
+	$(DISASM_DIR)/sh2/experiments/bounds_handler_rle_direct.inc \
+	$(DISASM_DIR)/sh2/experiments/rle_direct_trampolines.inc \
+	$(DISASM_DIR)/sh2/experiments/vertex_transform_load_schedule.inc \
+	$(DISASM_DIR)/sh2/expansion/coord_transform_batched.inc \
+	$(DISASM_DIR)/sections/code_1c200.asm \
+	$(DISASM_DIR)/sections/expansion_300000.asm \
+	$(DISASM_DIR)/vrd.asm
+VR60_INTERP_CAMERA_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_interp_camera_render.s
+VR60_INTERP_CAMERA_SH2_BIN = $(BUILD_DIR)/sh2/vr60_interp_camera_render.bin
+VR60_INTERP_CAMERA_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_interp_camera_render.inc
+VR60_INTERP_CAMERA_FAMILY_A_SPLIT_SH2_BIN = $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_split.bin
+VR60_INTERP_CAMERA_FAMILY_A_SPLIT_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_interp_camera_render_family_a_split.inc
+VR60_INTERP_CAMERA_FAMILY_A_HANDOFF_SH2_BIN = $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_handoff.bin
+VR60_INTERP_CAMERA_FAMILY_A_HANDOFF_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_interp_camera_render_family_a_handoff.inc
+VR60_INTERP_CAMERA_FAMILY_A_PRETRANSFORM_SH2_BIN = $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_pretransform.bin
+VR60_INTERP_CAMERA_FAMILY_A_PRETRANSFORM_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_interp_camera_render_family_a_pretransform.inc
+VR60_INTERP_CAMERA_FAMILY_A_SHADOW_SH2_BIN = $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_shadow.bin
+VR60_INTERP_CAMERA_FAMILY_A_SHADOW_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_interp_camera_render_family_a_shadow.inc
+VR60_INTERP_CAMERA_FAMILY_A_SHADOW_STAGE1_SH2_BIN = $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_shadow_stage1.bin
+VR60_INTERP_CAMERA_FAMILY_A_SHADOW_STAGE1_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_interp_camera_render_family_a_shadow_stage1.inc
+VR60_ONCHIP_COPY_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_onchip_copy_unrolled.s
+VR60_ONCHIP_COPY_SH2_BIN = $(BUILD_DIR)/sh2/vr60_onchip_copy_unrolled.bin
+VR60_ONCHIP_COPY_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_onchip_copy_unrolled.inc
+VR60_FILL_PUMP_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_fill_pump.s
+VR60_FILL_PUMP_SH2_BIN = $(BUILD_DIR)/sh2/vr60_fill_pump.bin
+VR60_FILL_PUMP_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_fill_pump.inc
+VR60_SLAVE_CLEAR_OVERLAP_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_slave_clear_overlap.s
+VR60_SLAVE_CLEAR_OVERLAP_SH2_BIN = $(BUILD_DIR)/sh2/vr60_slave_clear_overlap.bin
+VR60_SLAVE_CLEAR_OVERLAP_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_slave_clear_overlap.inc
+VR60_VERTEX_FAST_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_vertex_fast.s
+VR60_VERTEX_FAST_SH2_BIN = $(BUILD_DIR)/sh2/vr60_vertex_fast.bin
+VR60_VERTEX_FAST_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_vertex_fast.inc
+VR60_30HZ_LOD_SRC = $(DISASM_DIR)/sh2/expansion/vr60_player_parts_lod.s
+VR60_30HZ_LOD_BIN = $(BUILD_DIR)/sh2/vr60_player_parts_lod.bin
+VR60_30HZ_LOD_INC = $(DISASM_DIR)/sh2/generated/vr60_player_parts_lod.inc
+VR60_FAMILY_A_SPLIT_SH2_BIN = $(BUILD_DIR)/sh2/vr60_family_a_split_slave.bin
+VR60_FAMILY_A_SPLIT_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_family_a_split_slave.inc
+VR60_FAMILY_A_HANDOFF_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_family_a_handoff.s
+VR60_FAMILY_A_HANDOFF_SH2_BIN = $(BUILD_DIR)/sh2/vr60_family_a_handoff.bin
+VR60_FAMILY_A_HANDOFF_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_family_a_handoff.inc
+VR60_FAMILY_A_PRETRANSFORM_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_family_a_pretransform.s
+VR60_FAMILY_A_PRETRANSFORM_SH2_BIN = $(BUILD_DIR)/sh2/vr60_family_a_pretransform.bin
+VR60_FAMILY_A_PRETRANSFORM_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_family_a_pretransform.inc
+VR60_FAMILY_A_SHADOW_QUEUE_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_family_a_shadow_queue.s
+VR60_FAMILY_A_SHADOW_QUEUE_SH2_BIN = $(BUILD_DIR)/sh2/vr60_family_a_shadow_queue.bin
+VR60_FAMILY_A_SHADOW_QUEUE_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_family_a_shadow_queue.inc
+VR60_FAMILY_A_SHADOW_STAGE1_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_family_a_shadow_stage1.s
+VR60_FAMILY_A_SHADOW_STAGE1_SH2_BIN = $(BUILD_DIR)/sh2/vr60_family_a_shadow_stage1.bin
+VR60_FAMILY_A_SHADOW_STAGE1_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_family_a_shadow_stage1.inc
+VR60_SCANLINE_PAIR_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_scanline_pair_fused.s
+VR60_SCANLINE_PAIR_SH2_BIN = $(BUILD_DIR)/sh2/vr60_scanline_pair_fused.bin
+VR60_SCANLINE_PAIR_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_scanline_pair_fused.inc
+VR60_RLE_DIRECT_SH2_SRC = $(DISASM_DIR)/sh2/expansion/vr60_rle_direct_fast.s
+VR60_RLE_DIRECT_SH2_BIN = $(BUILD_DIR)/sh2/vr60_rle_direct_fast.bin
+VR60_RLE_DIRECT_SH2_INC = $(DISASM_DIR)/sh2/generated/vr60_rle_direct_fast.inc
+VR60_30HZ_LOD_ROM_SRCS = \
+	$(DISASM_DIR)/sections/code_20200.asm \
+	$(DISASM_DIR)/sections/expansion_300000.asm \
+	$(DISASM_DIR)/vrd.asm
+.PHONY: all ares-rom fps-rom fps-ares-rom fps-ares-roms experimental-40fps-interp-fps-rom experimental-40fps-interp-fps-ares-rom experimental-40fps-interp-family-a-split-fps-rom experimental-40fps-interp-family-a-split-fps-ares-rom experimental-40fps-interp-family-a-handoff-fps-rom experimental-40fps-interp-family-a-handoff-fps-ares-rom experimental-40fps-interp-family-a-pretransform-fps-rom experimental-40fps-interp-family-a-pretransform-fps-ares-rom experimental-40fps-interp-family-a-shadow-fps-rom experimental-40fps-interp-family-a-shadow-fps-ares-rom experimental-40fps-interp-family-a-shadow-stage1-fps-rom experimental-40fps-interp-family-a-shadow-stage1-fps-ares-rom experimental-40fps-interp-scanline-pair-fps-rom experimental-40fps-interp-scanline-pair-fps-ares-rom experimental-40fps-interp-rle-direct-fps-rom experimental-40fps-interp-rle-direct-fps-ares-rom experimental-60fps-routing-rom experimental-60fps-routing-ares-rom experimental-60fps-routing-fps-rom experimental-60fps-routing-fps-ares-rom experimental-30fps-merge-rom experimental-30fps-merge-ares-rom experimental-30fps-merge-fps-rom experimental-30fps-merge-fps-ares-rom experimental-30hz-lod-rom experimental-30hz-lod-ares-rom experimental-30hz-lod-fps-rom experimental-30hz-lod-fps-ares-rom experimental-60fps-burst-rom experimental-60fps-burst-ares-rom experimental-60fps-burst-fps-rom experimental-60fps-burst-fps-ares-rom control-rom mode0-roms mode0-default-verify mode1-roms mode1-runtime-tools mode1-gate-validate mode2-roms mode2-gate-validate q023-mailbox-roms q026-player-roms q026-runtime-tools q026-runtime-validate q027-cmd3f-roms q027-runtime-tools q027-runtime-validate q028-renderer-probe-roms q020-cmdint-probe q020-runtime-tools clean disasm tools test profile-frame profile-pc
 
 # ============================================================================
 # Main targets
 # ============================================================================
 
-all: dirs sh2-assembly $(OUTPUT_ROM)
+all: $(OUTPUT_ROM)
+
+ares-rom: $(ARES_ROM)
+
+$(ARES_ROM): $(OUTPUT_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible 4 MiB ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(OUTPUT_ROM) $@
+
+# User-facing diagnostic builds.  These are deliberately separate artifacts:
+# ordinary and experimental reference ROM hashes stay unchanged.
+fps-rom: $(FPS_ROM)
+
+fps-ares-rom: $(FPS_ARES_ROM)
+
+fps-ares-roms: $(FPS_ARES_ROMS)
+
+experimental-40fps-interp-fps-rom: $(EXPERIMENTAL_40FPS_INTERP_FPS_ROM)
+
+experimental-40fps-interp-fps-ares-rom: $(EXPERIMENTAL_40FPS_INTERP_FPS_ARES_ROM)
+
+experimental-40fps-interp-family-a-split-fps-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SPLIT_FPS_ROM)
+
+experimental-40fps-interp-family-a-split-fps-ares-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SPLIT_FPS_ARES_ROM)
+
+experimental-40fps-interp-family-a-handoff-fps-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_HANDOFF_FPS_ROM)
+
+experimental-40fps-interp-family-a-handoff-fps-ares-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_HANDOFF_FPS_ARES_ROM)
+
+experimental-40fps-interp-family-a-pretransform-fps-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_PRETRANSFORM_FPS_ROM)
+
+experimental-40fps-interp-family-a-pretransform-fps-ares-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_PRETRANSFORM_FPS_ARES_ROM)
+
+experimental-40fps-interp-family-a-shadow-fps-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_FPS_ROM)
+
+experimental-40fps-interp-family-a-shadow-fps-ares-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_FPS_ARES_ROM)
+
+experimental-40fps-interp-family-a-shadow-stage1-fps-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_STAGE1_FPS_ROM)
+
+experimental-40fps-interp-family-a-shadow-stage1-fps-ares-rom: $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_STAGE1_FPS_ARES_ROM)
+
+experimental-40fps-interp-scanline-pair-fps-rom: $(EXPERIMENTAL_40FPS_INTERP_SCANLINE_PAIR_FPS_ROM)
+
+experimental-40fps-interp-scanline-pair-fps-ares-rom: $(EXPERIMENTAL_40FPS_INTERP_SCANLINE_PAIR_FPS_ARES_ROM)
+
+experimental-40fps-interp-rle-direct-fps-rom: $(EXPERIMENTAL_40FPS_INTERP_RLE_DIRECT_FPS_ROM)
+
+experimental-40fps-interp-rle-direct-fps-ares-rom: $(EXPERIMENTAL_40FPS_INTERP_RLE_DIRECT_FPS_ARES_ROM)
+
+.PHONY: experimental-raster-arithmetic-ares-rom
+experimental-raster-arithmetic-ares-rom: $(EXPERIMENTAL_RASTER_ARITHMETIC_ARES_ROM)
+
+# Isolated audited 580-byte fusion; never enabled by canonical or v31 targets.
+.PHONY: experimental-solid-fusion-ares-rom
+experimental-solid-fusion-ares-rom: $(BUILD_DIR)/vr60_experimental_solid_fusion_ares.32x
+
+$(DISASM_DIR)/sh2/generated/solid_fusion.inc: $(DISASM_DIR)/sh2/experiments/solid_fusion.asm | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	$(SH2_AS) $(SH2_ASFLAGS) -big -o $(BUILD_DIR)/sh2/solid_fusion.o $<
+	$(SH2_OBJCOPY) -O binary --only-section=.text $(BUILD_DIR)/sh2/solid_fusion.o $(BUILD_DIR)/sh2/solid_fusion.bin
+	@test "$$(wc -c < $(BUILD_DIR)/sh2/solid_fusion.bin)" -eq 580
+	@echo "; Generated from sh2/experiments/solid_fusion.asm; do not edit." > $@
+	@xxd -p $(BUILD_DIR)/sh2/solid_fusion.bin | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+
+$(BUILD_DIR)/vr60_experimental_solid_fusion.32x: $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_SCANLINE_PAIR_SH2_INC) $(DISASM_DIR)/sh2/generated/solid_fusion.inc | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_NOP_REMOVE=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_BT_SCHEDULE=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_SCANLINE_PAIR_FUSED=1 \
+		-D VR60_EXPERIMENTAL_SOLID_FUSION=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(BUILD_DIR)/vr60_experimental_solid_fusion_ares.32x: $(BUILD_DIR)/vr60_experimental_solid_fusion.32x $(ARES_ROM_TOOL) | dirs
+	$(PYTHON) $(ARES_ROM_TOOL) $< $@
+
+# Isolated one-state solid-span experiment. Never enabled in canonical/v31.
+$(EXPERIMENTAL_RASTER_ARITHMETIC_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_SCANLINE_PAIR_SH2_INC) | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_NOP_REMOVE=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_BT_SCHEDULE=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_SCANLINE_PAIR_FUSED=1 \
+		-D VR60_EXPERIMENTAL_RASTER_ARITHMETIC=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_RASTER_ARITHMETIC_ARES_ROM): $(EXPERIMENTAL_RASTER_ARITHMETIC_ROM) $(ARES_ROM_TOOL) | dirs
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_RASTER_ARITHMETIC_ROM) $@
+
+$(EXPERIMENTAL_40FPS_INTERP_FPS_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_SCANLINE_PAIR_SH2_INC) | dirs
+	@echo "==> Assembling isolated 1P interpolation candidate with FPS counter..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_NOP_REMOVE=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_BT_SCHEDULE=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_SCANLINE_PAIR_FUSED=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_40FPS_INTERP_FPS_ARES_ROM): $(EXPERIMENTAL_40FPS_INTERP_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible interpolation ROM with FPS counter..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_40FPS_INTERP_FPS_ROM) $@
+
+# Isolated A/B over the current clear-overlap candidate.  Slave cmd $02 renders
+# family-A descriptor 0; the Master stage-B clone renders descriptors 1..3.
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SPLIT_FPS_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_FAMILY_A_SPLIT_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_SCANLINE_PAIR_SH2_INC) $(VR60_FAMILY_A_SPLIT_SH2_INC) | dirs
+	@echo "==> Assembling isolated family-A dual-SH2 split A/B..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_NOP_REMOVE=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_BT_SCHEDULE=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_SCANLINE_PAIR_FUSED=1 \
+		-D VR60_EXPERIMENTAL_FAMILY_A_SPLIT=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SPLIT_FPS_ARES_ROM): $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SPLIT_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible family-A split ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SPLIT_FPS_ROM) $@
+
+# Serialized correctness gate for a true cross-SH2 authority transfer.  The
+# Master emits family A at the exact Slave queue position; this target measures
+# equivalence/handshake overhead before any concurrent merge is attempted.
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_HANDOFF_FPS_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_FAMILY_A_HANDOFF_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_SCANLINE_PAIR_SH2_INC) $(VR60_FAMILY_A_HANDOFF_SH2_INC) | dirs
+	@echo "==> Assembling exact-position family-A dual-SH2 handoff gate..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_NOP_REMOVE=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_BT_SCHEDULE=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_SCANLINE_PAIR_FUSED=1 \
+		-D VR60_EXPERIMENTAL_FAMILY_A_HANDOFF=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_HANDOFF_FPS_ARES_ROM): $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_HANDOFF_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible family-A handoff ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_HANDOFF_FPS_ROM) $@
+
+# First performance-bearing dual-SH2 split: Master pre-transforms family-A
+# vertices while Slave cmd $02 is live; Slave retains records/buckets/order.
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_PRETRANSFORM_FPS_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_FAMILY_A_PRETRANSFORM_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_SCANLINE_PAIR_SH2_INC) $(VR60_FAMILY_A_PRETRANSFORM_SH2_INC) | dirs
+	@echo "==> Assembling concurrent family-A pre-transform split..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_NOP_REMOVE=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_BT_SCHEDULE=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_SCANLINE_PAIR_FUSED=1 \
+		-D VR60_EXPERIMENTAL_FAMILY_A_PRETRANSFORM=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_PRETRANSFORM_FPS_ARES_ROM): $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_PRETRANSFORM_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible family-A pre-transform ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_PRETRANSFORM_FPS_ROM) $@
+
+# Historical Stage-0 producer/consumer probe.  Its $2603E000 queue was later
+# proven to overlap every stock track payload; retain only for reconstruction
+# and do not treat buildability as permission to run or extend it.
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_FPS_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_FAMILY_A_SHADOW_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_FAMILY_A_SHADOW_QUEUE_SH2_INC) | dirs
+	@echo "==> Assembling isolated family-A queue shadow probe..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_FAMILY_A_SHADOW_QUEUE=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_FPS_ARES_ROM): $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible family-A queue shadow ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_FPS_ROM) $@
+
+# Rejected historical Stage-1 diagnostic.  Its $2603E000-$2603F18F storage
+# overlaps stock track payloads and its reciprocal waits time out/starve
+# presentation.  This target remains separate solely for reconstruction.
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_STAGE1_FPS_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_FAMILY_A_SHADOW_STAGE1_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_FAMILY_A_SHADOW_STAGE1_SH2_INC) | dirs
+	@echo "==> Assembling isolated family-A pre-transform Stage-1 probe..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_NOP_REMOVE=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_BT_SCHEDULE=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_FAMILY_A_SHADOW_STAGE1=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_STAGE1_FPS_ARES_ROM): $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_STAGE1_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible family-A Stage-1 shadow ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_40FPS_INTERP_FAMILY_A_SHADOW_STAGE1_FPS_ROM) $@
+
+# Exact 16-way unroll of the adjacent +4/-4 scanline list walks.  Kept as an
+# isolated A/B until cold-boot and deterministic replay both prove equality.
+$(EXPERIMENTAL_40FPS_INTERP_SCANLINE_PAIR_FPS_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_SCANLINE_PAIR_SH2_INC) | dirs
+	@echo "==> Assembling isolated exact fused scanline-pair candidate..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_NOP_REMOVE=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_BT_SCHEDULE=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_SCANLINE_PAIR_FUSED=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_40FPS_INTERP_SCANLINE_PAIR_FPS_ARES_ROM): $(EXPERIMENTAL_40FPS_INTERP_SCANLINE_PAIR_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible fused scanline-pair ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_40FPS_INTERP_SCANLINE_PAIR_FPS_ROM) $@
+
+# Direct A/B for the live SDRAM RLE entries.  Unlike the rejected descriptor
+# dispatcher clone, this leaves every non-RLE descriptor on the stock path.
+$(EXPERIMENTAL_40FPS_INTERP_RLE_DIRECT_FPS_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) $(VR60_EXPERIMENTAL_40FPS_INTERP_SRCS) $(VR60_INTERP_CAMERA_SH2_INC) $(VR60_ONCHIP_COPY_SH2_INC) $(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC) $(VR60_VERTEX_FAST_SH2_INC) $(VR60_SCANLINE_PAIR_SH2_INC) $(VR60_RLE_DIRECT_SH2_INC) | dirs
+	@echo "==> Assembling isolated direct RLE fast-path candidate..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_40FPS_INTERP=1 \
+		-D VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_NOP_REMOVE=1 \
+		-D VR60_EXPERIMENTAL_ONCHIP_VERTEX_BT_SCHEDULE=1 \
+		-D VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-D VR60_EXPERIMENTAL_SCANLINE_PAIR_FUSED=1 \
+		-D VR60_EXPERIMENTAL_RLE_DIRECT_FAST=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_40FPS_INTERP_RLE_DIRECT_FPS_ARES_ROM): $(EXPERIMENTAL_40FPS_INTERP_RLE_DIRECT_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible direct RLE fast-path ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_40FPS_INTERP_RLE_DIRECT_FPS_ROM) $@
+
+$(VR60_INTERP_CAMERA_SH2_BIN): $(VR60_INTERP_CAMERA_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_interp_camera_render..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		--defsym VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-o $(BUILD_DIR)/sh2/vr60_interp_camera_render.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_interp_camera_render.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_INTERP_CAMERA_SH2_INC): $(VR60_INTERP_CAMERA_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_interp_camera_render.inc..."
+	@echo "; Auto-generated from $(VR60_INTERP_CAMERA_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_SPLIT_SH2_BIN): $(VR60_INTERP_CAMERA_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_interp_camera_render (family-A split)..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		--defsym VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		--defsym VR60_EXPERIMENTAL_FAMILY_A_SPLIT=1 \
+		-o $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_split.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_split.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_SPLIT_SH2_INC): $(VR60_INTERP_CAMERA_FAMILY_A_SPLIT_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_interp_camera_render_family_a_split.inc..."
+	@echo "; Auto-generated from $(VR60_INTERP_CAMERA_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-split-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_HANDOFF_SH2_BIN): $(VR60_INTERP_CAMERA_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_interp_camera_render (family-A handoff)..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		--defsym VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		--defsym VR60_EXPERIMENTAL_FAMILY_A_HANDOFF=1 \
+		-o $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_handoff.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_handoff.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_HANDOFF_SH2_INC): $(VR60_INTERP_CAMERA_FAMILY_A_HANDOFF_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_interp_camera_render_family_a_handoff.inc..."
+	@echo "; Auto-generated from $(VR60_INTERP_CAMERA_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-handoff-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_PRETRANSFORM_SH2_BIN): $(VR60_INTERP_CAMERA_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_interp_camera_render (family-A pretransform)..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		--defsym VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		--defsym VR60_EXPERIMENTAL_FAMILY_A_PRETRANSFORM=1 \
+		-o $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_pretransform.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_pretransform.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_PRETRANSFORM_SH2_INC): $(VR60_INTERP_CAMERA_FAMILY_A_PRETRANSFORM_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_interp_camera_render_family_a_pretransform.inc..."
+	@echo "; Auto-generated from $(VR60_INTERP_CAMERA_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-pretransform-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_SHADOW_SH2_BIN): $(VR60_INTERP_CAMERA_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_interp_camera_render (family-A shadow)..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		--defsym VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		--defsym VR60_EXPERIMENTAL_FAMILY_A_SHADOW_QUEUE=1 \
+		-o $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_shadow.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_shadow.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_SHADOW_SH2_INC): $(VR60_INTERP_CAMERA_FAMILY_A_SHADOW_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_interp_camera_render_family_a_shadow.inc..."
+	@echo "; Auto-generated from $(VR60_INTERP_CAMERA_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-shadow-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_SHADOW_STAGE1_SH2_BIN): $(VR60_INTERP_CAMERA_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_interp_camera_render (family-A Stage-1)..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST=1 \
+		--defsym VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		--defsym VR60_EXPERIMENTAL_FAMILY_A_SHADOW_STAGE1=1 \
+		-o $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_shadow_stage1.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_interp_camera_render_family_a_shadow_stage1.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_INTERP_CAMERA_FAMILY_A_SHADOW_STAGE1_SH2_INC): $(VR60_INTERP_CAMERA_FAMILY_A_SHADOW_STAGE1_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_interp_camera_render_family_a_shadow_stage1.inc..."
+	@echo "; Auto-generated from $(VR60_INTERP_CAMERA_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-shadow-stage1-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_FAMILY_A_SPLIT_SH2_BIN): $(VR60_30HZ_LOD_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: family-A Slave split wrapper..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_FAMILY_A_SPLIT=1 \
+		-o $(BUILD_DIR)/sh2/vr60_family_a_split_slave.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_family_a_split_slave.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_FAMILY_A_SPLIT_SH2_INC): $(VR60_FAMILY_A_SPLIT_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_family_a_split_slave.inc..."
+	@echo "; Auto-generated from $(VR60_30HZ_LOD_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-split-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_FAMILY_A_HANDOFF_SH2_BIN): $(VR60_FAMILY_A_HANDOFF_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: exact-position family-A handoff..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_FAMILY_A_HANDOFF=1 \
+		-o $(BUILD_DIR)/sh2/vr60_family_a_handoff.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_family_a_handoff.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_FAMILY_A_HANDOFF_SH2_INC): $(VR60_FAMILY_A_HANDOFF_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_family_a_handoff.inc..."
+	@echo "; Auto-generated from $(VR60_FAMILY_A_HANDOFF_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-handoff-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_FAMILY_A_PRETRANSFORM_SH2_BIN): $(VR60_FAMILY_A_PRETRANSFORM_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: concurrent family-A pre-transform..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_FAMILY_A_PRETRANSFORM=1 \
+		-o $(BUILD_DIR)/sh2/vr60_family_a_pretransform.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_family_a_pretransform.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_FAMILY_A_PRETRANSFORM_SH2_INC): $(VR60_FAMILY_A_PRETRANSFORM_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_family_a_pretransform.inc..."
+	@echo "; Auto-generated from $(VR60_FAMILY_A_PRETRANSFORM_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-pretransform-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_FAMILY_A_SHADOW_QUEUE_SH2_BIN): $(VR60_FAMILY_A_SHADOW_QUEUE_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: family-A queue shadow probe..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_FAMILY_A_SHADOW_QUEUE=1 \
+		-o $(BUILD_DIR)/sh2/vr60_family_a_shadow_queue.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_family_a_shadow_queue.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_FAMILY_A_SHADOW_QUEUE_SH2_INC): $(VR60_FAMILY_A_SHADOW_QUEUE_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_family_a_shadow_queue.inc..."
+	@echo "; Auto-generated from $(VR60_FAMILY_A_SHADOW_QUEUE_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-shadow-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_FAMILY_A_SHADOW_STAGE1_SH2_BIN): $(VR60_FAMILY_A_SHADOW_STAGE1_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: family-A pre-transform Stage-1 probe..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_FAMILY_A_SHADOW_STAGE1=1 \
+		-o $(BUILD_DIR)/sh2/vr60_family_a_shadow_stage1.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_family_a_shadow_stage1.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_FAMILY_A_SHADOW_STAGE1_SH2_INC): $(VR60_FAMILY_A_SHADOW_STAGE1_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_family_a_shadow_stage1.inc..."
+	@echo "; Auto-generated from $(VR60_FAMILY_A_SHADOW_STAGE1_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-family-a-shadow-stage1-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_SCANLINE_PAIR_SH2_BIN): $(VR60_SCANLINE_PAIR_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: exact fused scanline pair..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_SCANLINE_PAIR_FUSED=1 \
+		-o $(BUILD_DIR)/sh2/vr60_scanline_pair_fused.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_scanline_pair_fused.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_SCANLINE_PAIR_SH2_INC): $(VR60_SCANLINE_PAIR_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_scanline_pair_fused.inc..."
+	@echo "; Auto-generated from $(VR60_SCANLINE_PAIR_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-scanline-pair-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_RLE_DIRECT_SH2_BIN): $(VR60_RLE_DIRECT_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: direct ABI-safe RLE fast path..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_RLE_DIRECT_FAST=1 \
+		-o $(BUILD_DIR)/sh2/vr60_rle_direct_fast.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_rle_direct_fast.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_RLE_DIRECT_SH2_INC): $(VR60_RLE_DIRECT_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_rle_direct_fast.inc..."
+	@echo "; Auto-generated from $(VR60_RLE_DIRECT_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-rle-direct-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_ONCHIP_COPY_SH2_BIN): $(VR60_ONCHIP_COPY_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_onchip_copy_unrolled..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/vr60_onchip_copy_unrolled.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_onchip_copy_unrolled.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_ONCHIP_COPY_SH2_INC): $(VR60_ONCHIP_COPY_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_onchip_copy_unrolled.inc..."
+	@echo "; Auto-generated from $(VR60_ONCHIP_COPY_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_FILL_PUMP_SH2_BIN): $(VR60_FILL_PUMP_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_fill_pump..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/vr60_fill_pump.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_fill_pump.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_FILL_PUMP_SH2_INC): $(VR60_FILL_PUMP_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_fill_pump.inc..."
+	@echo "; Auto-generated from $(VR60_FILL_PUMP_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_SLAVE_CLEAR_OVERLAP_SH2_BIN): $(VR60_SLAVE_CLEAR_OVERLAP_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_slave_clear_overlap..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP=1 \
+		-o $(BUILD_DIR)/sh2/vr60_slave_clear_overlap.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_slave_clear_overlap.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_SLAVE_CLEAR_OVERLAP_SH2_INC): $(VR60_SLAVE_CLEAR_OVERLAP_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_slave_clear_overlap.inc..."
+	@echo "; Auto-generated from $(VR60_SLAVE_CLEAR_OVERLAP_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(VR60_VERTEX_FAST_SH2_BIN): $(VR60_VERTEX_FAST_SH2_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_vertex_fast..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/vr60_vertex_fast.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_vertex_fast.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_VERTEX_FAST_SH2_INC): $(VR60_VERTEX_FAST_SH2_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_vertex_fast.inc..."
+	@echo "; Auto-generated from $(VR60_VERTEX_FAST_SH2_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-40fps-interp-fps-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(FPS_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) | dirs
+	@echo "==> Assembling canonical mode-0 ROM with on-screen FPS counter..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(FPS_ARES_ROM): $(FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible canonical FPS-counter ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(FPS_ROM) $@
+
+experimental-60fps-routing-fps-rom: $(EXPERIMENTAL_60FPS_ROUTING_FPS_ROM)
+
+experimental-60fps-routing-fps-ares-rom: $(EXPERIMENTAL_60FPS_ROUTING_FPS_ARES_ROM)
+
+$(EXPERIMENTAL_60FPS_ROUTING_FPS_ROM): $(EXPERIMENTAL_60FPS_ROUTING_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) | dirs
+	@echo "==> Assembling 1P routing experiment with on-screen FPS counter..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_60FPS_ROUTING=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_60FPS_ROUTING_FPS_ARES_ROM): $(EXPERIMENTAL_60FPS_ROUTING_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible routing FPS-counter ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_60FPS_ROUTING_FPS_ROM) $@
+
+experimental-30fps-merge-fps-rom: $(EXPERIMENTAL_30FPS_MERGE_FPS_ROM)
+
+experimental-30fps-merge-fps-ares-rom: $(EXPERIMENTAL_30FPS_MERGE_FPS_ARES_ROM)
+
+$(EXPERIMENTAL_30FPS_MERGE_FPS_ROM): $(EXPERIMENTAL_30FPS_MERGE_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) | dirs
+	@echo "==> Assembling two-phase experiment with on-screen FPS counter..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_60FPS_ROUTING=1 \
+		-D VR60_EXPERIMENTAL_30FPS_MERGE=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_30FPS_MERGE_FPS_ARES_ROM): $(EXPERIMENTAL_30FPS_MERGE_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible two-phase FPS-counter ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_30FPS_MERGE_FPS_ROM) $@
+
+experimental-30hz-lod-fps-rom: $(EXPERIMENTAL_30HZ_LOD_FPS_ROM)
+
+experimental-30hz-lod-fps-ares-rom: $(EXPERIMENTAL_30HZ_LOD_FPS_ARES_ROM)
+
+$(EXPERIMENTAL_30HZ_LOD_FPS_ROM): $(EXPERIMENTAL_30HZ_LOD_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) | dirs
+	@echo "==> Assembling 30-Hz LOD experiment with on-screen FPS counter..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_60FPS_ROUTING=1 \
+		-D VR60_EXPERIMENTAL_30FPS_MERGE=1 \
+		-D VR60_EXPERIMENTAL_30HZ_LOD=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_30HZ_LOD_FPS_ARES_ROM): $(EXPERIMENTAL_30HZ_LOD_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible 30-Hz LOD FPS-counter ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_30HZ_LOD_FPS_ROM) $@
+
+experimental-60fps-burst-fps-rom: $(EXPERIMENTAL_60FPS_BURST_FPS_ROM)
+
+experimental-60fps-burst-fps-ares-rom: $(EXPERIMENTAL_60FPS_BURST_FPS_ARES_ROM)
+
+$(EXPERIMENTAL_60FPS_BURST_FPS_ROM): $(EXPERIMENTAL_60FPS_BURST_ROM) $(M68K_SRC) $(VR60_FPS_COUNTER_SRCS) | dirs
+	@echo "==> Assembling burst experiment with on-screen FPS counter..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_60FPS_ROUTING=1 \
+		-D VR60_EXPERIMENTAL_30FPS_MERGE=1 \
+		-D VR60_EXPERIMENTAL_60FPS_BURST=1 \
+		-D VR60_FPS_COUNTER=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_60FPS_BURST_FPS_ARES_ROM): $(EXPERIMENTAL_60FPS_BURST_FPS_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible burst FPS-counter ROM..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_60FPS_BURST_FPS_ROM) $@
+
+experimental-60fps-routing-rom: $(EXPERIMENTAL_60FPS_ROUTING_ROM)
+
+experimental-60fps-routing-ares-rom: $(EXPERIMENTAL_60FPS_ROUTING_ARES_ROM)
+
+$(EXPERIMENTAL_60FPS_ROUTING_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_EXPERIMENTAL_ROUTING_SRCS) | dirs
+	@echo "==> Assembling isolated 1P 60-FPS routing experiment..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_60FPS_ROUTING=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_60FPS_ROUTING_ARES_ROM): $(EXPERIMENTAL_60FPS_ROUTING_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible 1P routing experiment..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_60FPS_ROUTING_ROM) $@
+
+experimental-30fps-merge-rom: $(EXPERIMENTAL_30FPS_MERGE_ROM)
+
+experimental-30fps-merge-ares-rom: $(EXPERIMENTAL_30FPS_MERGE_ARES_ROM)
+
+$(EXPERIMENTAL_30FPS_MERGE_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_EXPERIMENTAL_ROUTING_SRCS) | dirs
+	@echo "==> Assembling isolated 1P two-phase cadence candidate..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_60FPS_ROUTING=1 \
+		-D VR60_EXPERIMENTAL_30FPS_MERGE=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_30FPS_MERGE_ARES_ROM): $(EXPERIMENTAL_30FPS_MERGE_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible 1P two-phase cadence candidate..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_30FPS_MERGE_ROM) $@
+
+experimental-30hz-lod-rom: $(EXPERIMENTAL_30HZ_LOD_ROM)
+
+experimental-30hz-lod-ares-rom: $(EXPERIMENTAL_30HZ_LOD_ARES_ROM)
+
+$(EXPERIMENTAL_30HZ_LOD_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_EXPERIMENTAL_ROUTING_SRCS) $(VR60_30HZ_LOD_ROM_SRCS) $(VR60_30HZ_LOD_INC) | dirs
+	@echo "==> Assembling isolated 1P 30-Hz player-parts LOD candidate..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_60FPS_ROUTING=1 \
+		-D VR60_EXPERIMENTAL_30FPS_MERGE=1 \
+		-D VR60_EXPERIMENTAL_30HZ_LOD=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_30HZ_LOD_ARES_ROM): $(EXPERIMENTAL_30HZ_LOD_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible 1P 30-Hz LOD candidate..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_30HZ_LOD_ROM) $@
+
+$(VR60_30HZ_LOD_BIN): $(VR60_30HZ_LOD_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: vr60_player_parts_lod..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_EXPERIMENTAL_30HZ_LOD=1 \
+		-o $(BUILD_DIR)/sh2/vr60_player_parts_lod.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/vr60_player_parts_lod.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(VR60_30HZ_LOD_INC): $(VR60_30HZ_LOD_BIN)
+	@mkdir -p $(DISASM_DIR)/sh2/generated
+	@echo "==> Generating dc.w include: vr60_player_parts_lod.inc..."
+	@echo "; Auto-generated from $(VR60_30HZ_LOD_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make experimental-30hz-lod-rom'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+experimental-60fps-burst-rom: $(EXPERIMENTAL_60FPS_BURST_ROM)
+
+experimental-60fps-burst-ares-rom: $(EXPERIMENTAL_60FPS_BURST_ARES_ROM)
+
+$(EXPERIMENTAL_60FPS_BURST_ROM): $(OUTPUT_ROM) $(M68K_SRC) $(VR60_EXPERIMENTAL_ROUTING_SRCS) | dirs
+	@echo "==> Assembling isolated 1P burst-cadence candidate..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 \
+		-D VR60_EXPERIMENTAL_60FPS_ROUTING=1 \
+		-D VR60_EXPERIMENTAL_30FPS_MERGE=1 \
+		-D VR60_EXPERIMENTAL_60FPS_BURST=1 -o $@ $(M68K_SRC)
+
+$(EXPERIMENTAL_60FPS_BURST_ARES_ROM): $(EXPERIMENTAL_60FPS_BURST_ROM) $(ARES_ROM_TOOL) | dirs
+	@echo "==> Creating Ares-compatible 1P burst-cadence candidate..."
+	$(PYTHON) $(ARES_ROM_TOOL) $(EXPERIMENTAL_60FPS_BURST_ROM) $@
 
 dirs:
 	@mkdir -p $(BUILD_DIR)
 
 # Build the ROM from original sections/
 # Depends on SH2 assembly to ensure generated includes exist
-$(OUTPUT_ROM): $(M68K_SRC) $(SH2_FUNC000_INC) $(SH2_FUNC022_INC) $(SH2_FUNC017_INC) $(SH2_FUNC018_INC) $(SH2_FUNC019_INC) $(SH2_FUNC020_INC) $(SH2_FUNC021_ORIG_INC) $(SH2_FUNC023_INC) $(SH2_FUNC040_INC) $(SH2_FUNC032_INC) $(SH2_FUNC011_INC) $(SH2_FUNC012_INC) $(SH2_FUNC013_INC) $(SH2_FUNC014_015_INC) $(SH2_FUNC024_INC) $(SH2_FUNC025_INC) $(SH2_FUNC026_INC) $(SH2_FUNC001_INC) $(SH2_FUNC002_INC) $(SH2_FUNC003_004_INC) $(SH2_FUNC029_030_031_INC) $(SH2_FUNC033_INC) $(SH2_FUNC034_INC) $(SH2_FUNC036_INC) $(SH2_FUNC037_038_039_INC) $(SH2_FUNC005_INC) $(SH2_FUNC007_INC) $(SH2_FUNC006_INC) $(SH2_FUNC008_INC) $(SH2_FUNC016_INC) $(SH2_FUNC065_INC) $(SH2_FUNC066_INC) $(SH2_FUNC021_OPT_INC) $(SH2_BATCH_COPY_INC) $(SH2_CMD27_DRAIN_INC) $(SH2_SLAVE_WRAPPER_V2_INC) $(SH2_HANDLER_FRAME_SYNC_INC) $(SH2_MASTER_DISPATCH_HOOK_INC) $(SH2_SLAVE_TEST_FUNC_INC) $(SH2_SHADOW_PATH_WRAPPER_INC) $(SH2_CMDINT_HANDLER_INC) $(SH2_QUEUE_PROCESSOR_INC) $(SH2_GEN_DRAIN_INC)
+$(OUTPUT_ROM): $(M68K_SRC) sh2-assembly $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) $(VR60_EXPERIMENTAL_ROUTING_SRCS) $(SH2_FUNC000_INC) $(SH2_FUNC022_INC) $(SH2_FUNC017_INC) $(SH2_FUNC018_INC) $(SH2_FUNC019_INC) $(SH2_FUNC020_INC) $(SH2_FUNC021_ORIG_INC) $(SH2_FUNC023_INC) $(SH2_FUNC040_INC) $(SH2_FUNC032_INC) $(SH2_FUNC011_INC) $(SH2_FUNC012_INC) $(SH2_FUNC013_INC) $(SH2_FUNC014_015_INC) $(SH2_FUNC024_INC) $(SH2_FUNC025_INC) $(SH2_FUNC026_INC) $(SH2_FUNC001_INC) $(SH2_FUNC002_INC) $(SH2_FUNC003_004_INC) $(SH2_FUNC029_030_031_INC) $(SH2_FUNC033_INC) $(SH2_FUNC034_INC) $(SH2_FUNC036_INC) $(SH2_FUNC037_038_039_INC) $(SH2_FUNC005_INC) $(SH2_FUNC007_INC) $(SH2_FUNC006_INC) $(SH2_FUNC008_INC) $(SH2_FUNC016_INC) $(SH2_FUNC065_INC) $(SH2_FUNC066_INC) $(SH2_FUNC021_OPT_INC) $(SH2_BATCH_COPY_INC) $(SH2_CMD27_DRAIN_INC) $(SH2_SLAVE_WRAPPER_V2_INC) $(SH2_HANDLER_FRAME_SYNC_INC) $(SH2_MASTER_DISPATCH_HOOK_INC) $(SH2_SLAVE_TEST_FUNC_INC) $(SH2_SHADOW_PATH_WRAPPER_INC) $(SH2_CMDINT_HANDLER_INC) $(SH2_QUEUE_PROCESSOR_INC) $(SH2_GEN_DRAIN_INC)
 	@echo "==> Assembling 68000 code (from sections/)..."
-	$(ASM) $(ASMFLAGS) -o $@ $<
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -o $@ $<
 	@echo "==> Build complete: $@"
 	@ls -lh $@
+
+# Build a preserved live reference and an assembly-selected hook-bypass ROM.
+# The verifier imports the validator's fixed eight-byte ROM policy, records
+# both hashes, and fails unless every byte outside the hook is identical.
+control-rom: $(CONTROL_ROM_MANIFEST)
+	@echo "==> VR60 control ROM ready: $(CONTROL_ROM)"
+	@echo "==> Preserved live reference: $(CONTROL_REFERENCE_ROM)"
+	@echo "==> Pair manifest: $(CONTROL_ROM_MANIFEST)"
+
+$(LEGACY_DEFAULT_ROM): $(M68K_SRC) sh2-assembly $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling preserved pre-promotion VR60 default from source..."
+	$(ASM) $(ASMFLAGS) -o $@ $(M68K_SRC)
+
+$(CONTROL_REFERENCE_ROM): $(LEGACY_DEFAULT_ROM) | dirs
+	@echo "==> Preserving historical VR60-011 live reference..."
+	cp $(LEGACY_DEFAULT_ROM) $@
+
+$(CONTROL_ROM): $(CONTROL_REFERENCE_ROM) sh2-assembly $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) | dirs
+	@echo "==> Assembling VR60 hook-bypass control ROM from source..."
+	$(ASM) $(ASMFLAGS) -D VR60_CONTROL_ROM=1 -o $@ $(M68K_SRC)
+
+$(CONTROL_ROM_MANIFEST): $(CONTROL_ROM) $(CONTROL_REFERENCE_ROM) $(CONTROL_ROM_VERIFY) $(TOOLS_DIR)/libretro-profiling/validate_1p_control.py
+	@echo "==> Verifying isolated control-ROM delta..."
+	$(PYTHON) $(CONTROL_ROM_VERIFY) \
+		--candidate $(CONTROL_ROM) \
+		--reference $(CONTROL_REFERENCE_ROM) \
+		--manifest $(CONTROL_ROM_MANIFEST)
+
+# Rebuild the accepted mode-0 ACTIVE/STAGE-CONTROL pair against the preserved
+# pre-promotion default without replacing the accepted hook-bypass control.
+mode0-roms: $(MODE0_ROM_MANIFEST)
+	@echo "==> VR60 mode-0 ACTIVE ROM: $(MODE0_ACTIVE_ROM)"
+	@echo "==> VR60 mode-0 STAGE-CONTROL ROM: $(MODE0_CONTROL_ROM)"
+	@echo "==> Historical default reference: $(MODE0_DEFAULT_REFERENCE_ROM)"
+	@echo "==> Pair manifest: $(MODE0_ROM_MANIFEST)"
+
+$(MODE0_DEFAULT_REFERENCE_ROM): $(LEGACY_DEFAULT_ROM) | dirs
+	@echo "==> Preserving historical pre-promotion mode-0 reference..."
+	cp $(LEGACY_DEFAULT_ROM) $@
+
+$(MODE0_ACTIVE_ROM): $(MODE0_DEFAULT_REFERENCE_ROM) sh2-assembly $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling source-built VR60 mode-0 ACTIVE ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -o $@ $(M68K_SRC)
+
+$(MODE0_CONTROL_ROM): $(MODE0_DEFAULT_REFERENCE_ROM) sh2-assembly $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling source-built VR60 mode-0 STAGE-CONTROL ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_MODE0_STAGE_CONTROL=1 -o $@ $(M68K_SRC)
+
+$(MODE0_ROM_MANIFEST): $(MODE0_ACTIVE_ROM) $(MODE0_CONTROL_ROM) $(MODE0_DEFAULT_REFERENCE_ROM) $(MODE0_ROM_VERIFY)
+	@echo "==> Verifying isolated mode-0 ROM pair and assembled semantics..."
+	$(PYTHON) $(MODE0_ROM_VERIFY) \
+		--active $(MODE0_ACTIVE_ROM) \
+		--control $(MODE0_CONTROL_ROM) \
+		--default-reference $(MODE0_DEFAULT_REFERENCE_ROM) \
+		--manifest $(MODE0_ROM_MANIFEST)
+
+# Validation-only mode-1 pair.  This deliberately fail-stops on a missing
+# handshake and is never a promotable/default ROM.
+mode1-roms: $(MODE1_ROM_MANIFEST)
+	@echo "==> VR60 mode-1 validation ACTIVE ROM: $(MODE1_ACTIVE_ROM)"
+	@echo "==> VR60 mode-1 validation STAGE-CONTROL ROM: $(MODE1_CONTROL_ROM)"
+	@echo "==> Non-promotable static manifest: $(MODE1_ROM_MANIFEST)"
+
+$(MODE1_ACTIVE_ROM): sh2-assembly $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only VR60 mode-1 ACTIVE ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE1_VALIDATION=1 -o $@ $(M68K_SRC)
+
+$(MODE1_CONTROL_ROM): sh2-assembly $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only VR60 mode-1 STAGE-CONTROL ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE1_VALIDATION=1 -D VR60_MODE1_STAGE_CONTROL=1 -o $@ $(M68K_SRC)
+
+$(MODE1_ROM_MANIFEST): $(MODE1_ACTIVE_ROM) $(MODE1_CONTROL_ROM) $(OUTPUT_ROM) $(SH2_CMD3E_MODE1_VALIDATION_BIN) $(MODE1_ROM_VERIFY)
+	@echo "==> Verifying isolated mode-1 validation pair..."
+	$(PYTHON) $(MODE1_ROM_VERIFY) \
+		--active $(MODE1_ACTIVE_ROM) \
+		--control $(MODE1_CONTROL_ROM) \
+		--default $(OUTPUT_ROM) \
+		--isr-bin $(SH2_CMD3E_MODE1_VALIDATION_BIN) \
+		--isr-elf $(BUILD_DIR)/sh2/cmd3e_mode1_validation.elf \
+		--manifest $(MODE1_ROM_MANIFEST)
+
+# Rebuild the mode-1 evidence frontend/core under isolated names.  The pinned
+# preparation script applies the profiling, mode-1, and Q-020 parity overlays
+# fail closed and never overwrites either accepted canonical binary.
+mode1-runtime-tools:
+	$(CC) -O2 -Wall -Wextra -o $(MODE1_PROFILE_FRONTEND) $(Q020_PROFILE_DIR)/profiling_frontend.c -ldl
+	$(PYTHON) $(MODE1_PICODRIVE_PREPARE) --source-root $(Q020_PICODRIVE_DIR)
+	$(MAKE) -C $(Q020_PICODRIVE_DIR) -f Makefile.libretro clean
+	$(MAKE) -C $(Q020_PICODRIVE_DIR) -f Makefile.libretro platform=unix
+	cp $(Q020_PICODRIVE_DIR)/picodrive_libretro.so $(MODE1_PROFILE_CORE)
+	$(PYTHON) $(MODE1_RUNTIME_TOOLS_VERIFY) \
+		--frontend $(MODE1_PROFILE_FRONTEND) --core $(MODE1_PROFILE_CORE)
+
+# Compose the rebuilt static pair with the immutable runtime/lifecycle archive.
+# This is a validation-stage check only and cannot promote mode 1 or the default.
+mode1-gate-validate: mode1-roms $(MODE1_GATE_COMPOSITION_VERIFY) $(MODE1_GATE_COMPOSITION) $(MODE1_LIFECYCLE_MANIFEST)
+	$(PYTHON) $(MODE1_GATE_COMPOSITION_VERIFY) \
+		$(MODE1_GATE_COMPOSITION) --repo-root .
+
+# Validation-only mode-2 pair. This is an isolated one-shot AI-table transfer;
+# mode 0, mode 1, cmd $3F, and authority/cadence changes remain unreachable.
+mode2-roms: $(MODE2_ROM_MANIFEST)
+	@echo "==> VR60 mode-2 validation ACTIVE ROM: $(MODE2_ACTIVE_ROM)"
+	@echo "==> VR60 mode-2 validation STAGE-CONTROL ROM: $(MODE2_CONTROL_ROM)"
+	@echo "==> Non-promotable static manifest: $(MODE2_ROM_MANIFEST)"
+
+# Compose the rebuilt mode-2 pair with its immutable eight-run runtime archive
+# and the still-accepted mode-1 gate. This does not enable mode 2 by default.
+mode2-gate-validate: mode2-roms mode1-gate-validate $(MODE2_RUNTIME_CAPTURE) $(MODE2_RUNTIME_RESULT) $(MODE2_GATE_COMPOSITION) $(MODE2_GATE_COMPOSITION_VERIFY)
+	$(PYTHON) $(MODE2_RUNTIME_VERIFY) validate $(MODE2_RUNTIME_CAPTURE)
+	$(PYTHON) $(MODE2_GATE_COMPOSITION_VERIFY) \
+		$(MODE2_GATE_COMPOSITION) --repo-root .
+
+$(MODE2_ACTIVE_ROM): sh2-assembly $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only VR60 mode-2 ACTIVE ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE2_VALIDATION=1 -o $@ $(M68K_SRC)
+
+$(MODE2_CONTROL_ROM): sh2-assembly $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only VR60 mode-2 STAGE-CONTROL ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE2_VALIDATION=1 -D VR60_MODE2_STAGE_CONTROL=1 -o $@ $(M68K_SRC)
+
+$(MODE2_ROM_MANIFEST): $(MODE2_ACTIVE_ROM) $(MODE2_CONTROL_ROM) $(OUTPUT_ROM) $(MODE1_ACTIVE_ROM) $(MODE1_CONTROL_ROM) $(SH2_CMD3E_MODE2_VALIDATION_BIN) $(MODE2_ROM_VERIFY)
+	@echo "==> Verifying isolated mode-2 validation pair..."
+	$(PYTHON) $(MODE2_ROM_VERIFY) \
+		--active $(MODE2_ACTIVE_ROM) \
+		--control $(MODE2_CONTROL_ROM) \
+		--default $(OUTPUT_ROM) \
+		--mode1-active $(MODE1_ACTIVE_ROM) \
+		--mode1-control $(MODE1_CONTROL_ROM) \
+		--isr-bin $(SH2_CMD3E_MODE2_VALIDATION_BIN) \
+		--isr-elf $(BUILD_DIR)/sh2/cmd3e_mode2_validation.elf \
+		--manifest $(MODE2_ROM_MANIFEST)
+
+# Q-023 validation-only pair. ACTIVE corrects the dormant cmd-$3F mailbox
+# literal; STAGE-CONTROL is the exact accepted ordinary mode-0 default. Neither
+# image enables cmd $3F, shadow execution, a renderer bridge, or SH2 authority.
+q023-mailbox-roms: $(Q023_ROM_MANIFEST)
+	@echo "==> Q-023 mailbox-corrected ACTIVE ROM: $(Q023_ACTIVE_ROM)"
+	@echo "==> Q-023 mailbox STAGE-CONTROL ROM: $(Q023_CONTROL_ROM)"
+	@echo "==> Static-only manifest: $(Q023_ROM_MANIFEST)"
+
+$(Q023_ACTIVE_ROM): sh2-assembly disasm/sh2/generated/cmd3f_vr60_gameframe_q023_corrected.inc $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only Q-023 mailbox ACTIVE ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q023_MAILBOX_VALIDATION=1 -o $@ $(M68K_SRC)
+
+$(Q023_CONTROL_ROM): sh2-assembly $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only Q-023 mailbox STAGE-CONTROL ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q023_MAILBOX_VALIDATION=1 -D VR60_Q023_STAGE_CONTROL=1 -o $@ $(M68K_SRC)
+
+$(Q023_ROM_MANIFEST): $(Q023_ACTIVE_ROM) $(Q023_CONTROL_ROM) $(OUTPUT_ROM) $(MODE1_ACTIVE_ROM) $(MODE1_CONTROL_ROM) $(MODE2_ACTIVE_ROM) $(MODE2_CONTROL_ROM) build/sh2/cmd3f_vr60_gameframe.bin build/sh2/cmd3f_vr60_gameframe_q023_corrected.bin $(SH2_CMD3E_MODE1_VALIDATION_BIN) $(SH2_CMD3E_MODE2_VALIDATION_BIN) $(Q023_ROM_VERIFY)
+	@echo "==> Verifying isolated Q-023 mailbox correction..."
+	$(PYTHON) $(Q023_ROM_VERIFY) \
+		--active $(Q023_ACTIVE_ROM) \
+		--control $(Q023_CONTROL_ROM) \
+		--default $(OUTPUT_ROM) \
+		--mode1-active $(MODE1_ACTIVE_ROM) \
+		--mode1-control $(MODE1_CONTROL_ROM) \
+		--mode1-isr $(SH2_CMD3E_MODE1_VALIDATION_BIN) \
+		--mode2-active $(MODE2_ACTIVE_ROM) \
+		--mode2-control $(MODE2_CONTROL_ROM) \
+		--mode2-isr $(SH2_CMD3E_MODE2_VALIDATION_BIN) \
+		--legacy-handler $(SH2_CMD3F_VR60_BIN) \
+		--corrected-handler $(SH2_CMD3F_VR60_Q023_BIN) \
+		--manifest $(Q023_ROM_MANIFEST)
+
+# Q-026 validation-only direct-CMDINT player-physics precursor.  Both arms
+# contain the same isolated handler/ISR/lifecycle wrapper; the sole pair edge
+# is ACTIVE's eight-byte ORI.B INTM slot versus four CONTROL NOPs.
+q026-player-roms: $(Q026_ROM_MANIFEST)
+	@echo "==> Q-026 player-physics ACTIVE ROM: $(Q026_ACTIVE_ROM)"
+	@echo "==> Q-026 player-physics STAGE-CONTROL ROM: $(Q026_CONTROL_ROM)"
+	@echo "==> Non-promotable static manifest: $(Q026_ROM_MANIFEST)"
+
+$(Q026_ACTIVE_ROM): sh2-assembly $(SH2_Q026_HANDLER_INC) $(SH2_Q026_ISR_CORE_INC) $(SH2_Q026_ISR_INIT_INC) $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only Q-026 player-physics ACTIVE ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_Q026_VALIDATION=1 -o $@ $(M68K_SRC)
+
+$(Q026_CONTROL_ROM): sh2-assembly $(SH2_Q026_HANDLER_INC) $(SH2_Q026_ISR_CORE_INC) $(SH2_Q026_ISR_INIT_INC) $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only Q-026 player-physics STAGE-CONTROL ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_Q026_VALIDATION=1 -D VR60_Q026_STAGE_CONTROL=1 -o $@ $(M68K_SRC)
+
+$(Q026_ROM_MANIFEST): $(Q026_ACTIVE_ROM) $(Q026_CONTROL_ROM) $(OUTPUT_ROM) $(MODE1_ACTIVE_ROM) $(MODE1_CONTROL_ROM) $(MODE2_ACTIVE_ROM) $(MODE2_CONTROL_ROM) $(Q023_ACTIVE_ROM) $(Q023_CONTROL_ROM) $(SH2_Q026_HANDLER_BIN) $(SH2_Q026_ISR_BIN) $(Q026_ROM_VERIFY)
+	@echo "==> Verifying isolated Q-026 player-physics pair..."
+	$(PYTHON) $(Q026_ROM_VERIFY) \
+		--active $(Q026_ACTIVE_ROM) \
+		--control $(Q026_CONTROL_ROM) \
+		--default $(OUTPUT_ROM) \
+		--mode1-active $(MODE1_ACTIVE_ROM) --mode1-control $(MODE1_CONTROL_ROM) \
+		--mode2-active $(MODE2_ACTIVE_ROM) --mode2-control $(MODE2_CONTROL_ROM) \
+		--q023-active $(Q023_ACTIVE_ROM) --q023-control $(Q023_CONTROL_ROM) \
+		--handler-bin $(SH2_Q026_HANDLER_BIN) --handler-elf $(BUILD_DIR)/sh2/q026_player_shadow.elf \
+		--isr-bin $(SH2_Q026_ISR_BIN) --isr-elf $(BUILD_DIR)/sh2/q026_external_isr.elf \
+		--manifest $(Q026_ROM_MANIFEST)
+
+# Rebuild the isolated Q-026 passive recorder.  It observes canonical 68K
+# system-register callbacks and Master SH2 system/SDRAM/framebuffer writes
+# after the emulated access, without adding any emulated read.
+q026-runtime-tools:
+	$(CC) -O2 -Wall -Wextra -o $(Q026_PROFILE_FRONTEND) $(Q020_PROFILE_DIR)/profiling_frontend.c -ldl
+	$(PYTHON) $(Q026_PICODRIVE_PREPARE) --source-root $(Q020_PICODRIVE_DIR)
+	$(MAKE) -C $(Q020_PICODRIVE_DIR) -f Makefile.libretro clean
+	$(MAKE) -C $(Q020_PICODRIVE_DIR) -f Makefile.libretro platform=unix
+	cp $(Q020_PICODRIVE_DIR)/picodrive_libretro.so $(Q026_PROFILE_CORE)
+	$(PYTHON) $(Q026_RUNTIME_TOOLS_VERIFY) \
+		--frontend $(Q026_PROFILE_FRONTEND) --core $(Q026_PROFILE_CORE)
+
+# Revalidate the immutable two-repeat-per-arm trustworthy-normal-1P archive.
+# This passes only the bounded direct-CMDINT precursor and cannot promote Q-026.
+q026-runtime-validate: q026-player-roms $(Q026_RUNTIME_CAPTURE) $(Q026_RUNTIME_RESULT)
+	$(PYTHON) $(Q026_RUNTIME_TOOLS_VERIFY) \
+		--frontend $(Q026_PROFILE_FRONTEND) --core $(Q026_PROFILE_CORE)
+	$(PYTHON) $(Q026_RUNTIME_VERIFY) validate $(Q026_RUNTIME_CAPTURE)
+
+# Q-027 validation-only Master-COMM0 stock-dispatch gate. Both arms publish
+# exact $013F and take both CMD edges. Their sole executable delta is the
+# Edge-2 ISR branch that suppresses table dispatch in STAGE-CONTROL.
+q027-cmd3f-roms: $(Q027_ROM_MANIFEST)
+	@echo "==> Q-027 cmd-$3F ACTIVE ROM: $(Q027_ACTIVE_ROM)"
+	@echo "==> Q-027 cmd-$3F STAGE-CONTROL ROM: $(Q027_CONTROL_ROM)"
+	@echo "==> Non-promotable static manifest: $(Q027_ROM_MANIFEST)"
+
+$(Q027_ACTIVE_ROM): sh2-assembly $(SH2_Q027_HANDLER_INC) $(SH2_Q027_ISR_ACTIVE_CORE_INC) $(SH2_Q027_ISR_PARK_INC) $(SH2_Q027_ISR_INIT_INC) $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only Q-027 cmd-$3F ACTIVE ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_Q027_VALIDATION=1 -o $@ $(M68K_SRC)
+
+$(Q027_CONTROL_ROM): sh2-assembly $(SH2_Q027_HANDLER_INC) $(SH2_Q027_ISR_CONTROL_CORE_INC) $(SH2_Q027_ISR_PARK_INC) $(SH2_Q027_ISR_INIT_INC) $(M68K_SRC) $(VR60_1P_HOOK_SITE_SRC) $(VR60_1P_STAGING_HOOK_SRC) | dirs
+	@echo "==> Assembling validation-only Q-027 cmd-$3F STAGE-CONTROL ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_Q027_VALIDATION=1 -D VR60_Q027_STAGE_CONTROL=1 -o $@ $(M68K_SRC)
+
+$(Q027_ROM_MANIFEST): $(Q027_ACTIVE_ROM) $(Q027_CONTROL_ROM) $(OUTPUT_ROM) $(MODE1_ACTIVE_ROM) $(MODE1_CONTROL_ROM) $(MODE2_ACTIVE_ROM) $(MODE2_CONTROL_ROM) $(Q023_ACTIVE_ROM) $(Q023_CONTROL_ROM) $(Q026_ACTIVE_ROM) $(Q026_CONTROL_ROM) $(SH2_Q027_HANDLER_BIN) $(SH2_Q027_ISR_ACTIVE_CORE_BIN) $(SH2_Q027_ISR_CONTROL_CORE_BIN) $(SH2_Q027_ISR_PARK_BIN) $(SH2_Q027_ISR_INIT_BIN) $(Q027_ROM_VERIFY)
+	@echo "==> Verifying isolated Q-027 cmd-$3F transport pair..."
+	$(PYTHON) $(Q027_ROM_VERIFY) \
+		--active $(Q027_ACTIVE_ROM) --control $(Q027_CONTROL_ROM) \
+		--default $(OUTPUT_ROM) \
+		--mode1-active $(MODE1_ACTIVE_ROM) --mode1-control $(MODE1_CONTROL_ROM) \
+		--mode2-active $(MODE2_ACTIVE_ROM) --mode2-control $(MODE2_CONTROL_ROM) \
+		--q023-active $(Q023_ACTIVE_ROM) --q023-control $(Q023_CONTROL_ROM) \
+		--q026-active $(Q026_ACTIVE_ROM) --q026-control $(Q026_CONTROL_ROM) \
+		--handler-bin $(SH2_Q027_HANDLER_BIN) --handler-elf $(BUILD_DIR)/sh2/q027_player_stock_dispatch.elf \
+		--active-isr $(SH2_Q027_ISR_ACTIVE_CORE_BIN) --control-isr $(SH2_Q027_ISR_CONTROL_CORE_BIN) \
+		--active-isr-elf $(BUILD_DIR)/sh2/q027_external_isr_active.elf \
+		--control-isr-elf $(BUILD_DIR)/sh2/q027_external_isr_control.elf \
+		--park-bin $(SH2_Q027_ISR_PARK_BIN) --init-bin $(SH2_Q027_ISR_INIT_BIN) \
+		--manifest $(Q027_ROM_MANIFEST)
+
+q027-runtime-tools:
+	$(CC) -O2 -Wall -Wextra -o $(Q027_PROFILE_FRONTEND) $(Q020_PROFILE_DIR)/profiling_frontend.c -ldl
+	$(PYTHON) $(Q027_PICODRIVE_PREPARE) --source-root $(Q020_PICODRIVE_DIR)
+	$(MAKE) -C $(Q020_PICODRIVE_DIR) -f Makefile.libretro clean
+	$(MAKE) -C $(Q020_PICODRIVE_DIR) -f Makefile.libretro platform=unix
+	cp $(Q020_PICODRIVE_DIR)/picodrive_libretro.so $(Q027_PROFILE_CORE)
+	$(PYTHON) $(Q027_RUNTIME_TOOLS_VERIFY) \
+		--frontend $(Q027_PROFILE_FRONTEND) --core $(Q027_PROFILE_CORE)
+
+q027-runtime-validate: q027-cmd3f-roms $(Q027_RUNTIME_CAPTURE) $(Q027_RUNTIME_RESULT)
+	$(PYTHON) $(Q027_RUNTIME_TOOLS_VERIFY) \
+		--frontend $(Q027_PROFILE_FRONTEND) --core $(Q027_PROFILE_CORE)
+	$(PYTHON) $(Q027_RUNTIME_VERIFY) validate $(Q027_RUNTIME_CAPTURE)
+
+# Q-028 validation-only stock-cmd $02 renderer descriptor family triplets.
+# BASELINE remains the exact accepted ordinary image. CONTROL/ACTIVE contain
+# the same 296-byte boot-copied wrapper and differ only at file $02BC3A.
+q028-renderer-probe-roms: $(Q028_ROM_MANIFEST)
+	@echo "==> Q-028 family-all A/B/C BASELINE/CONTROL/ACTIVE triplets ready"
+	@echo "==> Non-promotable static manifest: $(Q028_ROM_MANIFEST)"
+
+$(Q028_A_BASELINE_ROM): $(M68K_SRC) sh2-assembly | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q028_BASELINE=1 -D VR60_Q028_FAMILY_A=1 -o $@ $<
+$(Q028_B_BASELINE_ROM): $(M68K_SRC) sh2-assembly | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q028_BASELINE=1 -D VR60_Q028_FAMILY_B=1 -o $@ $<
+$(Q028_C_BASELINE_ROM): $(M68K_SRC) sh2-assembly | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q028_BASELINE=1 -D VR60_Q028_FAMILY_C=1 -o $@ $<
+
+$(Q028_A_ACTIVE_ROM): $(M68K_SRC) $(Q028_A_ACTIVE_INC) | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q028_VALIDATION=1 -D VR60_Q028_FAMILY_A=1 -o $@ $<
+$(Q028_A_CONTROL_ROM): $(M68K_SRC) $(Q028_A_CONTROL_INC) | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q028_VALIDATION=1 -D VR60_Q028_STAGE_CONTROL=1 -D VR60_Q028_FAMILY_A=1 -o $@ $<
+$(Q028_B_ACTIVE_ROM): $(M68K_SRC) $(Q028_B_ACTIVE_INC) | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q028_VALIDATION=1 -D VR60_Q028_FAMILY_B=1 -o $@ $<
+$(Q028_B_CONTROL_ROM): $(M68K_SRC) $(Q028_B_CONTROL_INC) | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q028_VALIDATION=1 -D VR60_Q028_STAGE_CONTROL=1 -D VR60_Q028_FAMILY_B=1 -o $@ $<
+$(Q028_C_ACTIVE_ROM): $(M68K_SRC) $(Q028_C_ACTIVE_INC) | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q028_VALIDATION=1 -D VR60_Q028_FAMILY_C=1 -o $@ $<
+$(Q028_C_CONTROL_ROM): $(M68K_SRC) $(Q028_C_CONTROL_INC) | dirs
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q028_VALIDATION=1 -D VR60_Q028_STAGE_CONTROL=1 -D VR60_Q028_FAMILY_C=1 -o $@ $<
+
+$(Q028_ROM_MANIFEST): $(Q028_A_BASELINE_ROM) $(Q028_A_CONTROL_ROM) $(Q028_A_ACTIVE_ROM) \
+		$(Q028_B_BASELINE_ROM) $(Q028_B_CONTROL_ROM) $(Q028_B_ACTIVE_ROM) \
+		$(Q028_C_BASELINE_ROM) $(Q028_C_CONTROL_ROM) $(Q028_C_ACTIVE_ROM) \
+		$(Q028_A_ACTIVE_BIN) $(Q028_A_CONTROL_BIN) $(Q028_B_ACTIVE_BIN) \
+		$(Q028_B_CONTROL_BIN) $(Q028_C_ACTIVE_BIN) $(Q028_C_CONTROL_BIN) \
+		$(OUTPUT_ROM) $(MODE1_ACTIVE_ROM) $(MODE1_CONTROL_ROM) \
+		$(MODE2_ACTIVE_ROM) $(MODE2_CONTROL_ROM) $(Q023_ACTIVE_ROM) \
+		$(Q023_CONTROL_ROM) $(Q026_ACTIVE_ROM) $(Q026_CONTROL_ROM) \
+		$(Q027_ACTIVE_ROM) $(Q027_CONTROL_ROM) $(Q028_ROM_VERIFY)
+	$(PYTHON) $(Q028_ROM_VERIFY) --repo-root . --manifest $@
+
+# Q-020 validation-only Master CMD interrupt probe. This build is deliberately
+# separate from mode-1 validation and can never be promoted as the default ROM.
+q020-cmdint-probe: $(Q020_CMDINT_PROBE_MANIFEST)
+	@echo "==> Q-020 CMDINT probe ROM: $(Q020_CMDINT_PROBE_ROM)"
+	@echo "==> Non-promotable static manifest: $(Q020_CMDINT_PROBE_MANIFEST)"
+
+$(Q020_CMDINT_PROBE_ROM): sh2-assembly $(M68K_SRC) $(SH2_Q020_CMDINT_PROBE_INC) | dirs
+	@echo "==> Assembling validation-only Q-020 CMDINT probe ROM..."
+	$(ASM) $(ASMFLAGS) -D VR60_MODE0_ONLY=1 -D VR60_Q020_CMDINT_PROBE=1 -o $@ $(M68K_SRC)
+
+$(Q020_CMDINT_PROBE_MANIFEST): $(Q020_CMDINT_PROBE_ROM) $(OUTPUT_ROM) $(SH2_Q020_CMDINT_PROBE_BIN) $(Q020_CMDINT_PROBE_VERIFY)
+	@echo "==> Verifying isolated Q-020 CMDINT probe ROM..."
+	$(PYTHON) $(Q020_CMDINT_PROBE_VERIFY) \
+		--probe $(Q020_CMDINT_PROBE_ROM) \
+		--default $(OUTPUT_ROM) \
+		--isr-bin $(SH2_Q020_CMDINT_PROBE_BIN) \
+		--isr-elf $(BUILD_DIR)/sh2/q020_cmdint_probe_isr.elf \
+		--manifest $(Q020_CMDINT_PROBE_MANIFEST)
+
+# Rebuild the probe-only frontend/core under separate names.  This deliberately
+# does not overwrite the accepted canonical profiling binaries.
+q020-runtime-tools:
+	$(CC) -O2 -Wall -Wextra -o $(Q020_PROFILE_FRONTEND) $(Q020_PROFILE_DIR)/profiling_frontend.c -ldl
+	$(PYTHON) $(Q020_PICODRIVE_PREPARE) \
+		--source-root $(Q020_PICODRIVE_DIR) \
+		--patch $(Q020_PICODRIVE_PARITY_PATCH)
+	$(MAKE) -C $(Q020_PICODRIVE_DIR) -f Makefile.libretro clean
+	$(MAKE) -C $(Q020_PICODRIVE_DIR) -f Makefile.libretro platform=unix
+	cp $(Q020_PICODRIVE_DIR)/picodrive_libretro.so $(Q020_PROFILE_CORE)
+	$(PYTHON) $(Q020_RUNTIME_TOOLS_VERIFY) \
+		--frontend $(Q020_PROFILE_FRONTEND) \
+		--core $(Q020_PROFILE_CORE)
+
+mode0-default-verify: $(MODE0_DEFAULT_MANIFEST)
+	@echo "==> Promoted mode-0 default verified: $(OUTPUT_ROM)"
+	@echo "==> Default manifest: $(MODE0_DEFAULT_MANIFEST)"
+
+$(MODE0_DEFAULT_MANIFEST): $(OUTPUT_ROM) $(MODE0_ACTIVE_ROM) $(MODE0_DEFAULT_VERIFY)
+	$(PYTHON) $(MODE0_DEFAULT_VERIFY) \
+		--default $(OUTPUT_ROM) \
+		--validated-active $(MODE0_ACTIVE_ROM) \
+		--manifest $(MODE0_DEFAULT_MANIFEST)
 
 
 # ============================================================================
@@ -556,10 +1821,114 @@ SH2_VIS_BITMASK_SRC = $(SH2_EXP_DIR)/vis_bitmask_handler.asm
 SH2_VIS_BITMASK_BIN = $(BUILD_DIR)/sh2/vis_bitmask_handler.bin
 SH2_VIS_BITMASK_INC = $(SH2_GEN_DIR)/vis_bitmask_handler.inc
 
+# cmd3f_vr60_gameframe (VR60 Phase 0: game frame infrastructure handler)
+SH2_CMD3F_VR60_SRC = $(SH2_EXP_DIR)/cmd3f_vr60_gameframe.asm
+SH2_CMD3F_VR60_BIN = $(BUILD_DIR)/sh2/cmd3f_vr60_gameframe.bin
+SH2_CMD3F_VR60_INC = $(SH2_GEN_DIR)/cmd3f_vr60_gameframe.inc
+SH2_CMD3F_VR60_Q023_BIN = $(BUILD_DIR)/sh2/cmd3f_vr60_gameframe_q023_corrected.bin
+SH2_CMD3F_VR60_Q023_INC = $(SH2_GEN_DIR)/cmd3f_vr60_gameframe_q023_corrected.inc
+
+# cmd3e_entity_transfer (VR60 Phase 3A: DREQ-based entity transfer to SDRAM)
+SH2_CMD3E_ENTITY_SRC = $(SH2_EXP_DIR)/cmd3e_entity_transfer.asm
+SH2_CMD3E_ENTITY_BIN = $(BUILD_DIR)/sh2/cmd3e_entity_transfer.bin
+SH2_CMD3E_ENTITY_INC = $(SH2_GEN_DIR)/cmd3e_entity_transfer.inc
+
+# Q-020 validation-only mode-1 CMDINT/DREQ handler
+SH2_CMD3E_MODE1_VALIDATION_SRC = $(SH2_EXP_DIR)/cmd3e_mode1_validation.asm
+SH2_CMD3E_MODE1_VALIDATION_BIN = $(BUILD_DIR)/sh2/cmd3e_mode1_validation.bin
+SH2_CMD3E_MODE1_VALIDATION_INC = $(SH2_GEN_DIR)/cmd3e_mode1_validation.inc
+
+# Q-021 validation-only mode-2 CMDINT/DREQ handler
+SH2_CMD3E_MODE2_VALIDATION_SRC = $(SH2_EXP_DIR)/cmd3e_mode2_validation.asm
+SH2_CMD3E_MODE2_VALIDATION_BIN = $(BUILD_DIR)/sh2/cmd3e_mode2_validation.bin
+SH2_CMD3E_MODE2_VALIDATION_INC = $(SH2_GEN_DIR)/cmd3e_mode2_validation.inc
+
+# Q-020 validation-only Master CMD interrupt probe
+SH2_Q020_CMDINT_PROBE_SRC = $(SH2_EXP_DIR)/q020_cmdint_probe_isr.s
+SH2_Q020_CMDINT_PROBE_BIN = $(BUILD_DIR)/sh2/q020_cmdint_probe_isr.bin
+SH2_Q020_CMDINT_PROBE_INC = $(SH2_GEN_DIR)/q020_cmdint_probe_isr.inc
+
+# Q-026 validation-only bounded player-physics handler and unified ISR.
+
+# physics_divide (VR60 Phase 3B: division infrastructure)
+SH2_PHYS_DIV_SRC = $(SH2_EXP_DIR)/physics_divide.asm
+SH2_PHYS_DIV_BIN = $(BUILD_DIR)/sh2/physics_divide.bin
+SH2_PHYS_DIV_INC = $(SH2_GEN_DIR)/physics_divide.inc
+
+# physics_group1 (VR60 Phase 3B: functions 1-4)
+SH2_PHYS_G1_SRC = $(SH2_EXP_DIR)/physics_group1.asm
+SH2_PHYS_G1_BIN = $(BUILD_DIR)/sh2/physics_group1.bin
+SH2_PHYS_G1_INC = $(SH2_GEN_DIR)/physics_group1.inc
+
+# physics_group2_accel (VR60 Phase 3B: functions 6-7)
+SH2_PHYS_G2A_SRC = $(SH2_EXP_DIR)/physics_group2_accel.asm
+SH2_PHYS_G2A_BIN = $(BUILD_DIR)/sh2/physics_group2_accel.bin
+SH2_PHYS_G2A_INC = $(SH2_GEN_DIR)/physics_group2_accel.inc
+
+# physics_timers (VR60 Phase 3B: timer/guard functions co-ported to SH2)
+SH2_PHYS_TMR_SRC = $(SH2_EXP_DIR)/physics_timers.asm
+SH2_PHYS_TMR_BIN = $(BUILD_DIR)/sh2/physics_timers.bin
+SH2_PHYS_TMR_INC = $(SH2_GEN_DIR)/physics_timers.inc
+
+# physics_pos_update (VR60 Phase 3D: 16.16 fixed-point position update)
+SH2_PHYS_POS_SRC = $(SH2_EXP_DIR)/physics_pos_update.asm
+SH2_PHYS_POS_BIN = $(BUILD_DIR)/sh2/physics_pos_update.bin
+SH2_PHYS_POS_INC = $(SH2_GEN_DIR)/physics_pos_update.inc
+
+# physics_drift (VR60 Phase 3C: drift system — 4 functions)
+SH2_PHYS_DRF_SRC = $(SH2_EXP_DIR)/physics_drift.asm
+SH2_PHYS_DRF_BIN = $(BUILD_DIR)/sh2/physics_drift.bin
+SH2_PHYS_DRF_INC = $(SH2_GEN_DIR)/physics_drift.inc
+
+# ai_steering (VR60 Phase 4: AI steering + atan2 calculation)
+SH2_AI_STEER_SRC = $(SH2_EXP_DIR)/ai_steering.asm
+SH2_AI_STEER_BIN = $(BUILD_DIR)/sh2/ai_steering.bin
+SH2_AI_STEER_INC = $(SH2_GEN_DIR)/ai_steering.inc
+
+# ai_orchestrator (VR60 Phase 4: AI entity main update — 3 entry points)
+SH2_AI_ORCH_SRC = $(SH2_EXP_DIR)/ai_orchestrator.asm
+SH2_AI_ORCH_BIN = $(BUILD_DIR)/sh2/ai_orchestrator.bin
+SH2_AI_ORCH_INC = $(SH2_GEN_DIR)/ai_orchestrator.inc
+
+# render_state_patcher (VR60 Phase 7: bridge physics to renderer for 60 FPS)
+SH2_RSP_SRC = $(SH2_EXP_DIR)/render_state_patcher.asm
+SH2_RSP_BIN = $(BUILD_DIR)/sh2/render_state_patcher.bin
+SH2_RSP_INC = $(SH2_GEN_DIR)/render_state_patcher.inc
+
+# collision_leaf (VR60 Phase 5A: pure-math collision/BSP leaf functions)
+SH2_COLL_LEAF_SRC = $(SH2_EXP_DIR)/collision_leaf.asm
+SH2_COLL_LEAF_BIN = $(BUILD_DIR)/sh2/collision_leaf.bin
+SH2_COLL_LEAF_INC = $(SH2_GEN_DIR)/collision_leaf.inc
+
+# collision_track_data (VR60 Phase 5B: track-data addressing layer / keystone)
+SH2_COLL_TRK_SRC = $(SH2_EXP_DIR)/collision_track_data.asm
+SH2_COLL_TRK_BIN = $(BUILD_DIR)/sh2/collision_track_data.bin
+SH2_COLL_TRK_INC = $(SH2_GEN_DIR)/collision_track_data.inc
+
+# collision_boundary (VR60 Phase 5C: object_type_dispatch + track_boundary)
+SH2_COLL_BND_SRC = $(SH2_EXP_DIR)/collision_boundary.asm
+SH2_COLL_BND_BIN = $(BUILD_DIR)/sh2/collision_boundary.bin
+SH2_COLL_BND_INC = $(SH2_GEN_DIR)/collision_boundary.inc
+
+# collision_response (VR60 Phase 5D: collision_response_surface_tracking)
+SH2_COLL_RSP_SRC = $(SH2_EXP_DIR)/collision_response.asm
+SH2_COLL_RSP_BIN = $(BUILD_DIR)/sh2/collision_response.bin
+SH2_COLL_RSP_INC = $(SH2_GEN_DIR)/collision_response.inc
+
+# collision_object (VR60 Phase 5E: object_collision/zone_check/position_separation/proximity_zone_loop)
+SH2_COLL_OBJ_SRC = $(SH2_EXP_DIR)/collision_object.asm
+SH2_COLL_OBJ_BIN = $(BUILD_DIR)/sh2/collision_object.bin
+SH2_COLL_OBJ_INC = $(SH2_GEN_DIR)/collision_object.inc
+
+# bridge_probe (VR60 Phase 5F-1b: SH2->render bridge validation probe, DIAGNOSTIC)
+SH2_BRIDGE_PROBE_SRC = $(SH2_EXP_DIR)/bridge_probe.asm
+SH2_BRIDGE_PROBE_BIN = $(BUILD_DIR)/sh2/bridge_probe.bin
+SH2_BRIDGE_PROBE_INC = $(SH2_GEN_DIR)/bridge_probe.inc
+
 .PHONY: sh2-assembly sh2-verify
 
 # Build all SH2 assembly sources
-sh2-assembly: dirs $(SH2_FUNC000_INC) $(SH2_FUNC022_INC) $(SH2_FUNC017_INC) $(SH2_FUNC018_INC) $(SH2_FUNC019_INC) $(SH2_FUNC020_INC) $(SH2_FUNC021_ORIG_INC) $(SH2_FUNC023_INC) $(SH2_FUNC040_INC) $(SH2_FUNC040_CASES_INC) $(SH2_FUNC040_UTIL_INC) $(SH2_FUNC041_INC) $(SH2_FUNC042_INC) $(SH2_FUNC043_INC) $(SH2_FUNC044_INC) $(SH2_FUNC045_INC) $(SH2_FUNC046_INC) $(SH2_FUNC047_INC) $(SH2_FUNC048_INC) $(SH2_FUNC049_INC) $(SH2_FUNC050_INC) $(SH2_FUNC051_INC) $(SH2_FUNC052_INC) $(SH2_FUNC053_INC) $(SH2_FUNC054_INC) $(SH2_FUNC055_INC) $(SH2_FUNC067_INC) $(SH2_FUNC068_INC) $(SH2_FUNC069_INC) $(SH2_FUNC070_INC) $(SH2_FUNC071_INC) $(SH2_FUNC072_INC) $(SH2_FUNC073_INC) $(SH2_FUNC074_INC) $(SH2_FUNC075_INC) $(SH2_FUNC076_INC) $(SH2_FUNC077_INC) $(SH2_FUNC078_INC) $(SH2_FUNC079_INC) $(SH2_FUNC080_INC) $(SH2_FUNC081_INC) $(SH2_FUNC082_INC) $(SH2_FUNC083_INC) $(SH2_FUNC084_INC) $(SH2_FUNC085_INC) $(SH2_FUNC086_INC) $(SH2_FUNC087_INC) $(SH2_FUNC088_INC) $(SH2_FUNC089_INC) $(SH2_FUNC090_INC) $(SH2_FUNC091_INC) $(SH2_FUNC032_INC) $(SH2_FUNC011_INC) $(SH2_FUNC012_INC) $(SH2_FUNC013_INC) $(SH2_FUNC014_015_INC) $(SH2_FUNC024_INC) $(SH2_FUNC025_INC) $(SH2_FUNC026_INC) $(SH2_FUNC001_INC) $(SH2_FUNC002_INC) $(SH2_FUNC003_004_INC) $(SH2_FUNC029_030_031_INC) $(SH2_FUNC033_INC) $(SH2_FUNC034_INC) $(SH2_FUNC036_INC) $(SH2_FUNC037_038_039_INC) $(SH2_FUNC005_INC) $(SH2_FUNC007_INC) $(SH2_FUNC006_INC) $(SH2_FUNC008_INC) $(SH2_FUNC016_INC) $(SH2_FUNC009_INC) $(SH2_FUNC010_INC) $(SH2_FUNC065_INC) $(SH2_FUNC066_INC) $(SH2_FUNC021_OPT_INC) $(SH2_BATCH_COPY_INC) $(SH2_CMD27_DRAIN_INC) $(SH2_SLAVE_WRAPPER_V2_INC) $(SH2_HANDLER_FRAME_SYNC_INC) $(SH2_MASTER_DISPATCH_HOOK_INC) $(SH2_SLAVE_TEST_FUNC_INC) $(SH2_SHADOW_PATH_WRAPPER_INC) $(SH2_CMDINT_HANDLER_INC) $(SH2_QUEUE_PROCESSOR_INC) $(SH2_COMM7_CHECK_INC) $(SH2_GEN_DRAIN_INC) $(SH2_CMD22_SINGLE_SHOT_INC) $(SH2_CMD25_SINGLE_SHOT_INC) $(SH2_VIS_BITMASK_INC)
+sh2-assembly: dirs $(SH2_FUNC000_INC) $(SH2_FUNC022_INC) $(SH2_FUNC017_INC) $(SH2_FUNC018_INC) $(SH2_FUNC019_INC) $(SH2_FUNC020_INC) $(SH2_FUNC021_ORIG_INC) $(SH2_FUNC023_INC) $(SH2_FUNC040_INC) $(SH2_FUNC040_CASES_INC) $(SH2_FUNC040_UTIL_INC) $(SH2_FUNC041_INC) $(SH2_FUNC042_INC) $(SH2_FUNC043_INC) $(SH2_FUNC044_INC) $(SH2_FUNC045_INC) $(SH2_FUNC046_INC) $(SH2_FUNC047_INC) $(SH2_FUNC048_INC) $(SH2_FUNC049_INC) $(SH2_FUNC050_INC) $(SH2_FUNC051_INC) $(SH2_FUNC052_INC) $(SH2_FUNC053_INC) $(SH2_FUNC054_INC) $(SH2_FUNC055_INC) $(SH2_FUNC067_INC) $(SH2_FUNC068_INC) $(SH2_FUNC069_INC) $(SH2_FUNC070_INC) $(SH2_FUNC071_INC) $(SH2_FUNC072_INC) $(SH2_FUNC073_INC) $(SH2_FUNC074_INC) $(SH2_FUNC075_INC) $(SH2_FUNC076_INC) $(SH2_FUNC077_INC) $(SH2_FUNC078_INC) $(SH2_FUNC079_INC) $(SH2_FUNC080_INC) $(SH2_FUNC081_INC) $(SH2_FUNC082_INC) $(SH2_FUNC083_INC) $(SH2_FUNC084_INC) $(SH2_FUNC085_INC) $(SH2_FUNC086_INC) $(SH2_FUNC087_INC) $(SH2_FUNC088_INC) $(SH2_FUNC089_INC) $(SH2_FUNC090_INC) $(SH2_FUNC091_INC) $(SH2_FUNC032_INC) $(SH2_FUNC011_INC) $(SH2_FUNC012_INC) $(SH2_FUNC013_INC) $(SH2_FUNC014_015_INC) $(SH2_FUNC024_INC) $(SH2_FUNC025_INC) $(SH2_FUNC026_INC) $(SH2_FUNC001_INC) $(SH2_FUNC002_INC) $(SH2_FUNC003_004_INC) $(SH2_FUNC029_030_031_INC) $(SH2_FUNC033_INC) $(SH2_FUNC034_INC) $(SH2_FUNC036_INC) $(SH2_FUNC037_038_039_INC) $(SH2_FUNC005_INC) $(SH2_FUNC007_INC) $(SH2_FUNC006_INC) $(SH2_FUNC008_INC) $(SH2_FUNC016_INC) $(SH2_FUNC009_INC) $(SH2_FUNC010_INC) $(SH2_FUNC065_INC) $(SH2_FUNC066_INC) $(SH2_FUNC021_OPT_INC) $(SH2_BATCH_COPY_INC) $(SH2_CMD27_DRAIN_INC) $(SH2_SLAVE_WRAPPER_V2_INC) $(SH2_HANDLER_FRAME_SYNC_INC) $(SH2_MASTER_DISPATCH_HOOK_INC) $(SH2_SLAVE_TEST_FUNC_INC) $(SH2_SHADOW_PATH_WRAPPER_INC) $(SH2_CMDINT_HANDLER_INC) $(SH2_QUEUE_PROCESSOR_INC) $(SH2_COMM7_CHECK_INC) $(SH2_GEN_DRAIN_INC) $(SH2_CMD22_SINGLE_SHOT_INC) $(SH2_CMD25_SINGLE_SHOT_INC) $(SH2_VIS_BITMASK_INC) $(SH2_CMD3F_VR60_INC) $(SH2_CMD3E_ENTITY_INC) $(SH2_CMD3E_MODE1_VALIDATION_INC) $(SH2_CMD3E_MODE2_VALIDATION_INC) $(SH2_Q020_CMDINT_PROBE_INC) $(SH2_PHYS_DIV_INC) $(SH2_PHYS_G1_INC) $(SH2_PHYS_G2A_INC) $(SH2_PHYS_TMR_INC) $(SH2_PHYS_POS_INC) $(SH2_PHYS_DRF_INC) $(SH2_AI_STEER_INC) $(SH2_AI_ORCH_INC) $(SH2_RSP_INC) $(SH2_COLL_LEAF_INC) $(SH2_COLL_TRK_INC) $(SH2_COLL_BND_INC) $(SH2_COLL_RSP_INC) $(SH2_COLL_OBJ_INC) $(SH2_BRIDGE_PROBE_INC)
 
 # Build data_copy binary from source (requires linker script for PC-relative addressing)
 $(SH2_FUNC000_BIN): $(SH2_FUNC000_SRC) $(SH2_FUNC000_LDS) | dirs
@@ -2203,6 +3572,520 @@ $(SH2_VIS_BITMASK_INC): $(SH2_VIS_BITMASK_BIN)
 	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
 	@echo "    Output: $@ ($$(wc -l < $@) lines)"
 
+# Build cmd3f_vr60_gameframe binary from source (VR60 Phase 0)
+$(SH2_CMD3F_VR60_BIN): $(SH2_CMD3F_VR60_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: cmd3f_vr60_gameframe..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/cmd3f_vr60_gameframe.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/cmd3f_vr60_gameframe.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_CMD3F_VR60_INC): $(SH2_CMD3F_VR60_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: cmd3f_vr60_gameframe.inc..."
+	@echo "; Auto-generated from $(SH2_CMD3F_VR60_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(SH2_CMD3F_VR60_Q023_BIN): $(SH2_CMD3F_VR60_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: cmd3f_vr60_gameframe (Q-023 corrected)..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym VR60_Q023_MAILBOX_CORRECTED=1 -o $(BUILD_DIR)/sh2/cmd3f_vr60_gameframe_q023_corrected.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/cmd3f_vr60_gameframe_q023_corrected.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes, expected 428)"
+
+$(SH2_CMD3F_VR60_Q023_INC): $(SH2_CMD3F_VR60_Q023_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: cmd3f_vr60_gameframe_q023_corrected.inc..."
+	@echo "; Auto-generated from $(SH2_CMD3F_VR60_SRC) with VR60_Q023_MAILBOX_CORRECTED" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make q023-mailbox-roms'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build cmd3e_entity_transfer binary from source (VR60 Phase 3A)
+$(SH2_CMD3E_ENTITY_BIN): $(SH2_CMD3E_ENTITY_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: cmd3e_entity_transfer..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/cmd3e_entity_transfer.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/cmd3e_entity_transfer.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_CMD3E_ENTITY_INC): $(SH2_CMD3E_ENTITY_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: cmd3e_entity_transfer.inc..."
+	@echo "; Auto-generated from $(SH2_CMD3E_ENTITY_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(SH2_CMD3E_MODE1_VALIDATION_BIN): $(SH2_CMD3E_MODE1_VALIDATION_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling/linking SH2: cmd3e_mode1_validation at $02303B00..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/cmd3e_mode1_validation.o $<
+	$(SH2_LD) -Ttext=0x02303B00 -e cmd3e_mode1_validation -o $(BUILD_DIR)/sh2/cmd3e_mode1_validation.elf $(BUILD_DIR)/sh2/cmd3e_mode1_validation.o
+	$(SH2_OBJCOPY) --only-section=.text -O binary $(BUILD_DIR)/sh2/cmd3e_mode1_validation.elf $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_CMD3E_MODE1_VALIDATION_INC): $(SH2_CMD3E_MODE1_VALIDATION_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: cmd3e_mode1_validation.inc..."
+	@echo "; Auto-generated from $(SH2_CMD3E_MODE1_VALIDATION_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+$(SH2_CMD3E_MODE2_VALIDATION_BIN): $(SH2_CMD3E_MODE2_VALIDATION_SRC) $(SH2_CMD3E_MODE1_VALIDATION_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling/linking SH2: cmd3e_mode2_validation at 0x02303B00..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/cmd3e_mode2_validation.o $<
+	$(SH2_LD) -Ttext=0x02303B00 -e cmd3e_mode2_validation -o $(BUILD_DIR)/sh2/cmd3e_mode2_validation.elf $(BUILD_DIR)/sh2/cmd3e_mode2_validation.o
+	$(SH2_OBJCOPY) --only-section=.text -O binary $(BUILD_DIR)/sh2/cmd3e_mode2_validation.elf $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_CMD3E_MODE2_VALIDATION_INC): $(SH2_CMD3E_MODE2_VALIDATION_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: cmd3e_mode2_validation.inc..."
+	@echo "; Auto-generated from $(SH2_CMD3E_MODE2_VALIDATION_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build and link the Q-020 CMDINT ISR at its exact SH2 execution address so
+# every PC-relative literal is resolved against $02303B00.
+$(SH2_Q020_CMDINT_PROBE_BIN): $(SH2_Q020_CMDINT_PROBE_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: q020_cmdint_probe_isr..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/q020_cmdint_probe_isr.o $<
+	$(SH2_LD) -Ttext=0x02303B00 -e q020_cmdint_probe_isr -o $(BUILD_DIR)/sh2/q020_cmdint_probe_isr.elf $(BUILD_DIR)/sh2/q020_cmdint_probe_isr.o
+	$(SH2_OBJCOPY) --only-section=.text -O binary $(BUILD_DIR)/sh2/q020_cmdint_probe_isr.elf $@
+	$(PYTHON) -c 'from hashlib import sha256; from pathlib import Path; p=Path("$@"); b=p.read_bytes(); assert len(b)==452, len(b); assert sha256(b).hexdigest()=="be3e5a944ad46b48533bc80f76452e768fad0f3a929d1dcbb54b4caf30b621c3"'
+	@echo "    Output: $@ ($$(wc -c < $@) bytes, byte-reviewed SHA-256 verified)"
+
+$(SH2_Q020_CMDINT_PROBE_INC): $(SH2_Q020_CMDINT_PROBE_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: q020_cmdint_probe_isr.inc..."
+	@echo "; Auto-generated from $(SH2_Q020_CMDINT_PROBE_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Q-026 handler is linked at its exact expansion-ROM execution address so its
+# pinned PC-relative pool begins at file $30157C.
+$(SH2_Q026_HANDLER_BIN): $(SH2_Q026_HANDLER_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling/linking SH2: Q-026 player handler at $02301500..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/q026_player_shadow.o $<
+	$(SH2_LD) -Ttext=0x02301500 -e q026_player_shadow -o $(BUILD_DIR)/sh2/q026_player_shadow.elf $(BUILD_DIR)/sh2/q026_player_shadow.o
+	$(SH2_OBJCOPY) --only-section=.text -O binary $(BUILD_DIR)/sh2/q026_player_shadow.elf $@
+	@test "$$(wc -c < $@)" -eq 200
+	@echo "    Output: $@ (200 bytes)"
+
+$(SH2_Q026_HANDLER_INC): $(SH2_Q026_HANDLER_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "; Auto-generated from $(SH2_Q026_HANDLER_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make q026-player-roms'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+
+# The one linked ISR source contains .org $600.  Split only the audited core
+# and startup bytes; expansion_300000.asm supplies asserted $FF padding.
+$(SH2_Q026_ISR_BIN): $(SH2_Q026_ISR_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling/linking SH2: Q-026 unified ISR at $02304000..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/q026_external_isr.o $<
+	$(SH2_LD) -Ttext=0x02304000 -e q026_external_entry -o $(BUILD_DIR)/sh2/q026_external_isr.elf $(BUILD_DIR)/sh2/q026_external_isr.o
+	$(SH2_OBJCOPY) --only-section=.text -O binary $(BUILD_DIR)/sh2/q026_external_isr.elf $@
+	@test "$$(wc -c < $@)" -eq 1620
+	@echo "    Output: $@ (1620-byte linked layout)"
+
+$(SH2_Q026_ISR_CORE_BIN): $(SH2_Q026_ISR_BIN)
+	dd if=$< of=$@ bs=1 count=656 status=none
+	@test "$$(wc -c < $@)" -eq 656
+
+$(SH2_Q026_ISR_INIT_BIN): $(SH2_Q026_ISR_BIN)
+	dd if=$< of=$@ bs=1 skip=1536 count=84 status=none
+	@test "$$(wc -c < $@)" -eq 84
+
+$(SH2_Q026_ISR_CORE_INC): $(SH2_Q026_ISR_CORE_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "; Auto-generated core from $(SH2_Q026_ISR_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make q026-player-roms'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+
+$(SH2_Q026_ISR_INIT_INC): $(SH2_Q026_ISR_INIT_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "; Auto-generated startup shim from $(SH2_Q026_ISR_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make q026-player-roms'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+
+# Q-027 handler is exactly the approved 432-byte cmd-$3F reservation.
+$(SH2_Q027_HANDLER_BIN): $(SH2_Q027_HANDLER_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling/linking SH2: Q-027 stock-dispatch player handler..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/q027_player_stock_dispatch.o $<
+	$(SH2_LD) -Ttext=0x02301500 -e q027_player_stock_dispatch -o $(BUILD_DIR)/sh2/q027_player_stock_dispatch.elf $(BUILD_DIR)/sh2/q027_player_stock_dispatch.o
+	$(SH2_OBJCOPY) --only-section=.text -O binary $(BUILD_DIR)/sh2/q027_player_stock_dispatch.elf $@
+	@test "$$(wc -c < $@)" -eq 432
+	@echo "    Output: $@ (432 bytes)"
+
+$(SH2_Q027_HANDLER_INC): $(SH2_Q027_HANDLER_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "; Auto-generated from $(SH2_Q027_HANDLER_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make q027-cmd3f-roms'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+
+# Q-027's one source emits separately placed core/park/startup sections.  This
+# avoids linker-created zero fill; expansion_300000.asm owns asserted $FF gaps.
+$(SH2_Q027_ISR_ACTIVE_CORE_BIN) $(SH2_Q027_ISR_PARK_BIN) $(SH2_Q027_ISR_INIT_BIN): $(SH2_Q027_ISR_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling/linking SH2: Q-027 ACTIVE unified ISR..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/q027_external_isr_active.o $<
+	$(SH2_LD) --section-start=.q027_core=0x02304000 --section-start=.q027_park=0x02304500 --section-start=.q027_init=0x02304600 -e q027_external_entry -o $(BUILD_DIR)/sh2/q027_external_isr_active.elf $(BUILD_DIR)/sh2/q027_external_isr_active.o
+	$(SH2_OBJCOPY) --only-section=.q027_core -O binary $(BUILD_DIR)/sh2/q027_external_isr_active.elf $(SH2_Q027_ISR_ACTIVE_CORE_BIN)
+	$(SH2_OBJCOPY) --only-section=.q027_park -O binary $(BUILD_DIR)/sh2/q027_external_isr_active.elf $(SH2_Q027_ISR_PARK_BIN)
+	$(SH2_OBJCOPY) --only-section=.q027_init -O binary $(BUILD_DIR)/sh2/q027_external_isr_active.elf $(SH2_Q027_ISR_INIT_BIN)
+	@test "$$(wc -c < $(SH2_Q027_ISR_ACTIVE_CORE_BIN))" -eq 788
+	@test "$$(wc -c < $(SH2_Q027_ISR_PARK_BIN))" -eq 4
+	@test "$$(wc -c < $(SH2_Q027_ISR_INIT_BIN))" -eq 108
+
+$(SH2_Q027_ISR_CONTROL_CORE_BIN): $(SH2_Q027_ISR_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling/linking SH2: Q-027 STAGE-CONTROL unified ISR..."
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym Q027_STAGE_CONTROL=1 -o $(BUILD_DIR)/sh2/q027_external_isr_control.o $<
+	$(SH2_LD) --section-start=.q027_core=0x02304000 --section-start=.q027_park=0x02304500 --section-start=.q027_init=0x02304600 -e q027_external_entry -o $(BUILD_DIR)/sh2/q027_external_isr_control.elf $(BUILD_DIR)/sh2/q027_external_isr_control.o
+	$(SH2_OBJCOPY) --only-section=.q027_core -O binary $(BUILD_DIR)/sh2/q027_external_isr_control.elf $@
+	@test "$$(wc -c < $@)" -eq 788
+
+$(SH2_Q027_ISR_ACTIVE_CORE_INC): $(SH2_Q027_ISR_ACTIVE_CORE_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "; Auto-generated ACTIVE core from $(SH2_Q027_ISR_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make q027-cmd3f-roms'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+
+$(SH2_Q027_ISR_CONTROL_CORE_INC): $(SH2_Q027_ISR_CONTROL_CORE_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "; Auto-generated STAGE-CONTROL core from $(SH2_Q027_ISR_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make q027-cmd3f-roms'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+
+$(SH2_Q027_ISR_PARK_INC): $(SH2_Q027_ISR_PARK_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "; Auto-generated fixed park loop from $(SH2_Q027_ISR_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make q027-cmd3f-roms'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+
+$(SH2_Q027_ISR_INIT_INC): $(SH2_Q027_ISR_INIT_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "; Auto-generated startup shim from $(SH2_Q027_ISR_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make q027-cmd3f-roms'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+
+# Q-028 wrapper variants all share the approved 296-byte layout at $0600BBC0.
+# Family-all is Q028_INDEX=-1; exact-index variants are a later decision-tree
+# stage and are intentionally not generated by this first family gate.
+define Q028_BUILD_WRAPPER
+$(1): $(Q028_WRAPPER_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	$(SH2_AS) $(SH2_ASFLAGS) --defsym Q028_FAMILY=$(2) --defsym Q028_INDEX=-1 $(3) -o $(4).o $$<
+	$(SH2_LD) -Ttext=0x0600BBC0 -e q028_probe -o $(4).elf $(4).o
+	$(SH2_OBJCOPY) --only-section=.text -O binary $(4).elf $$@
+	@test "$$$$(wc -c < $$@)" -eq 296
+	@sh-elf-nm -n $(4).elf | awk '$$$$3=="q028_probe" && $$$$1=="0600bbc0" {ok=1} END {exit !ok}'
+	@sh-elf-nm -n $(4).elf | awk '$$$$3=="q028_probe_end" && $$$$1=="0600bce8" {ok=1} END {exit !ok}'
+endef
+
+$(eval $(call Q028_BUILD_WRAPPER,$(Q028_A_ACTIVE_BIN),1,,$(BUILD_DIR)/sh2/q028_family_a_active))
+$(eval $(call Q028_BUILD_WRAPPER,$(Q028_A_CONTROL_BIN),1,--defsym Q028_STAGE_CONTROL=1,$(BUILD_DIR)/sh2/q028_family_a_control))
+$(eval $(call Q028_BUILD_WRAPPER,$(Q028_B_ACTIVE_BIN),2,,$(BUILD_DIR)/sh2/q028_family_b_active))
+$(eval $(call Q028_BUILD_WRAPPER,$(Q028_B_CONTROL_BIN),2,--defsym Q028_STAGE_CONTROL=1,$(BUILD_DIR)/sh2/q028_family_b_control))
+$(eval $(call Q028_BUILD_WRAPPER,$(Q028_C_ACTIVE_BIN),3,,$(BUILD_DIR)/sh2/q028_family_c_active))
+$(eval $(call Q028_BUILD_WRAPPER,$(Q028_C_CONTROL_BIN),3,--defsym Q028_STAGE_CONTROL=1,$(BUILD_DIR)/sh2/q028_family_c_control))
+
+define Q028_GENERATE_INC
+$(1): $(2)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "; Auto-generated from $(Q028_WRAPPER_SRC); family $(3) $(4)" > $$@
+	@echo "; DO NOT EDIT - regenerate with 'make q028-renderer-probe-roms'" >> $$@
+	@echo "" >> $$@
+	@xxd -p $$< | fold -w4 | awk '{print "        dc.w    $$$$" toupper($$$$1)}' >> $$@
+endef
+
+$(eval $(call Q028_GENERATE_INC,$(Q028_A_ACTIVE_INC),$(Q028_A_ACTIVE_BIN),A,ACTIVE))
+$(eval $(call Q028_GENERATE_INC,$(Q028_A_CONTROL_INC),$(Q028_A_CONTROL_BIN),A,CONTROL))
+$(eval $(call Q028_GENERATE_INC,$(Q028_B_ACTIVE_INC),$(Q028_B_ACTIVE_BIN),B,ACTIVE))
+$(eval $(call Q028_GENERATE_INC,$(Q028_B_CONTROL_INC),$(Q028_B_CONTROL_BIN),B,CONTROL))
+$(eval $(call Q028_GENERATE_INC,$(Q028_C_ACTIVE_INC),$(Q028_C_ACTIVE_BIN),C,ACTIVE))
+$(eval $(call Q028_GENERATE_INC,$(Q028_C_CONTROL_INC),$(Q028_C_CONTROL_BIN),C,CONTROL))
+
+# Build physics_divide binary from source (VR60 Phase 3B)
+$(SH2_PHYS_DIV_BIN): $(SH2_PHYS_DIV_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: physics_divide..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/physics_divide.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/physics_divide.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_PHYS_DIV_INC): $(SH2_PHYS_DIV_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: physics_divide.inc..."
+	@echo "; Auto-generated from $(SH2_PHYS_DIV_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build physics_group1 binary from source (VR60 Phase 3B)
+$(SH2_PHYS_G1_BIN): $(SH2_PHYS_G1_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: physics_group1..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/physics_group1.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/physics_group1.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_PHYS_G1_INC): $(SH2_PHYS_G1_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: physics_group1.inc..."
+	@echo "; Auto-generated from $(SH2_PHYS_G1_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build physics_group2_accel binary from source (VR60 Phase 3B)
+$(SH2_PHYS_G2A_BIN): $(SH2_PHYS_G2A_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: physics_group2_accel..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/physics_group2_accel.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/physics_group2_accel.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_PHYS_G2A_INC): $(SH2_PHYS_G2A_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: physics_group2_accel.inc..."
+	@echo "; Auto-generated from $(SH2_PHYS_G2A_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build physics_timers binary from source (VR60 Phase 3B: timer/guard co-port)
+$(SH2_PHYS_TMR_BIN): $(SH2_PHYS_TMR_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: physics_timers..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/physics_timers.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/physics_timers.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_PHYS_TMR_INC): $(SH2_PHYS_TMR_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: physics_timers.inc..."
+	@echo "; Auto-generated from $(SH2_PHYS_TMR_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build physics_pos_update binary from source (VR60 Phase 3D: 16.16 position)
+$(SH2_PHYS_POS_BIN): $(SH2_PHYS_POS_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: physics_pos_update..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/physics_pos_update.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/physics_pos_update.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_PHYS_POS_INC): $(SH2_PHYS_POS_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: physics_pos_update.inc..."
+	@echo "; Auto-generated from $(SH2_PHYS_POS_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build physics_drift binary from source (VR60 Phase 3C: drift system)
+$(SH2_PHYS_DRF_BIN): $(SH2_PHYS_DRF_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: physics_drift..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/physics_drift.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/physics_drift.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_PHYS_DRF_INC): $(SH2_PHYS_DRF_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: physics_drift.inc..."
+	@echo "; Auto-generated from $(SH2_PHYS_DRF_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build ai_steering binary from source (VR60 Phase 4: AI steering + atan2)
+$(SH2_AI_STEER_BIN): $(SH2_AI_STEER_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: ai_steering..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/ai_steering.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/ai_steering.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_AI_STEER_INC): $(SH2_AI_STEER_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: ai_steering.inc..."
+	@echo "; Auto-generated from $(SH2_AI_STEER_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build ai_orchestrator binary from source (VR60 Phase 4: AI update orchestrator)
+$(SH2_AI_ORCH_BIN): $(SH2_AI_ORCH_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: ai_orchestrator..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/ai_orchestrator.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/ai_orchestrator.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_AI_ORCH_INC): $(SH2_AI_ORCH_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: ai_orchestrator.inc..."
+	@echo "; Auto-generated from $(SH2_AI_ORCH_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build render_state_patcher binary from source (VR60 Phase 7: 60 FPS render bridge)
+$(SH2_RSP_BIN): $(SH2_RSP_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: render_state_patcher..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/render_state_patcher.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/render_state_patcher.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_RSP_INC): $(SH2_RSP_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: render_state_patcher.inc..."
+	@echo "; Auto-generated from $(SH2_RSP_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build collision_leaf binary from source (VR60 Phase 5A: pure-math BSP leaves)
+$(SH2_COLL_LEAF_BIN): $(SH2_COLL_LEAF_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: collision_leaf..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/collision_leaf.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/collision_leaf.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_COLL_LEAF_INC): $(SH2_COLL_LEAF_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: collision_leaf.inc..."
+	@echo "; Auto-generated from $(SH2_COLL_LEAF_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build collision_track_data binary from source (VR60 Phase 5B: addressing layer)
+$(SH2_COLL_TRK_BIN): $(SH2_COLL_TRK_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: collision_track_data..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/collision_track_data.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/collision_track_data.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_COLL_TRK_INC): $(SH2_COLL_TRK_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: collision_track_data.inc..."
+	@echo "; Auto-generated from $(SH2_COLL_TRK_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build collision_boundary binary from source (VR60 Phase 5C: boundary detection)
+$(SH2_COLL_BND_BIN): $(SH2_COLL_BND_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: collision_boundary..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/collision_boundary.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/collision_boundary.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_COLL_BND_INC): $(SH2_COLL_BND_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: collision_boundary.inc..."
+	@echo "; Auto-generated from $(SH2_COLL_BND_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build collision_response binary from source (VR60 Phase 5D: response + surface)
+$(SH2_COLL_RSP_BIN): $(SH2_COLL_RSP_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: collision_response..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/collision_response.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/collision_response.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_COLL_RSP_INC): $(SH2_COLL_RSP_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: collision_response.inc..."
+	@echo "; Auto-generated from $(SH2_COLL_RSP_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build collision_object binary from source (VR60 Phase 5E: object/proximity collision)
+$(SH2_COLL_OBJ_BIN): $(SH2_COLL_OBJ_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: collision_object..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/collision_object.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/collision_object.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_COLL_OBJ_INC): $(SH2_COLL_OBJ_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: collision_object.inc..."
+	@echo "; Auto-generated from $(SH2_COLL_OBJ_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
+# Build bridge_probe binary from source (VR60 Phase 5F-1b: render bridge probe)
+$(SH2_BRIDGE_PROBE_BIN): $(SH2_BRIDGE_PROBE_SRC) | dirs
+	@mkdir -p $(BUILD_DIR)/sh2
+	@echo "==> Assembling SH2: bridge_probe..."
+	$(SH2_AS) $(SH2_ASFLAGS) -o $(BUILD_DIR)/sh2/bridge_probe.o $<
+	$(SH2_OBJCOPY) -O binary $(BUILD_DIR)/sh2/bridge_probe.o $@
+	@echo "    Output: $@ ($$(wc -c < $@) bytes)"
+
+$(SH2_BRIDGE_PROBE_INC): $(SH2_BRIDGE_PROBE_BIN)
+	@mkdir -p $(SH2_GEN_DIR)
+	@echo "==> Generating dc.w include: bridge_probe.inc..."
+	@echo "; Auto-generated from $(SH2_BRIDGE_PROBE_SRC)" > $@
+	@echo "; DO NOT EDIT - regenerate with 'make sh2-assembly'" >> $@
+	@echo "" >> $@
+	@xxd -p $< | fold -w4 | awk '{print "        dc.w    $$" toupper($$1)}' >> $@
+	@echo "    Output: $@ ($$(wc -l < $@) lines)"
+
 # Verify SH2 assembly matches original ROM
 sh2-verify: $(SH2_FUNC000_BIN) $(SH2_FUNC022_BIN) $(SH2_FUNC017_BIN) $(SH2_FUNC018_BIN) $(SH2_FUNC032_BIN) $(SH2_FUNC011_BIN) $(SH2_FUNC012_BIN) $(SH2_FUNC013_BIN) $(SH2_FUNC014_015_BIN) $(SH2_FUNC024_BIN) $(SH2_FUNC025_BIN) $(SH2_FUNC026_BIN) $(SH2_FUNC003_004_BIN) $(SH2_FUNC029_030_031_BIN) $(SH2_FUNC033_BIN) $(SH2_FUNC034_BIN) $(SH2_FUNC036_BIN) $(SH2_FUNC037_038_039_BIN) $(SH2_FUNC005_BIN) $(SH2_FUNC007_BIN) $(SH2_FUNC006_BIN) $(SH2_FUNC008_BIN) $(SH2_FUNC016_BIN) $(SH2_FUNC009_BIN) $(SH2_FUNC010_BIN) $(SH2_FUNC065_BIN) $(SH2_FUNC066_BIN)
 	@echo "==> Verifying SH2 assembly against original ROM..."
@@ -2673,7 +4556,21 @@ help:
 	@echo "Virtua Racing Deluxe (32X) - Build System"
 	@echo ""
 	@echo "Build Targets:"
-	@echo "  all            - Build the ROM from sections/ (original disasm)"
+	@echo "  all                  - Build the promoted mode-0 ACTIVE ROM from sections/"
+	@echo "  ares-rom             - Pad the canonical rebuild to 4 MiB for Ares"
+	@echo "  fps-ares-rom         - Build the canonical Ares ROM with an FPS counter"
+	@echo "  fps-ares-roms        - Build all five Ares ROM variants with FPS counters"
+	@echo "  experimental-60fps-routing-ares-rom - Build the private routing probe"
+	@echo "  experimental-30fps-merge-ares-rom   - Build the two-phase cadence probe"
+	@echo "  experimental-60fps-burst-ares-rom   - Build the one-VBlank cadence probe"
+	@echo "  experimental-30hz-lod-ares-rom      - Build the player-parts LOD probe"
+	@echo "  control-rom          - Build and verify the historical VR60-011 control pair"
+	@echo "  mode0-roms           - Rebuild and verify the accepted mode-0 evidence pair"
+	@echo "  mode0-default-verify - Prove the ordinary default equals accepted ACTIVE"
+	@echo "  q023-mailbox-roms    - Build/verify the inactive cmd-$3F mailbox pair"
+	@echo "  q026-player-roms     - Build/verify bounded direct-CMDINT precursor pair"
+	@echo "  q026-runtime-tools   - Rebuild/pin isolated Q-026 passive recorder"
+	@echo "  q026-runtime-validate - Revalidate the two-repeat-per-arm Q-026 archive"
 	@echo ""
 	@echo "SH2 Assembly:"
 	@echo "  sh2-assembly   - Build SH2 sources to dc.w includes"

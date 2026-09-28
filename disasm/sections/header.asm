@@ -65,8 +65,12 @@
         dc.w    $170A        ; $000072
         dc.w    $0088        ; $000074
         dc.w    $0832        ; $000076
+        ifd     VR60_FPS_COUNTER
+        dc.l    $00880000+vr60_fps_vint_wrapper ; every-VBlank FPS timebase
+        else
         dc.w    $0088        ; $000078 - V-INT handler (high word)
         dc.w    $1684        ; $00007A - → $00881684 (original handler)
+        endif
         dc.w    $0088        ; $00007C
         dc.w    $0832        ; $00007E
         dc.w    $0088        ; $000080

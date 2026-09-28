@@ -1,0 +1,229 @@
+; ============================================================================
+; vr60_1p_staging_hook — VR60 1P interactive racing: staging + cmd $3F trigger
+; ============================================================================
+;
+; Full Phase 1 body: mirrors state4_epilogue (code_2200.asm, the built but
+; unvalidated 2P integration) in staging/transfer/relay call order, but calls the
+; 1P-EXCLUSIVE copies of the transfer/trigger functions (vr60_1p_entity_
+; transfer.asm, vr60_1p_ai_entity_transfer.asm, vr60_1p_globals_transfer.asm,
+; vr60_1p_comm_trigger.asm) rather than the shared vr60_*_transfer.asm/
+; vr60_comm_trigger.asm files that state4_epilogue (2P) also uses.
+;
+; This hook's insertion point (game_frame_orch_013, "Path A", state 8 of
+; state_disp_004cb8) was investigated at length this session (2026-07-13):
+; briefly suspected dead code (a false negative from PC-histogram top-200
+; truncation), then confirmed via VRD_CALLER_TRACE (an exact, non-truncated
+; JSR-return-address counter) to fire reliably every ~3 frames (20 Hz),
+; exactly matching the documented game-tick rate. See analysis/VR60_PHASE1_
+; CMD3E_ACK_HANG.md §15-§20 for the full investigation -- this hook's
+; location is confirmed valid, no relocation needed.
+;
+; The 1P-exclusive transfer/trigger functions use a BOUNDED retry (max 16
+; attempts, ~600-cycle settle delay each) defensively around a suspected,
+; unproven Master-SH2 poll-detection race discussed in that analysis (§13).
+; The bounded retry is defensive; it is not proof that the race is the root
+; cause. An earlier attempt applied an UNBOUNDED version of this same
+; retry directly to the SHARED vr60_*_transfer.asm/vr60_comm_trigger.asm
+; files (also called unconditionally every frame by 2P's state4_epilogue)
+; and hard-hung the 68K in real gameplay (black screen, §13.2-13.3) --
+; hence separate, bounded, 1P-exclusive copies here. If any attempt is
+; exhausted without an ACK, the affected transfer/trigger is skipped for
+; that frame rather than blocking -- a dropped SH2 update, not a hang.
+;
+; Physics bypass stays OFF (vr60_physics_bypass_trampoline's flag is
+; untouched here) -- this phase only proves the staging+trigger chain
+; reaches the SH2 side; gameplay logic remains on the 68K.
+;
+; CURRENT ORDINARY STATE: the promoted build defines
+; VR60_MODE0_ONLY and executes the accepted cmd $3E mode-0 transfer exactly
+; once per eligible lifecycle. The mode-1/mode-2 validation blocks and relay
+; below are therefore unreachable in that build; cmd $3F is physically absent.
+; Modes 1 and 2 passed only their separate isolated validation gates; neither
+; is promoted here. See VR60_STATUS.md and the Q-020/Q-021 evidence archives.
+; ============================================================================
+
+VR60_1P_FLAG    equ     $FFFF7B40
+
+vr60_1p_staging_hook:
+        ifd     VR60_Q027_VALIDATION
+; Q-027 retains Q-026's exact accepted first-hit 320-byte mode-0 seed.  On the
+; second hit its separate helper owns the masked two-CMD COMM0 transaction.
+; No relay, cmd-$3F legacy lane publication, authority, or cadence path follows.
+        move.b  VR60_1P_FLAG,d0
+        beq.s   .q027_seed
+        cmpi.b  #$01,d0
+        bne.s   .original_calls
+        jsr     q027_cmd3f_transport
+        bra.s   .original_calls
+
+.q027_seed:
+        jsr     vr60_entity_stage
+        jsr     vr60_globals_stage
+        move.b  #$00,COMM3
+        jsr     vr60_1p_entity_transfer
+        move.b  #$01,VR60_1P_FLAG
+        bra.w   .original_calls
+        else
+        ifd     VR60_Q026_VALIDATION
+; Q-026 is a bounded direct-CMDINT precursor.  First eligible state-8 stages
+; and synchronously transfers the exact accepted 320-byte mode-0 seed.  The
+; second hit publishes flag 2 before any waits, then ACTIVE emits exactly one
+; Master INTM edge while STAGE-CONTROL occupies the same eight-byte slot with
+; four NOPs.  The normal cmd $3F route remains physically absent.
+        move.b  VR60_1P_FLAG,d0
+        beq.s   .q026_seed
+        cmpi.b  #$01,d0
+        bne.w   .original_calls
+
+        move.b  #$02,VR60_1P_FLAG
+.q026_wait_intm:
+        btst    #0,MARS_SYS_INTMASK+1
+        bne.s   .q026_wait_intm
+.q026_wait_dreq:
+        btst    #2,MARS_DREQ_CTRL+1
+        bne.s   .q026_wait_dreq
+.q026_wait_len:
+        tst.w   MARS_DREQ_LEN
+        bne.s   .q026_wait_len
+.q026_wait_comm0:
+        tst.b   COMM0_HI
+        bne.s   .q026_wait_comm0
+        ifd     VR60_Q026_STAGE_CONTROL
+        nop
+        nop
+        nop
+        nop
+        else
+        ori.b   #$01,MARS_SYS_INTMASK+1
+        endif
+        bra.w   .original_calls
+
+.q026_seed:
+        jsr     vr60_entity_stage
+        jsr     vr60_globals_stage
+        move.b  #$00,COMM3
+        jsr     vr60_1p_entity_transfer
+        move.b  #$01,VR60_1P_FLAG
+        bra.w   .original_calls
+        else
+        ifd     VR60_MODE2_VALIDATION
+        tst.b   VR60_1P_FLAG
+        bne.s   .original_calls
+; Mode 2 is an isolated lifecycle one-shot. Both arms stage the exact 15-entry
+; AI table; only the six-byte ACTIVE slot starts transport.
+        jsr     vr60_ai_entity_stage              ; $FF9100-$FF9FFF -> $FF6B40-$FF7A3F
+        nop                                       ; preserve fixed three-slot hook layout
+        nop
+        nop
+        ifd     VR60_MODE2_STAGE_CONTROL
+        nop                                       ; exact six-byte ACTIVE/CONTROL pair slot
+        nop
+        nop
+        else
+        jsr     vr60_1p_ai_transfer_mode2_validation
+        endif
+        move.b  #$01,VR60_1P_FLAG
+        bra.s   .original_calls
+        dcb.w   23,$4E71                          ; mode 0/1, relay, cmd $3F absent
+        else
+        tst.b   VR60_1P_FLAG
+        ifd     VR60_MODE0_ONLY
+        bne.s   .original_calls
+        else
+        bne.s   .globals_only
+        endif
+; --- First frame: player entity + globals staging (AI mode 2 remains gated) ---
+        jsr     vr60_entity_stage                 ; 256B player WRAM -> $FF6A00
+        jsr     vr60_globals_stage                 ; 64B scattered -> $FF6B00
+        ifd     VR60_MODE0_ONLY
+        ifd     VR60_MODE0_STAGE_CONTROL
+        nop                                         ; paired stage-control: no DREQ
+        nop                                         ; exact 6-byte replacement for JSR
+        nop
+        else
+        jsr     .mode0_transfer                    ; explicit mode 0 + DREQ transfer
+        endif
+        else
+        ifd     VR60_MODE1_VALIDATION
+        nop                                         ; isolated mode-1 pair: first hit stages only
+        nop                                         ; mode 0 is neither repeated nor revalidated
+        nop
+        else
+        jsr     vr60_1p_entity_transfer            ; DREQ 320B -> SDRAM (cmd $3E mode 0)
+        endif
+        endif
+; VALIDATION GATE: AI transfer stays disabled until a trustworthy control
+; fixture passes, then must be tested independently of cmd $3F.
+;        jsr     vr60_ai_entity_stage               ; 3840B AI WRAM -> $FF6B40
+;        jsr     vr60_1p_ai_entity_transfer          ; DREQ 3840B -> SDRAM (cmd $3E mode 2)
+        move.b  #$01,VR60_1P_FLAG
+        ifd     VR60_MODE0_ONLY
+        bra.s   .original_calls
+        else
+        ifd     VR60_MODE1_VALIDATION
+        bra.s   .original_calls                    ; mode-1 pair never enters relay
+        else
+        bra.s   .relay
+        endif
+        endif
+.globals_only:
+        ifd     VR60_MODE0_ONLY
+; The promoted mode-0-only build reuses the original 12-byte mode-1 slot
+; as a tail-call stub. MOVE.B #imm,abs.l is 8 bytes and BRA.W is 4 bytes, so
+; the complete hook layout and every following ROM address remain unchanged.
+; The JSR above supplies the return address consumed by the transfer's RTS.
+.mode0_transfer:
+        move.b  #$00,COMM3                         ; explicit COMM3_HI mode 0
+        bra.w   vr60_1p_entity_transfer            ; tail-call; returns to first-hit block
+        else
+; --- Subsequent frames: globals only ---
+        jsr     vr60_globals_stage                 ; 64B scattered -> $FF6B00
+        ifd     VR60_MODE1_VALIDATION
+        ifd     VR60_MODE1_STAGE_CONTROL
+        nop                                         ; exact six-byte ACTIVE/CONTROL pair slot
+        nop
+        nop
+        else
+        jsr     vr60_1p_globals_transfer_mode1_validation
+        endif
+        else
+        jsr     vr60_1p_globals_transfer           ; DREQ 64B -> SDRAM (cmd $3E mode 1)
+        endif
+        endif
+.relay:
+        ifd     VR60_MODE1_VALIDATION
+; The old relay occupies 34 bytes. Keep the accepted original-call address fixed
+; while making every relay operation unreachable and physically absent.
+        bra.s   .original_calls
+        dcb.w   16,$4E71
+        else
+; --- Dormant relay slots; values are stale/zero while cmd $3F stays disabled ---
+        move.b  COMM6,($FFFFC8A4).w               ; sound trigger
+        clr.b   COMM6                              ; clear
+        move.w  COMM4,$00FF617A                    ; viewport left
+        move.w  COMM5,$00FF618E                    ; viewport right
+        endif
+        endif
+        endif
+        endif
+; --- Fire-and-forget: async block copies + physics via cmd $3F ---
+; VALIDATION GATE: cmd $3F stays disabled until a trustworthy baseline exists.
+; First run it as observable shadow computation with the 68K authoritative;
+; do not enable the physics bypass or infer causality from fb_crc alone.
+; The §21 freeze attribution was retracted by §22 because the fixture freezes
+; independently of this hook.
+;        jsr     vr60_1p_comm_trigger                ; writes COMM3-5 + triggers cmd $3F
+.original_calls:
+        jsr     animated_seq_player+10
+        jsr     object_update
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        jmp     $00880000+vr60_interp_state8_submit ; returns through stock $4D6A tail
+        else
+        ifd     VR60_MODE0_ONLY
+        jmp     $00884D6A                              ; preserve exact accepted raw PC
+        else
+        jmp     game_frame_orch_013_tail                 ; NOT rts — entered via
+                                                          ; JMP, no return addr
+                                                          ; pushed for this frame
+        endif
+        endif

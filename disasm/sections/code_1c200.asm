@@ -37,4 +37,115 @@
 ; --- S-1: LOD culling enhanced sprite param update (relocated from code_2200) ---
         include "modules/68k/game/render/object_table_sprite_param_update.asm"
 
+; --- VR60 Phase 1B: COMM relay trigger (50 bytes, called via JSR abs.l from code_2200) ---
+        include "modules/68k/sh2/vr60_comm_trigger.asm"
+
+; --- VR60 60 FPS: V-INT handlers (Phase 7 wrappers kept for non-racing modes) ---
+        include "modules/68k/vint/vint_vdp_sync_with_swap.asm"
+        include "modules/68k/vint/vint_sprite_cfg_with_swap.asm"
+
+; --- VR60 Phase 8: Unified V-INT handler (VDP sync + sprite cfg + frame swap) ---
+        include "modules/68k/vint/vint_unified_60fps.asm"
+
+; --- VR60 Phase 3B: physics bypass trampoline (called via JMP from entity_render_pipeline) ---
+        include "modules/68k/sh2/vr60_physics_bypass_trampoline.asm"
+
+; --- VR60 Phase 4: AI bypass trampoline (called via JMP from Variant B) ---
+        include "modules/68k/sh2/vr60_ai_bypass_trampoline.asm"
+
+; --- VR60 Phase 3A/3B: entity+globals staging + DREQ transfer (called via JSR abs.l from code_2200) ---
+        include "modules/68k/sh2/vr60_entity_stage.asm"
+        include "modules/68k/sh2/vr60_globals_stage.asm"
+        include "modules/68k/sh2/vr60_entity_transfer.asm"
+        include "modules/68k/sh2/vr60_globals_transfer.asm"
+
+; --- VR60 Phase 4: AI entity staging + DREQ transfer (first frame only) ---
+        include "modules/68k/sh2/vr60_ai_entity_stage.asm"
+        include "modules/68k/sh2/vr60_ai_entity_transfer.asm"
+
+; --- VR60 Phase 1P: 1-player-exclusive copies of the DREQ transfer + cmd $3F
+; trigger functions, with BOUNDED retries against the Master-SH2 poll-
+; detection race (analysis/VR60_PHASE1_CMD3E_ACK_HANG.md §13). Separate
+; files from the shared vr60_*_transfer.asm/vr60_comm_trigger.asm above --
+; those are called unconditionally every frame by the always-active 2P path
+; (state4_epilogue) and must never carry unverified retry logic again after
+; the 2026-07-13 black-screen incident (§13.2-13.3). ---
+        include "modules/68k/sh2/vr60_1p_entity_transfer.asm"
+        include "modules/68k/sh2/vr60_1p_ai_entity_transfer.asm"
+        include "modules/68k/sh2/vr60_1p_globals_transfer.asm"
+        include "modules/68k/sh2/vr60_1p_comm_trigger.asm"
+
+; --- VR60 Phase 1P: 1-player interactive racing staging + cmd $3F trigger ---
+; Patched into game_frame_orch_013 (code_4200.asm) — see file header for why
+; this lives here (equal-size swap; cross-section abs.l JSR convention).
+        include "modules/68k/sh2/vr60_1p_staging_hook.asm"
+
+; --- Validation-only reset wrappers/helpers ---
+; Ordinary mode 0 leaves this entire interval as the original $FF padding.
+        ifd     VR60_Q027_VALIDATION
+        dcb.b   ($01C930-*),$FF
+        assert  *=$01C930,"Q-027 helper must start at file $01C930"
+        include "modules/68k/sh2/q027_cmd3f_transport.asm"
+        assert  q027_scene_entry_wrapper=$01CB00,"Q-027 wrapper must start at file $01CB00"
+        assert  *=$01CB0E,"Q-027 lifecycle wrapper must end at file $01CB0E"
+        else
+        ifd     VR60_Q026_VALIDATION
+        include "modules/68k/sh2/q026_player_cmdint.asm"
+        assert  *=$01C93E,"Q-026 lifecycle wrapper must end at file $01C93E"
+        else
+        ifd     VR60_Q020_CMDINT_PROBE
+        include "modules/68k/sh2/q020_cmdint_probe.asm"
+        assert  *=$01C94A,"Q-020 68K wrapper/helper must end at file $01C94A"
+        else
+        ifd     VR60_MODE1_VALIDATION
+        include "modules/68k/sh2/vr60_mode1_validation.asm"
+        else
+        ifd     VR60_MODE2_VALIDATION
+        include "modules/68k/sh2/vr60_mode1_validation.asm"
+        endif
+        endif
+        endif
+        endif
+        endif
+
+; --- Experimental 1P interpolated renderer (isolated from routing/merge) ---
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        dcb.b   ($01CC00-*),$FF
+        assert  *=$01CC00,"experimental 1P interpolation must start at $01CC00"
+        include "modules/68k/vint/vr60_1p_interpolated_render.asm"
+        assert  *<=$01D000,"experimental 1P interpolation overflowed its ROM area"
+        else
+; --- Experimental 1P-only scheduler routing (no commits or cadence change) ---
+        ifd     VR60_EXPERIMENTAL_60FPS_ROUTING
+        dcb.b   ($01CC00-*),$FF
+        assert  *=$01CC00,"experimental 1P V-INT routes must start at $01CC00"
+        include "modules/68k/vint/vr60_1p_scheduler_vint.asm"
+        endif
+        endif
+
+; --- Optional on-ROM FPS display, isolated from accepted/experimental code ---
+        ifd     VR60_FPS_COUNTER
+        dcb.b   ($01D000-*),$FF
+        assert  *=$01D000,"VR60 FPS counter must start at file $01D000"
+        include "modules/68k/vint/vr60_fps_counter.asm"
+        assert  *<=$01D800,"VR60 FPS counter overflowed its reserved ROM area"
+        endif
+
+; --- 30-FPS scheduler: interpolation of the other cars ---
+        ifd     VR60_30_CARS
+        ifd     VR60_30_PREFETCH
+        assert  0,"VR60_30_CARS and VR60_30_PREFETCH share $01D800"
+        endif
+        dcb.b   ($01D800-*),$FF
+        include "modules/68k/vint/vr60_30fps_cars.asm"
+        assert  *<=$01E200,"VR60 30-FPS car interpolation overflowed its ROM area"
+        endif
+
+; --- 30-FPS scheduler research: scene-block prefetch (TRAP #15 handler) ---
+        ifd     VR60_30_PREFETCH
+        dcb.b   ($01D800-*),$FF
+        include "modules/68k/vint/vr60_30fps_prefetch.asm"
+        assert  *<=$01E200,"VR60 30-FPS prefetch overflowed its ROM area"
+        endif
+
         dcb.b   ($01E200-*),$FF

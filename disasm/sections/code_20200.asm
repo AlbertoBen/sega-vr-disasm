@@ -332,8 +332,28 @@
         dc.w    $FE10        ; $02047A
         dc.w    $2000        ; $02047C
         dc.w    $4000        ; $02047E
+        ifd     VR60_Q027_VALIDATION
+        dc.l    $02304600    ; Q-027 cold/VRES startup shim
+        else
+        ifd     VR60_Q026_VALIDATION
+        dc.l    $02304600    ; Q-026 cold/VRES startup shim
+        else
+        ifd     VR60_Q020_CMDINT_PROBE
+        dc.l    $02303C50    ; probe-only cold/VRES trace initialization shim
+        else
+        ifd     VR60_MODE1_VALIDATION
+        dc.l    $02303E60    ; mode-1 CMDINT cold/VRES trace initialization shim
+        else
+        ifd     VR60_MODE2_VALIDATION
+        dc.l    $02303E60    ; mode-2 CMDINT cold/VRES trace initialization shim
+        else
         dc.w    $0600        ; $020480
         dc.w    $45CC        ; $020482
+        endif
+        endif
+        endif
+        endif
+        endif
         dc.w    $0600        ; $020484
         dc.w    $FF80        ; $020486
         dc.w    $2000        ; $020488
@@ -515,8 +535,13 @@ vdp_wait_test:                   ; $02050C
         dc.w    $135C        ; $0205E2
         dc.w    $0600        ; $0205E4
         dc.w    $0DA8        ; $0205E6
+        ifd     VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP
+        dc.w    $0230        ; $0205E8: Slave cmd $08 clear100 handler
+        dc.w    $4C00        ; $0205EA: $02304C00
+        else
         dc.w    $0600        ; $0205E8
         dc.w    $0608        ; $0205EA
+        endif
         dc.w    $0600        ; $0205EC
         dc.w    $0608        ; $0205EE
         dc.w    $0600        ; $0205F0
@@ -831,10 +856,20 @@ vdp_wait_test:                   ; $02050C
         dc.w    $0490        ; $020872
         dc.w    $0600        ; $020874
         dc.w    $0490        ; $020876
-        dc.w    $0600        ; $020878
-        dc.w    $0490        ; $02087A
-        dc.w    $0600        ; $02087C
-        dc.w    $0490        ; $02087E
+        dc.w    $0230        ; $020878  cmd $3E → expansion ROM $023016B0 (VR60 Phase 7: shifted)
+        dc.w    $16B0        ; $02087A
+        ifd     VR60_Q027_VALIDATION
+        dc.w    $0230        ; $02087C  Q-027 real stock table[$3F] target
+        dc.w    $1500
+        else
+        ifd     VR60_Q026_VALIDATION
+        dc.w    $0600        ; $02087C  Q-026 direct-only: no cmd $3F registration
+        dc.w    $0490        ; $02087E  stock invalid-command handler
+        else
+        dc.w    $0230        ; $02087C  cmd $3F → expansion ROM $02301500 (VR60 Phase 0)
+        dc.w    $1500        ; $02087E
+        endif
+        endif
         dc.w    $4F22        ; $020880
         dc.w    $D105        ; $020882
         dc.w    $E000        ; $020884
@@ -1419,18 +1454,31 @@ vdp_wait_test:                   ; $02050C
         dc.w    $D015        ; $020D0A
         dc.w    $400B        ; $020D0C
         dc.w    $E364        ; $020D0E
+        ifd     VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP
+        dc.w    $0009,$0009,$0009 ; $020D10-$020D15: overlap helper owns DMAC finish
+        else
         dc.w    $D014        ; $020D10
         dc.w    $400B        ; $020D12
         dc.w    $0009        ; $020D14
+        endif
+        ifd     VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP
+        dc.w    $0009,$0009,$0009 ; $020D16-$020D1B: helper owns VDP setup
+        dc.w    $0009,$0009,$0009 ; $020D1C-$020D21: helper submits Slave cmd $04
+        else
         dc.w    $D014        ; $020D16
         dc.w    $400B        ; $020D18
         dc.w    $0009        ; $020D1A
         dc.w    $D013        ; $020D1C
         dc.w    $400B        ; $020D1E
         dc.w    $E104        ; $020D20
+        endif
+        ifd     VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP
+        dc.w    $0009,$0009,$0009 ; $020D22-$020D27: overlap helper owns transform
+        else
         dc.w    $D013        ; $020D22
         dc.w    $400B        ; $020D24
         dc.w    $0009        ; $020D26
+        endif
         dc.w    $B218        ; $020D28
         dc.w    $0009        ; $020D2A
         dc.w    $D011        ; $020D2C
@@ -1459,8 +1507,13 @@ vdp_wait_test:                   ; $02050C
         dc.w    $C000        ; $020D5A
         dc.w    $0600        ; $020D5C
         dc.w    $4448        ; $020D5E
+        ifd     VR60_EXPERIMENTAL_SLAVE_CLEAR_OVERLAP
+        dc.w    $0230        ; $020D60: dual-SH2 clear-overlap helper
+        dc.w    $4C20        ; $020D62: $02304C20 (always-render entry)
+        else
         dc.w    $0600        ; $020D60
         dc.w    $44F6        ; $020D62
+        endif
         dc.w    $0600        ; $020D64
         dc.w    $4480        ; $020D66
         dc.w    $0600        ; $020D68
@@ -1723,8 +1776,8 @@ vdp_wait_test:                   ; $02050C
         dc.w    $244C        ; $020F6A
         dc.w    $C000        ; $020F6C
         dc.w    $0700        ; $020F6E
-        dc.w    $C000        ; $020F70
-        dc.w    $01B0        ; $020F72
+        assert  *=$020F70,"vertex scale/callback slot A preimage"
+        dc.w    $C000,$01B0  ; stock callback pointer
         dc.w    $0000        ; $020F74
         dc.w    $1000        ; $020F76
         dc.w    $0600        ; $020F78
@@ -1851,16 +1904,51 @@ vdp_wait_test:                   ; $02050C
         dc.w    $2494        ; $02106A
         dc.w    $C000        ; $02106C
         dc.w    $0700        ; $02106E
-        dc.w    $C000        ; $021070
-        dc.w    $01B0        ; $021072
+        assert  *=$021070,"vertex scale/callback slot B preimage"
+        dc.w    $C000,$01B0
         dc.w    $0000        ; $021074
         dc.w    $1000        ; $021076
         dc.w    $0600        ; $021078
         dc.w    $CA60        ; $02107A
         dc.w    $0600        ; $02107C
         dc.w    $C128        ; $02107E
+        ifd     VR60_EXPERIMENTAL_FAMILY_A_PRETRANSFORM
+        dc.w    $0230        ; $021080 - concurrent family-A pre-transform consumer
+        dc.w    $6000        ; $021082 - SH2 $02306000
+        else
+        ifd     VR60_EXPERIMENTAL_FAMILY_A_HANDOFF
+        dc.w    $0230        ; $021080 - exact-position dual-SH2 authority handoff
+        dc.w    $6000        ; $021082 - SH2 $02306000
+        else
+        ifd     VR60_EXPERIMENTAL_FAMILY_A_SHADOW_STAGE1
+        dc.w    $0230        ; $021080 - Stage-1 validator, stock always renders
+        dc.w    $4E00        ; $021082 - SH2 $02304E00
+        else
+        ifd     VR60_EXPERIMENTAL_FAMILY_A_SHADOW_QUEUE
+        dc.w    $0230        ; $021080 - shadow validator, always stock fallback
+        dc.w    $4E00        ; $021082 - SH2 $02304E00
+        else
+        ifd     VR60_EXPERIMENTAL_FAMILY_A_SPLIT
+        dc.w    $0230        ; $021080 - exact split: Slave family-A descriptor 0
+        dc.w    $3A10        ; $021082 - SH2 $02303A10
+        else
+        ifd     VR60_EXPERIMENTAL_30HZ_LOD
+        dc.w    $0230        ; $021080 - exact family-A PARTS count 4 -> 1
+        dc.w    $3A10        ; $021082 - SH2 $02303A10
+        else
+        ifd     VR60_Q028_VALIDATION
+        dc.w    $0600        ; $021080 - Q-028 stock cmd-$02 wrapper
+        dc.w    $BBC0        ; $021082
+        else
         dc.w    $0600        ; $021080
         dc.w    $24DC        ; $021082
+        endif
+        endif
+        endif
+        endif
+        endif
+        endif
+        endif
         dc.w    $0600        ; $021084
         dc.w    $CB20        ; $021086
         dc.w    $0600        ; $021088
@@ -1961,8 +2049,8 @@ vdp_wait_test:                   ; $02050C
         dc.w    $D8D0        ; $021146
         dc.w    $0600        ; $021148
         dc.w    $C72C        ; $02114A
-        dc.w    $0600        ; $02114C
-        dc.w    $271A        ; $02114E
+        assert  *=$02114C,"vertex scale/callback slot C preimage"
+        dc.w    $0600,$271A  ; stock callback pointer
         dc.w    $0600        ; $021150
         dc.w    $C218        ; $021152
         dc.w    $0600        ; $021154
@@ -2547,8 +2635,8 @@ vdp_wait_test:                   ; $02050C
         dc.w    $C100        ; $0215DA
         dc.w    $0600        ; $0215DC
         dc.w    $2C50        ; $0215DE
-        dc.w    $C000        ; $0215E0
-        dc.w    $01B0        ; $0215E2
+        assert  *=$0215E0,"vertex scale/callback slot D preimage"
+        dc.w    $C000,$01B0
         dc.w    $0000        ; $0215E4
         dc.w    $0800        ; $0215E6
         dc.w    $0600        ; $0215E8
@@ -2595,8 +2683,8 @@ vdp_wait_test:                   ; $02050C
         dc.w    $D8D0        ; $02163A
         dc.w    $0600        ; $02163C
         dc.w    $C72C        ; $02163E
-        dc.w    $0600        ; $021640
-        dc.w    $271A        ; $021642
+        assert  *=$021640,"vertex scale/callback slot E preimage"
+        dc.w    $0600,$271A
         dc.w    $0600        ; $021644
         dc.w    $3220        ; $021646
         dc.w    $0600        ; $021648
@@ -2703,8 +2791,8 @@ vdp_wait_test:                   ; $02050C
         dc.w    $C330        ; $021712
         dc.w    $0600        ; $021714
         dc.w    $2C50        ; $021716
-        dc.w    $C000        ; $021718
-        dc.w    $01B0        ; $02171A
+        assert  *=$021718,"vertex scale/callback slot F preimage"
+        dc.w    $C000,$01B0
         dc.w    $0000        ; $02171C
         dc.w    $0800        ; $02171E
         dc.w    $0600        ; $021720

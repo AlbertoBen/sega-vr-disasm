@@ -6,6 +6,325 @@
 ; Global hardware register definitions (canonical — do not redefine locally)
         include "modules/shared/definitions.asm"
 
+; The optional user-facing FPS overlay is a separately named diagnostic ROM.
+; It composes only with ordinary mode 0 and the four 1P scheduler candidates;
+; accepted controls/probes remain byte- and timing-exact.
+        ifd     VR60_FPS_COUNTER
+        ifd     VR60_MODE0_ONLY
+        else
+        assert  0,"VR60 FPS counter requires VR60_MODE0_ONLY"
+        endif
+        ifd     VR60_CONTROL_ROM
+        assert  0,"VR60 FPS counter and control ROM are mutually exclusive"
+        endif
+        ifd     VR60_MODE0_STAGE_CONTROL
+        assert  0,"VR60 FPS counter and mode-0 control are mutually exclusive"
+        endif
+        ifd     VR60_MODE1_VALIDATION
+        assert  0,"VR60 FPS counter and mode-1 validation are mutually exclusive"
+        endif
+        ifd     VR60_MODE2_VALIDATION
+        assert  0,"VR60 FPS counter and mode-2 validation are mutually exclusive"
+        endif
+        ifd     VR60_Q020_CMDINT_PROBE
+        assert  0,"VR60 FPS counter and Q-020 are mutually exclusive"
+        endif
+        ifd     VR60_Q023_MAILBOX_VALIDATION
+        assert  0,"VR60 FPS counter and Q-023 are mutually exclusive"
+        endif
+        ifd     VR60_Q026_VALIDATION
+        assert  0,"VR60 FPS counter and Q-026 are mutually exclusive"
+        endif
+        ifd     VR60_Q027_VALIDATION
+        assert  0,"VR60 FPS counter and Q-027 are mutually exclusive"
+        endif
+        ifd     VR60_Q028_VALIDATION
+        assert  0,"VR60 FPS counter and Q-028 are mutually exclusive"
+        endif
+        ifd     VR60_Q028_BASELINE
+        assert  0,"VR60 FPS counter and Q-028 baseline are mutually exclusive"
+        endif
+        endif
+
+; The first 1P 60-FPS artifact is deliberately routing-only. It gets private
+; V-INT slots without changing render commits, cadence, authority, or the
+; canonical ROM. Keep it isolated from every validation/control artifact.
+        ifd     VR60_EXPERIMENTAL_60FPS_ROUTING
+        ifd     VR60_MODE0_ONLY
+        else
+        assert  0,"experimental 1P routing requires VR60_MODE0_ONLY"
+        endif
+        ifd     VR60_CONTROL_ROM
+        assert  0,"experimental 1P routing and control ROM are mutually exclusive"
+        endif
+        ifd     VR60_MODE0_STAGE_CONTROL
+        assert  0,"experimental 1P routing and mode-0 control are mutually exclusive"
+        endif
+        ifd     VR60_MODE1_VALIDATION
+        assert  0,"experimental 1P routing and mode-1 validation are mutually exclusive"
+        endif
+        ifd     VR60_MODE2_VALIDATION
+        assert  0,"experimental 1P routing and mode-2 validation are mutually exclusive"
+        endif
+        ifd     VR60_Q020_CMDINT_PROBE
+        assert  0,"experimental 1P routing and Q-020 are mutually exclusive"
+        endif
+        ifd     VR60_Q023_MAILBOX_VALIDATION
+        assert  0,"experimental 1P routing and Q-023 are mutually exclusive"
+        endif
+        ifd     VR60_Q026_VALIDATION
+        assert  0,"experimental 1P routing and Q-026 are mutually exclusive"
+        endif
+        ifd     VR60_Q027_VALIDATION
+        assert  0,"experimental 1P routing and Q-027 are mutually exclusive"
+        endif
+        ifd     VR60_Q028_VALIDATION
+        assert  0,"experimental 1P routing and Q-028 are mutually exclusive"
+        endif
+        ifd     VR60_Q028_BASELINE
+        assert  0,"experimental 1P routing and Q-028 baseline are mutually exclusive"
+        endif
+        endif
+
+; Isolated 1P display-only interpolation experiment.  It keeps stock game
+; cadence and composes only with the promoted mode-0 base plus optional FPS
+; instrumentation.  It must never inherit the merge/burst state accelerators
+; or any validation-arm transport mutations.
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        ifd     VR60_MODE0_ONLY
+        else
+        assert  0,"experimental 40-FPS interpolation requires VR60_MODE0_ONLY"
+        endif
+        ifd     VR60_EXPERIMENTAL_60FPS_ROUTING
+        assert  0,"40-FPS interpolation and routing probe are mutually exclusive"
+        endif
+        ifd     VR60_EXPERIMENTAL_30FPS_MERGE
+        assert  0,"40-FPS interpolation and state merge are mutually exclusive"
+        endif
+        ifd     VR60_EXPERIMENTAL_60FPS_BURST
+        assert  0,"40-FPS interpolation and burst are mutually exclusive"
+        endif
+        ifd     VR60_EXPERIMENTAL_30HZ_LOD
+        assert  0,"40-FPS interpolation and LOD probe are mutually exclusive"
+        endif
+        ifd     VR60_CONTROL_ROM
+        assert  0,"40-FPS interpolation and control ROM are mutually exclusive"
+        endif
+        ifd     VR60_MODE0_STAGE_CONTROL
+        assert  0,"40-FPS interpolation and mode-0 control are mutually exclusive"
+        endif
+        ifd     VR60_MODE1_VALIDATION
+        assert  0,"40-FPS interpolation and mode-1 validation are mutually exclusive"
+        endif
+        ifd     VR60_MODE2_VALIDATION
+        assert  0,"40-FPS interpolation and mode-2 validation are mutually exclusive"
+        endif
+        ifd     VR60_Q020_CMDINT_PROBE
+        assert  0,"40-FPS interpolation and Q-020 are mutually exclusive"
+        endif
+        ifd     VR60_Q023_MAILBOX_VALIDATION
+        assert  0,"40-FPS interpolation and Q-023 are mutually exclusive"
+        endif
+        ifd     VR60_Q026_VALIDATION
+        assert  0,"40-FPS interpolation and Q-026 are mutually exclusive"
+        endif
+        ifd     VR60_Q027_VALIDATION
+        assert  0,"40-FPS interpolation and Q-027 are mutually exclusive"
+        endif
+        ifd     VR60_Q028_VALIDATION
+        assert  0,"40-FPS interpolation and Q-028 are mutually exclusive"
+        endif
+        ifd     VR60_Q028_BASELINE
+        assert  0,"40-FPS interpolation and Q-028 baseline are mutually exclusive"
+        endif
+        endif
+
+; The two-phase candidate merges state 0 into state 4, while leaving state 8
+; for the following TV frame.  The burst candidate is its stricter child and
+; also enters state 8 immediately.  Both retain stock gameplay/render
+; authority and the stock COMM1 deadline fallback.
+        ifd     VR60_EXPERIMENTAL_30FPS_MERGE
+        ifd     VR60_EXPERIMENTAL_60FPS_ROUTING
+        else
+        assert  0,"experimental 1P two-phase merge requires private routing"
+        endif
+        endif
+
+        ifd     VR60_EXPERIMENTAL_60FPS_BURST
+        ifd     VR60_EXPERIMENTAL_30FPS_MERGE
+        else
+        assert  0,"experimental 1P burst requires the two-phase merge"
+        endif
+        endif
+
+; Renderer load-shedding trial for the two-phase (30-Hz target) scheduler.
+; It is intentionally independent of the one-VBlank burst.
+        ifd     VR60_EXPERIMENTAL_30HZ_LOD
+        ifd     VR60_EXPERIMENTAL_30FPS_MERGE
+        else
+        assert  0,"experimental 30-Hz LOD requires the two-phase merge"
+        endif
+        ifd     VR60_EXPERIMENTAL_60FPS_BURST
+        assert  0,"experimental 30-Hz LOD and one-VBlank burst are mutually exclusive"
+        endif
+        endif
+
+; Q-028 is a validation-only wrapper around the existing Slave cmd-$02
+; descriptor consumer.  BASELINE, CONTROL, and ACTIVE family arms are always
+; separate ROMs and cannot compose with any earlier validation/default gate.
+        ifd     VR60_Q028_STAGE_CONTROL
+        ifd     VR60_Q028_VALIDATION
+        else
+        assert  0,"VR60_Q028_STAGE_CONTROL requires VR60_Q028_VALIDATION"
+        endif
+        endif
+        ifd     VR60_Q028_VALIDATION
+        ifd     VR60_Q028_BASELINE
+        assert  0,"Q-028 validation and baseline are mutually exclusive"
+        endif
+        endif
+        ifd     VR60_Q028_FAMILY_A
+        ifd     VR60_Q028_FAMILY_B
+        assert  0,"Q-028 requires exactly one family"
+        endif
+        ifd     VR60_Q028_FAMILY_C
+        assert  0,"Q-028 requires exactly one family"
+        endif
+        endif
+        ifd     VR60_Q028_FAMILY_B
+        ifd     VR60_Q028_FAMILY_C
+        assert  0,"Q-028 requires exactly one family"
+        endif
+        endif
+        ifd     VR60_Q028_VALIDATION
+        ifd     VR60_Q028_FAMILY_A
+        else
+        ifd     VR60_Q028_FAMILY_B
+        else
+        ifd     VR60_Q028_FAMILY_C
+        else
+        assert  0,"Q-028 validation requires one family"
+        endif
+        endif
+        endif
+        ifd     VR60_Q020_CMDINT_PROBE
+        assert  0,"Q-028 and Q-020 CMDINT probe are mutually exclusive"
+        endif
+        ifd     VR60_MODE1_VALIDATION
+        assert  0,"Q-028 and mode-1 validation are mutually exclusive"
+        endif
+        ifd     VR60_MODE2_VALIDATION
+        assert  0,"Q-028 and mode-2 validation are mutually exclusive"
+        endif
+        ifd     VR60_Q023_MAILBOX_VALIDATION
+        assert  0,"Q-028 and Q-023 mailbox validation are mutually exclusive"
+        endif
+        ifd     VR60_Q026_VALIDATION
+        assert  0,"Q-028 and Q-026 validation are mutually exclusive"
+        endif
+        ifd     VR60_Q027_VALIDATION
+        assert  0,"Q-028 and Q-027 validation are mutually exclusive"
+        endif
+        endif
+
+; Q-027 is a validation-only Master-COMM0 stock-dispatch gate.  Its handler,
+; unified external vectors, startup shim, lifecycle wrapper, and two-edge
+; transport are indivisible and cannot compose with any earlier gate/default.
+        ifd     VR60_Q027_STAGE_CONTROL
+        ifd     VR60_Q027_VALIDATION
+        else
+        assert  0,"VR60_Q027_STAGE_CONTROL requires VR60_Q027_VALIDATION"
+        endif
+        endif
+        ifd     VR60_Q027_VALIDATION
+        ifd     VR60_MODE0_ONLY
+        assert  0,"Q-027 and ordinary VR60_MODE0_ONLY are mutually exclusive"
+        endif
+        ifd     VR60_Q020_CMDINT_PROBE
+        assert  0,"Q-027 and Q-020 CMDINT probe are mutually exclusive"
+        endif
+        ifd     VR60_MODE1_VALIDATION
+        assert  0,"Q-027 and mode-1 validation are mutually exclusive"
+        endif
+        ifd     VR60_MODE2_VALIDATION
+        assert  0,"Q-027 and mode-2 validation are mutually exclusive"
+        endif
+        ifd     VR60_Q023_MAILBOX_VALIDATION
+        assert  0,"Q-027 and Q-023 mailbox validation are mutually exclusive"
+        endif
+        ifd     VR60_Q026_VALIDATION
+        assert  0,"Q-027 and Q-026 validation are mutually exclusive"
+        endif
+        endif
+
+; Q-026 is a validation-only direct-CMDINT player-physics precursor.  Its
+; handler, vectors, startup shim, lifecycle wrapper, and trigger slot are one
+; indivisible artifact and cannot compose with any ordinary or earlier gate.
+        ifd     VR60_Q026_STAGE_CONTROL
+        ifd     VR60_Q026_VALIDATION
+        else
+        assert  0,"VR60_Q026_STAGE_CONTROL requires VR60_Q026_VALIDATION"
+        endif
+        endif
+        ifd     VR60_Q026_VALIDATION
+        ifd     VR60_MODE0_ONLY
+        assert  0,"Q-026 and ordinary VR60_MODE0_ONLY are mutually exclusive"
+        endif
+        ifd     VR60_Q020_CMDINT_PROBE
+        assert  0,"Q-026 and Q-020 CMDINT probe are mutually exclusive"
+        endif
+        ifd     VR60_MODE1_VALIDATION
+        assert  0,"Q-026 and mode-1 validation are mutually exclusive"
+        endif
+        ifd     VR60_MODE2_VALIDATION
+        assert  0,"Q-026 and mode-2 validation are mutually exclusive"
+        endif
+        ifd     VR60_Q023_MAILBOX_VALIDATION
+        assert  0,"Q-026 and Q-023 mailbox validation are mutually exclusive"
+        endif
+        endif
+
+; Q-020 CMDINT probing and the mode-1/mode-2 validation pairs all occupy file
+; $01C914 and therefore can never coexist in one ROM.
+        ifd     VR60_Q020_CMDINT_PROBE
+        ifd     VR60_MODE1_VALIDATION
+        assert  0,"VR60_Q020_CMDINT_PROBE and VR60_MODE1_VALIDATION are mutually exclusive"
+        endif
+        ifd     VR60_MODE1_STAGE_CONTROL
+        assert  0,"VR60_Q020_CMDINT_PROBE and VR60_MODE1_STAGE_CONTROL are mutually exclusive"
+        endif
+        ifd     VR60_MODE2_VALIDATION
+        assert  0,"VR60_Q020_CMDINT_PROBE and VR60_MODE2_VALIDATION are mutually exclusive"
+        endif
+        endif
+        ifd     VR60_MODE1_VALIDATION
+        ifd     VR60_MODE2_VALIDATION
+        assert  0,"VR60_MODE1_VALIDATION and VR60_MODE2_VALIDATION are mutually exclusive"
+        endif
+        endif
+        ifd     VR60_MODE1_STAGE_CONTROL
+        ifd     VR60_MODE2_STAGE_CONTROL
+        assert  0,"mode-1 and mode-2 stage controls are mutually exclusive"
+        endif
+        endif
+
+; Q-023 is a validation-only, dormant cmd-$3F literal pair. It cannot be
+; composed with either separately accepted mode-1/mode-2 validation image.
+        ifd     VR60_Q023_STAGE_CONTROL
+        ifd     VR60_Q023_MAILBOX_VALIDATION
+        else
+        assert  0,"VR60_Q023_STAGE_CONTROL requires VR60_Q023_MAILBOX_VALIDATION"
+        endif
+        endif
+        ifd     VR60_Q023_MAILBOX_VALIDATION
+        ifd     VR60_MODE1_VALIDATION
+        assert  0,"Q-023 and mode-1 validation are mutually exclusive"
+        endif
+        ifd     VR60_MODE2_VALIDATION
+        assert  0,"Q-023 and mode-2 validation are mutually exclusive"
+        endif
+        endif
+
         include "sections/header.asm"
         include "sections/code_200.asm"
         include "sections/code_2200.asm"

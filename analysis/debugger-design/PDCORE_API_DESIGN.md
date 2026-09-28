@@ -1,5 +1,9 @@
 # PicoDrive Debugger Core API Design (`pdcore.h`)
 
+> **Historical API research (2026-07-21).** The archived PDCORE implementation never loaded
+> the real ROM. Current debugger work uses the libretro/PicoDrive ABI documented in
+> `tools/libretro-profiling/VRD_PROFILING.md#real-rom-debugger-mode`.
+
 **Date**: 2026-01-10
 **Purpose**: Stable C interface for 32X/SH2 deterministic debugging and profiling
 **Target**: MVP-1 implementation (1-2 evenings)
@@ -38,11 +42,11 @@ typedef enum {
 
 ```c
 typedef enum {
-    PD_BUS_SH2_ROM = 0,        // SH2 ROM space (2000000h-23FFFFFh)
-    PD_BUS_SH2_SDRAM = 1,      // SH2 SDRAM (2000000h-23FFFFFh cached)
-    PD_BUS_SH2_SDRAM_WT = 2,   // SH2 SDRAM cache-through (22000000h-23FFFFFh)
+    PD_BUS_SH2_ROM = 0,        // SH2 cartridge ROM (02000000h-023FFFFFh)
+    PD_BUS_SH2_SDRAM = 1,      // SH2 SDRAM cached (06000000h-0603FFFFh)
+    PD_BUS_SH2_SDRAM_WT = 2,   // SH2 SDRAM cache-through (26000000h-2603FFFFh)
     PD_BUS_SH2_FB = 3,         // SH2 Frame buffers (2400000h-25FFFFFh)
-    PD_BUS_SH2_SYS = 4,        // SH2 System registers (2A000000h+)
+    PD_BUS_SH2_SYS = 4,        // SH2 system registers (20004000h+ cache-through)
     PD_BUS_68K = 5,            // 68000 address space (000000h+)
 } pd_bus_t;
 

@@ -48,6 +48,18 @@
 | analysis/sh2-analysis/SH2_PARALLELIZATION_STRATEGY.md | Historical parallelization approach | Multi-SH2 work distribution | ⚠ SUPERSEDED — approach reverted (B-006) |
 | analysis/architecture/EXPANSION_ROM_PROTOCOL_ABI.md | Historical COMM6/COMM4 protocol | Pre-B-006 ABI | ⚠ Historical — no longer current |
 
+### Game Logic Subsystems
+
+| Path | Purpose | Key Topics | Note |
+|------|---------|-----------|------|
+| analysis/ENTITY_OBJECT_ARCHITECTURE.md | Entity/object system | 4 WRAM tables ($FF9000-$FF9F00), 256B records, dual-layer 68K↔SH2, 20-sub pipeline, display objects at $FF6218, DMA to SH2 | Added March 2026 |
+| analysis/PHYSICS_SYSTEM_ARCHITECTURE.md | Physics system | 9-step pipeline, 8.8 grip, 7-gear transmission, speed/drag tables, fall-through to collision | Added March 2026 |
+| analysis/AI_SYSTEM_ARCHITECTURE.md | AI system | 15-state machine (120-frame timer), 3-band Manhattan avoidance, atan2 steering, falls through to physics_integration | Added March 2026 |
+| analysis/COLLISION_SYSTEM_ARCHITECTURE.md | Collision system | Binary search (4 iterations), center+4 probes, EMA surface tracking, 4-level proximity zones | Added March 2026 |
+| analysis/SOUND_DRIVER_ARCHITECTURE.md | Sound driver | 68K-driven FM/PSG sequencer + Z80 DAC (653B), 18 channels ($30 stride), 3-priority commands, YM2612/SN76489/Z80 | Added March 2026 |
+| analysis/TRACK_DATA_FORMAT.md | Track data format | Segmented spline, 4 pages × $800, 5L+9W per segment, 2 table modes, index computation | Added March 2026 |
+| analysis/MEMORY_MANAGEMENT_ARCHITECTURE.md | Memory management | Static WRAM layout, JSR-cascade copy primitives, MOVEM block copy, PRNG ($FFEF00), no dynamic allocation | Added March 2026 |
+
 ### Function References
 
 | Path | Purpose | Key Topics | Note |
@@ -61,6 +73,282 @@
 | Path | Purpose | Key Topics | Note |
 |------|---------|-----------|------|
 | tools/libretro-profiling/README_68K_PC_PROFILING.md | How to profile VRD | Frame-level + PC-level hotspots, toolchain, baseline setup | Profiling how-to |
+| tools/libretro-profiling/VRD_PROFILING.md | Current profiling and normal-1P control gates | Unchanged continuous `validate_1p_control.py`; accepted DRC `validate_1p_lifecycle_suite.py`; Q-020 mode-0 gate; Q-027 transaction-relative convergence gate | Current VR60 measurement authority; Q-027 bounded cmd `$3F` gate passed its isolated validation stage and is non-promotable |
+| tools/libretro-profiling/validate_mode0_gate.py | Q-020 mode-0 acceptance validator | Exact 12-slot matrix, frame-0 debugger reads, source/stage and 320B destination proof, raw caller/write chronology, paired framebuffer rule, post-results COMM3 chronology | Mode-0 sub-gate PASS; policy `VR60-Q020-mode0-gate-v2` |
+| analysis/evidence/vr60-q020-mode0-gate/README.md | Accepted Q-020 mode-0 evidence | ACTIVE/control hashes, no-frame preflight, exact payload/sentinel, deterministic 12-run lifecycle matrix, preserved failed result and corrected PASS, normalized archive | Ordinary default promoted to exact ACTIVE `6f2768f2…2523900`; mode 1 remains disabled |
+| analysis/evidence/vr60-q020-cmdint-probe/README.md | Q-020 CMDINT diagnostic-feasibility evidence | Cold/normal/VRES/seeded-name routes, level-8 ISR, FRT workaround, CMD clear/readback/re-arm, literal ownership, patched/canonical PicoDrive comparison, exact 15-artifact archive | Probe-only PASS `8766714e…6a91e7`; non-promotable, non-organic name fixture, mode 1 still disabled |
+| analysis/evidence/vr60-q020-mode1-cmdint-gate/README.md | Q-020 mode-1 CMDINT Gate-B evidence | Zero-COMM two-edge transport, exact 64B/FULL/DMAC/TE/re-arm chronology, 8 route captures, safe-boundary VRES, busy-reset diagnostic, fail-closed composition | Isolated validation-stage PASS `96365860…ff4470` / `39177456…34e9fd`; default unchanged, mode 1 unpromoted |
+| analysis/evidence/vr60-q021-mode2-cmdint-gate/README.md | Q-021 mode-2 first-boundary CMDINT/DREQ evidence | Exact 3,840B source/FIFO/destination equality, 1,920 FIFO words, 480 FULL groups, stack-boundary proof, 8 route captures, safe-boundary VRES, fail-closed composition | Isolated validation-stage PASS `96d79e3f…ee276` / `da5ce4ec…309b8`; default and mode 1 unchanged; later destination ownership remains unknown |
+| analysis/evidence/vr60-q023-mailbox-correction/README.md | Q-023 inactive cmd `$3F` mailbox correction | Source-built `$2200BC00->$2600BC00` pair, sole file-$301638 byte delta, `$D449` literal ownership, accepted default/mode identities | Static-only PASS `8709aed4…5a59ef` / exact-default CONTROL `6f2768f2…2523900`; cmd `$3F` remains unreachable |
+| analysis/evidence/vr60-q026-player-cmdint-gate/README.md | Q-026 bounded player-physics direct-CMDINT gate | Exact eight-byte ACTIVE/CONTROL edge, one accepted 320B seed, ISR/stack/canary/write/field/COMM/liveness bounds, retained failed pilot | Isolated non-promotable PASS `c9358ad4…b76f8` / `240dfd0a…a66d`; cmd `$3F`, bridge, collision, authority, cadence, and FPS remain open |
+| analysis/evidence/vr60-q027-cmd3f-transport-gate/README.md | Q-027 bounded COMM0/stock-table `$3F` player-shadow gate | Exact two-edge park/normalize/publish protocol, fixed mailbox, Q-026-identical player result, interpreter transient/convergence table, uninterrupted DRC corroboration, ineligible diagnostic archive | Isolated validation-stage PASS after fresh completed-diff audit; non-promotable and not render/shared-lane/authority/cadence/FPS validation |
+| analysis/evidence/vr60-q028-renderer-descriptor-probe/README.md | Q-028 cmd `$02` renderer descriptor-family probe | v3-v7 repair contract, direct render selector/callback bijection, applied-input/raw archive/static-owner/mutation/index requirements; old archive inventory | `BLOCKED / INCONCLUSIVE_ENGINE_SCHEDULE`; every prior interpreter/DRC-A output is `INELIGIBLE` diagnostic evidence and establishes no family result |
+
+Q-028 pre-capture tooling (2026-08-20): exact listing `9e32636c…b91c` plus
+ordinary ROM `6f2768f2…23900` regenerate the opcode-aware site map/include at
+`f4e9876c…774b`; observer `3ba9531b…c021`.  The offline recursive source pack
+produces identical A/B clean cores `f9e01a81…5557` and frontends
+`7883729f…79ab`.  The resource pilot remains unrun because `/mnt/data`
+available bytes (199,020,318,720) are below its immutable launch floor
+(240,518,168,576).  `/mnt/audio` passes capacity but its NTFS/FUSE mode
+semantics fail the pinned `.gitignore` materialization identity; the observed
+ext4 `/var/lib/docker` mount has enough space but is not user-writable.  Use a
+writable Unix-semantics staging filesystem, never a lower floor, weakened mode
+check, or `/tmp` workaround.
+
+Q-028 staging update (2026-09-04): the full mount inventory also exposes
+owner-writable ext4 `/run/media/matias/Downloads` (1,545,815,298,048 available
+bytes at inspection). The unchanged v9 resource pilot was launched at
+`/run/media/matias/Downloads/vr60-q028-resource-pilot-20260904`. This supersedes
+the earlier staging impasse. The first pilot was deliberately stopped after
+audit found enum-ordered footer keys incompatible with the canonical reader
+and incorrect subtraction of cumulative child RSS maxima. Its clean builds
+matched the prior pinned binaries; raw prefix/builds remain retained. Fix the
+producer/measurement before a fresh pilot, without relaxing the parser.
+The footer-order/per-child-RSS fixes passed a fresh completed-diff audit and
+14 focused tests. Corrected observer `967e0c81…52df3a`, core
+`67c93765…84c7d9`; frontend, ordinary ROM, and resource policy are unchanged.
+Fresh pilot target: `/run/media/matias/Downloads/vr60-q028-resource-pilot-20260904-r2`.
+Check its live handle or terminal artifacts; the earlier session 2711 is
+terminal. All pilot outputs remain quarantined and ineligible for schedule,
+family, bridge, or FPS claims.
+
+Q-028 r2 terminal diagnosis (2026-09-04): session 61766 ended with gate exit 1
+after a complete 1,340-frame producer run; no SIGTERM was delivered. Raw data:
+496,577,712 events / 1,987 chunks; reader rejects the first fetch slot (0
+instead of 0xFFFF). Footer reports 1,212 errors, 63,806,555 unattributed
+events, and active Master DREQ0 despite N/A inventory. Investigate the full
+producer/reader contract: reset-vector reads precede instructions (SH7604
+manual §§4.1.2/4.2.2); PicoDrive generates built-in BIOS code at startup
+(`pico/32x/memory.c`, `get_bios`), absent from the ordinary ROM site map;
+byte-only cmd-02 tracking misclassifies other command submissions. The
+captured prefix/full run must stay unchanged and diagnostic. Require complete
+short real-core binary-stream validation before the next full pilot.
+
+Additional Q-028 domain omissions: linked `sections/code_200.asm` encodes
+file `$00169C` as `dc.w $227B,$0014`; `joypad_read_port.asm` similarly encodes
+`$0019AC/$0019B4`. The standalone mnemonic V-INT file is not linked there.
+`parse_listing` discards these and all addresses >= `$020200`, including
+executed sound code at file `$030000`. SRAM code has a source-proven bounded
+437-longword copy `$0600254C -> $C0000000` at file `$02252C`. Track Master
+COMM0 commands separately from the Slave COMM2 renderer counter; their 28
+versus 67 cmd-2 counts are not an equivalence requirement.
+
+COMM logger correction: its `ack` rows target COMM1_LO `$20004023`, not
+COMM0_HI. Linked `$06004464` sets DMA bit 1; func_084 clears COMM0_HI at
+`$06004400` and sets done bit 0 at `$0600440A`. See
+`disasm/sh2/expansion/cmd22_single_shot.asm` for early parameter-consumption,
+self-redispatch, and trigger-restoration behavior. Generic submit/ack equality
+is invalid. The v10 design proposal is in
+`analysis/agent-scratch/worker/q028-v10-repair-proposal.md`; its first fresh
+audit blocked implementation pending concrete domain/BIOS/COMM/SRAM policies.
+The amended proposal `1dd62401…69ce9fa` was approved for passive host-tool
+implementation only; full pilot/diff acceptance remains pending. Additional
+M68K provenance issue: linked file `$0F92` and `$0FAA` both map opcode `$4EB9`
+to `$FF0000` with different extensions, and scene changes deliberately write
+the JSR operand at `$FF0002`. First-opcode equality is not full live-byte identity.
+
+Q-028 full r2 scan closed: all 496,577,712 events / 340,285,941 fetches,
+exactly four boot-reset context mismatches, and exactly 63,806,555
+unattributed records. Retained CSV/classifier:
+`analysis/evidence/vr60-q028-renderer-descriptor-probe/diagnostics/r2-full-raw-scan/`.
+Pinned `cpu/fame/famec_opcodes.h:idle_detector_bcc8`,
+`cpu/fame/famec.c:INSTALL_IDLE`, and `pico/sek.c:SekFinishIdleDet` establish
+direct host opcode install/restore writes after frame 360. These are engine
+virtual opcodes, not legal new M68000 instructions; retain raw words and
+model their ordered provenance. Mutable WRAM and host-ledger proposal:
+`analysis/agent-scratch/worker/q028-mutable-images-amendment.md`.
+Finite source inventory/review: `q028-m68k-finite-inventory-review.md` beside
+that proposal, with 321 instructions / 120 spans. Correct false table/code
+boundaries C7E6 and 9F14 and the cross-section CMPI.B extension at 8200;
+exclude known table rows rather than accepting their misleading mnemonics.
+The new amendment `d230ca49…924f772` and finite inventory `a0995579…70edee8`
+are approved for implementation only. Required details include boot copy
+32B/code20B/data12B separation, exact preceding-fetch host install binding,
+and EOF ledger consumption without synthetic events. Runtime/core tests and
+fresh completed-diff approval remain pending; no pilot approval follows.
+All 32,785 changed M68K fetches in the diagnostic aggregate (40 ROM sites
+plus FF0014) independently match three registered FAME aliases:
+66F6→73F6, 66F8→73F8 and 67F6→77F6. No unexplained pair was found; retain
+the full source-defined model rather than reducing it to observed aliases.
+First implementation stage: byte-identical assembly corrections and finite
+span/exclusion checks are in place; fresh listing validates 22,464 M68K rows
+and 1,296 source entries. Ten image/domain tests pass with no skips. WRAM
+tracking is implemented but uncompiled in a new core; host ledger integration
+is in progress. Verify current Worker findings before attempting a capture.
+Later source-stage checkpoint: twelve image/domain tests pass, including all
+source-defined idle aliases. Standalone exact-C WRAM parity passes 223 state
+transitions and five rejected malformed copies; retained harness is
+`diagnostics/r2-full-raw-scan/q028_wram_parity.py` under Q-028 evidence.
+Ledger producer/reader and callback transforms are implemented, awaiting new
+core compilation and actual-artifact validation. This is not runtime proof.
+
+User-requested checkpoint (2026-09-04): repaired core pair now matches
+`b3bd2d55…ceb69b7`; actual six-frame binary regression passes 517,467 records
+and six artifact mutations, without reaching host rewrites or SRAM installs.
+IDL source/destination/length must derive from the hash-bound ROM header:
+`02020000 -> 06000000`, `C000`, per pinned `pico/32x/32x.c:202–211`; every
+source longword must equal ROM bytes. Raw frames must be below the actual
+footer terminal, not merely below the 1,340-frame cap. Sixteen focused tests
+and unchanged-raw checks pass after these assertions; complete runtime rerun,
+400-frame domains, full mutation matrix and refreshed closure remain open.
+Retained snapshots and exact limitations:
+`analysis/evidence/vr60-q028-renderer-descriptor-probe/diagnostics/checkpoint-20260904/README.md`.
+
+After checkpoint `e180875`, actual-core session 91919 passed the full final
+six-frame harness (517,467 events, seven actual-artifact mutations, zero
+skips). `/tmp/q028-v10-smoke-r4` retains its original chunks and receipts.
+The actual terminal-frame mutation now passes production-reader rejection;
+400-frame SRAM/host-rewrite coverage and the expanded matrix remain open.
+
+Bounded 400-r1 subsequently completed with four observer errors and 537,091
+unattributed events. Independent full scan localizes all of those to SRAM
+on both SH2s starting at frame 398; no M68K gap. Diagnose exact copy/view
+chronology, not the now-accounted-for finite M68K or idle-word domains.
+Retained raw location: `diagnostics/q028-v10-bounded-400-r1/` under Q-028
+evidence. This failure is ineligible; SRAM root cause is not yet established.
+Standalone exact-C host comparison extension separately rejects 372 byte
+mismatches and passes 27 controls with observed/model bytes unchanged.
+Source follow-up proves all four SRAM errors: pinned
+`cpu/sh2/mame/sh2.c:795–817` performs an observer-visible word reread in
+`DT` under `BUSY_LOOP_HACKS`, between correct copy pairs. Exact DT PCs are
+`06002536`, `06003352`, `06003A5C`; read value is `4710` in this capture.
+Current tracking rejects those extra reads; a finite source/phase/identity
+amendment is being prepared for fresh review. Preserve the raw reads and
+emulator behavior. This diagnosis does not make failed 400-r1 eligible.
+Fresh implementation-only approval: DT amendment `baa6dc80…edf8391` requires
+exact per-CPU read32/write32/DT-read16 triplets and final-DT activation.
+Independent `replay_sram_phases.py` in failed 400-r1 replays 978,338 unchanged
+records, verifies all four copies (437/437/402/145 longwords), compares all
+386,491 SRAM fetch words to current payloads, and accounts for every 537,091
+unattributed record with no in-image invalidations. Diagnostic corroboration
+only; fresh actual-core and complete mutation validation remain mandatory.
+Host restoration ordering has an independent exact pre/post-source C harness:
+`diagnostics/r2-full-raw-scan/q028_idle_restore_parity.py` under Q-028 evidence.
+All 20 aliases, two unmatched controls and repeated teardown pass with final
+bytes unchanged and callbacks observing only final restored words. This
+standalone check does not satisfy actual-ledger/EOF artifact coverage.
+Implemented DT phase has 18 passing focused tests and standalone exact C/Python
+parity of 11,940 transitions / 84 malformed phases. Reproduce with retained
+`diagnostics/r2-full-raw-scan/q028_sram_phase_parity.py`; current function hash
+is `e9867e5a…64d2b2`. Fresh regenerated-core/binary validation is still required.
+Fresh core pair subsequently reproduces `9f7e5bf7…40775da`; all actual
+tool-input/output joins pass. Fresh six-frame test 20098 passes. The new
+400-frame producer has zero errors/unattributed/unknown/dropped; production
+reader 26276 is still running. Full old/new raw execution-field comparison
+passes all 135,978,338 records with only the expected 537,091 SRAM attribution
+metadata resolutions. Retained comparator: `q028_compare_attribution.c` in
+`diagnostics/r2-full-raw-scan/`; output is in `q028-v10-dt-bounded-400-r1/`.
+Reader/harness 26276 is now terminal PASS (exit 0, 243.365 seconds, zero
+skips): all 135,978,338 events, four SRAM installs, 27 host rewrites and
+seven existing actual-artifact mutations. Retained positive/mutation receipts
+close the bounded regression only. Expanded ledger/DT/WRAM/EOF matrix and
+fresh completed-diff approval remain prerequisites for a full resource pilot.
+Actual WRAM EOF proof 18778 demonstrates that direct `read_events` returns
+on an incomplete 22,594-event boot-copy prefix; complete 22,616-event control
+also returns, with one installed template. Record bytes equal original fresh
+six-frame prefixes. Proposed one-condition closure amendment `6ffb6f70…d2f207f`
+was initially held by the fresh-auditor thread limit. Capacity subsequently
+opened; fresh `auditor_q028_eof_capacity_check` independently verified the
+payload prefixes and approved implementation only. Fresh `worker_q028_eof`
+implemented the exact condition. All 57 unfinished prefixes and three complete
+controls pass; Worker ran 19 focused tests, root independently ran 17 related
+tests, zero skips. Clean build 71418 reproduces the accepted ROM. New actual
+prefix result `dc83ae16…4a664272` in `q028-v10-wram-eof-r2/` rejects the
+22,594-record incomplete copy and accepts the 22,616-record complete control;
+root cmp-verified both payloads. Reader `f3476592…55a1d65` differs by exactly
+two lines from the previous build snapshot. Observer/core/maps remain unchanged.
+Clean pair 33769 passed in `/tmp/q028-v10-eof-build-pair-r1`, receipt
+`e0d3d96e…138ad7a`; Worker and root independently passed all 14 current
+tool/snapshot joins, source postimages and compiled outputs. Ordinary clean
+build 92950 also reproduces the accepted ROM. No auditor reuse was needed. DT29 and
+the full pilot remain unlaunched; no acceptance claim follows.
+Actual ledger batch 92910 terminated exit 1 with ten passing cases and one
+expected-error mismatch: reordered installs correctly fail with `unconsumed
+host ledger boundary`. Raw proof and failed receipt are retained. Only adding
+that exact error to the test expectation is authorized; eight selected cases
+must continue in a new directory after clean build/resource checks, without
+changing the reader or rerunning the ten completed cases. No aggregate PASS.
+Clean build 86494 then passed with the accepted ROM; continuation 77302
+terminated exit 0 at `diagnostics/q028-v10-actual-ledger-r2/`, all eight cases
+passing. Root verified exactly 18 unique passes across r1/r2, excluding the
+preserved historical failure. Source manifests are byte-identical at
+`ad444e06…1a4a4632`; r2 aggregate `786883a3…7b1e8a2`; production
+tool-input/source/output closure passed before the WRAM EOF guard. The constructed EOF
+restore traversed all 135,978,338 unchanged records
+(boundary 135,978,338/frame 400, original 27 ledger rows unchanged). The
+unique-case ledger matrix is now complete (18 cases), but the DT/WRAM
+matrix and subsequent pilot/acceptance remain unproven. This
+positive control is not an organically captured emulator teardown.
+DT harness `7120e398…7343841` prepares 29 actual cases,
+including four source-bound premature SRAM fetches; its serialized-record
+comparison independently passes seven transformations and 28 corruption
+controls plus canonical replacement-metadata roundtrip in
+`test_q028_dt_record_proof.py` (two tests, zero skips). That standalone
+test is not actual DT acceptance. Launch requires ledger success, coordinated
+clean build and resource check; unobserved CPU/view pairs remain outside actual coverage.
+Checkpoint `992a529` has fresh checkpoint-only approval. DT29 session 53133
+ran at `diagnostics/q028-v10-actual-dt-r1/`; its current-reader full
+control passed 135,978,338 events, 195.670 seconds, peak RSS 4,119,601,152 bytes,
+source manifest `ad444e06…1a4a4632`. All 28 mutations subsequently passed below.
+Pre-pilot review additionally identifies required actual WRAM mutable/mask/copy
+mutations, bootstrap/reset/chunk/agent cases, explicit finite-inventory
+mutations and final probe-identity checks; existing standalone tests are not
+equivalent coverage. See the newest roadmap requirements table.
+WRAM operand source-review target: raw sequence 135,013,642 writes FF0008=0010,
+135,013,645 fetches FF0006/31FC, 135,013,646 writes FFFFC87A=0010.
+`WramState.fetch` currently validates firstword/static mask, not an independent
+live extension witness. Standalone differing reconstructed operands both pass.
+Actual one-value mutation 29767 then terminated with the current reader
+accepting all 135,978,338 events despite FF0008 write0011 / later consumer0010.
+New `q028-v10-wram-operand-r1/` result `b27146e9…406df1`, transformation
+`287c30c6…9ce267`, harness `ee1a5b22…0d6881`; copied source PASS receipts have
+`source-` names. Root proved exactly one changed byte at chunk0541 offset654912,
+all543 other raw chunks unchanged by exact source-manifest joins, and unchanged
+consumer/footer/bootstrap/ledger. Original and changed chunk SHAs are
+`470b6379…54c277` / `dcc4fb45…336a74`. This is a direct-reader consistency gap,
+not whole-pilot bypass or gameplay failure. Worker is researching a repair for
+all approved mutable fields; fresh design approval is required before code.
+DT53133 subsequently completed exit 0 with all29 cases passing. Root verified
+the exact case/receipt/error/transform joins, all104 changed-chunk hashes and
+all544 unchanged source stat identities. Aggregate `30e7cbb5…091b68`, reader
+time5642.014s, peakRSS4,119,601,152B; current toolchain closure also PASS.
+All reader handles are terminal; this covers readerf347, not the operand gap.
+Witness revision `dfc50860…3084ed` is proposed only. Same-engine interpreter
+comparison is corrected; the managed-writer/source-bound inventory is explicit.
+R-WRAM-OUTPUT-1 remains open: common prewrite admission across core RFILE,
+frontend FILE and shared stdout/stderr, including terminal buffering, is not
+closed by a witness-only counter. Terminal host observation stays before
+PicoExit; later teardown is outside this observation interval. Resolve the
+accounting design before fresh implementation review; existing caps stay fixed.
+Ordinary clean build 24260 exited 0 with accepted ROM `6f2768f2…2523900` unchanged.
+No production change is approved; all required post-fix gates remain.
+Six-frame raw only contains boot copy/clear for these addresses; it cannot
+substitute for the actual later mutable-operand capture.
+Storage follow-up: retained ineligible r2's 1,987 raw chunks independently
+sum to 23,835,857,344 bytes, exceeding the old v7 aggregate uncompressed
+archive cap (17,179,869,184 bytes) before other artifacts. Existing
+`q028_archive.py` copies all packages into default temporary staging and
+creates a further tar; this host's `/tmp` is only 16,081,719,296 bytes total.
+A separate reviewed storage/archiver amendment is required before campaign
+archiving; this diagnostic size does not forecast the repaired campaign,
+and no current pilot cap has been changed.
+
+**Q-028 status: BLOCKED / INCONCLUSIVE_ENGINE_SCHEDULE.** The prior
+`INCONCLUSIVE_COMPOSITE` acceptance is retracted: it was based on interpreter-only completion despite the
+approved requirement for two uninterrupted normal-DRC repeats of every A/B/C
+BASELINE/CONTROL/ACTIVE arm. Existing interpreter and DRC-A outputs are diagnostic only and establish no
+accepted family result. B/C normal-DRC evidence is absent. No exact-index, bridge, authority, cadence,
+CPU-budget, FPS, host-presentation, or real-hardware claim is accepted. Q-028 remains the active gate until
+a separately audited immutable DRC schedule, fresh two-engine recapture, complete retained raw evidence,
+and the repaired fail-closed mutation matrix pass a fresh completed-diff audit.
+| tools/libretro-profiling/validate_1p_lifecycle_suite.py | VR60-011 complete-lifecycle capture and aggregate validator | Sterile DRC/no-PC capture, composed exact FAME hook, all-row caller provenance, strict caller/write grammars, exact C87E cycle/Master completion, per-frame Slave and per-window/tail Master executed cycles, exact C07C chain, predeclared boundaries, duplicate rejection, 3/1800/3960/18000 floors | Separate v2 policy; 43 focused lifecycle tests pass. Reviewed Big Forest/Bay Bridge/Acropolis suite passed |
+| tools/libretro-profiling/vr60_lifecycle_suite.schema.json | VR60-011 reviewed manifest schema | Exact ROM/tool/state/input/source/raw artifact pins, predeclared lifecycle boundaries, no extra policy fields | Use with the lifecycle validator; generated fixture entries require review before suite inclusion |
+| analysis/evidence/vr60-011-lifecycle-suite/README.md | Accepted VR60-011 baseline evidence | Three DRC lifecycles, exact E/R boundaries, 31,137 active frames, deterministic x2 replay, tool/patch identities, normalized raw archive | Baseline blocker cleared; Q-020 mode 0 subsequently passed |
+| tools/libretro-profiling/retroarch_replay_to_csv.py | Strict visual replay bridge for VR60-010 | RetroArch 1.22.2 v2, commit `4c3793f36c`, exact P1/P2 joypad-mask events, no checkpoints/key events, exact frame count/EOF, ROM CRC32 check, replay/raw-state/ROM/CSV hashes | 899-frame real replay converted and byte-replayed through the canonical frontend; bridge evidence only, never gameplay acceptance |
+| analysis/evidence/vr60-009-write-trace/README.md | VR60-009 exact writer and finish classification | Non-perturbing FAME instruction-start hook, `$C87E`/`$FF0002` writers, timed-race display sequence, deterministic evidence archive | Decision-grade diagnosis; present state/replay is bounded-only. Continuous VR60-008 remains blocked, but VR60-011 cleared the baseline |
+| tools/libretro-profiling/verify_control_rom.py | Assembly-built control-ROM evidence writer | Imports the validator's fixed hook policy, atomically records both hashes and the exact outside-hook comparison | `control_rom_pair.json` is the reviewed VR60-004 manifest |
+| tools/libretro-profiling/profiling_frontend.c | Canonical real-ROM debugger and profiling frontend | `--debug`, `--debug-script`, frame advance, exact `joypad` control/recording, Master/Slave registers, bus-explicit memory reads, exact-size savestate save/load | VR60-003 input capture complete; CPU/game-memory inspection remains read-only; archived PDCORE cannot load ROM |
 | analysis/profiling/68K_BOTTLENECK_ANALYSIS.md | THE critical finding: 68K at 100.1% | Cycle counts, utilization proof, SH2 optimization futility | Performance root cause evidence |
 | analysis/optimization/COMM_REGISTER_USAGE_ANALYSIS.md | COMM usage per call site (async safety) | 15 safe / 2 unsafe sites, buffer dependency analysis | ⚠ SH2 addresses offset by 2 for COMM1+ (known error) |
 | analysis/VDP_POLLING_ANALYSIS.md | VDP polling locations in 68K code | ~71 polling sites, $FFFFC80E dependency, async safety | VDP optimization prerequisite |
@@ -215,6 +503,28 @@ HANDLER $05 VISIBILITY CULLING:
   Reads $0600C0C8/$0600C0CA (camera view range). If either=$FFFF or equal, skips heavy render.
   This is the game's built-in LOD/range culling — S-5/S-9 should interface here.
 ```
+
+### 1P Racing State Dispatch — fully resolved, Path A is fine (2026-07-13)
+
+`state_disp_004cb8.asm` (68K `$884CBC`, the CONSTANT active scene handler during real 1P racing —
+`$FF0002` never changes) has a 5-entry jump table indexed by `$C87E`, dispatched via `JMP` (not
+`JSR`) to each state handler. An earlier pass this session wrongly concluded state 8's handler
+(`game_frame_orch_013.asm`, "Path A") was dead code (zero hits in a top-200/cycle-sorted PC
+histogram across 28.5M samples) — a false negative, retracted the same session. A new
+`VRD_CALLER_TRACE` capability (exact JSR-return-address counter, reads A7 off the 68K stack) proved
+Path A fires **reliably every 3 frames (20 Hz)**, exactly matching CLAUDE.md's documented "1 state
+per V-INT" game-tick model — `$C87E` genuinely cycles 0→4→8→12→reset→0→... continuously during
+real racing, exactly as the architecture was always assumed to work; there was never a real
+mechanism to find. (The `JMP`-not-`JSR` dispatch meant the caller-trace's observed return address,
+`$FF0006`, was just the original main-loop `JSR`'s residual stack entry, not evidence of a second
+dynamic rewrite — an intermediate over-complication, also resolved.) Separately confirmed:
+`race_entity_update_loop` is ALSO genuinely active, called from `object_table_lookup_loop`/
+`object_table_clear_loop`, reached via `sh2_handler_dispatch_scene_init`+98 from
+`state_disp_004cb8`'s state-0 handler (which recurs on the same ~3-frame cadence). **Both are
+valid hook targets; the original VR60 Phase 1 plan's Path-A insertion point stands.**
+**Lesson (keep applying)**: a top-200 PC histogram's absence of an address does NOT prove
+non-execution — cross-check with `VRD_CALLER_TRACE` (exact, non-truncated) before concluding
+"dead code." Full writeup: `analysis/VR60_PHASE1_CMD3E_ACK_HANG.md` §15-§20.
 
 ### SH2 Dispatch Architecture (Traced March 2026, corrected March 12)
 
@@ -430,6 +740,8 @@ $020476: NOP
 
 7. **Test SH2 patches in isolation** — Interacting patches hide root causes. B-006: reverting only Patch #2 was insufficient; Patches #1+#3 together also crashed. Always test each patch alone first.
 
+7b. **Unbounded retry loops on a COMM ACK can hard-hang the 68K** — a retry fix for cmd $3E/$3F (force 0→1 transition, `beq.s .retrigger` with no attempt cap) was headlessly "verified" but never actually tested against the real code path it was meant to fix (see pitfall 16 below); real GP racing hard-hung the 68K (black screen, audio still running). Fully reverted 2026-07-13. Any retry loop waiting on a hardware/emulator ACK must have a hard attempt cap. See `analysis/VR60_PHASE1_CMD3E_ACK_HANG.md` §13.
+
 ### 🟠 HIGH (silent bugs, hours to debug)
 
 8. **SH2 `.align N` uses power-of-2 semantics** — `.align 1`=2B, `.align 2`=4B, `.align 4`=16B. Using `.align 4` inflates code and shifts all PC-relative displacements.
@@ -456,6 +768,146 @@ $020476: NOP
 
 15. **Sega's "COMM1" = hardware COMM2 ($20004024)** — Sega's slave source calls $20004024 "COMM1". VRD docs use hardware register index (COMM2). When reading Sega's internal code comments, their COMM1 = our COMM2.
 
+16. **`--autoplay` never reaches real GP racing** — `profiling_frontend`'s canned input (press START blindly, then hold A after frame 1200) reliably parks the game in scene `$5586` (Free Run/TT) and never reaches scene `$4CBC` (real 1P GP racing) — confirmed out to 3600 frames, and even with zero input. The `[racing]` progress label is a naive frame-count heuristic, not derived from game state. Any headless test claiming to verify 1P-GP-specific code must watch `$FF0004` directly to confirm the scene, or use `VRD_LOAD_STATE=path` (added 2026-07-13) with a manually-captured GP savestate.
+
+17. **`VRD_PROFILE_PC`'s exported histogram is top-200, cycle-sorted — absence of an address there does NOT prove it never executes.** A real address (`game_frame_orch_013`, `$884D1A`) was declared "dead code" after showing zero hits across 28.5M samples, then proven to fire 50+ times in a 600-frame window using `VRD_CALLER_TRACE` (an exact, non-truncated JSR-return-address counter added 2026-07-13). The address simply had low enough per-hit cycle cost to fall outside the top 200 entries by total cycles. Also: `VRD_PROFILE_PC=1` silently disables itself if `VRD_PROFILE_PC_LOG` isn't also set (a fallback in `libretro.c` forces `vrd_profile_pc_enabled=0` when the log file didn't open) — always pass both together. Before concluding any code path "never executes," cross-check with `VRD_CALLER_TRACE=<hex addr>` (reads the JSR return address off the 68K stack when the watched PC is hit), not just histogram absence.
+
+18. **A per-frame COMM watch is a stuck-lane detector, not an access-event trace.** A command can set and clear COMM0/COMM1/COMM2 entirely inside one emulated frame, so absence of sampled variation or COMM1_LO=1 is not failure. Check long non-zero streaks at cache-through SH2 aliases, corroborate with non-idle SH2 work, and use access-event instrumentation or an execution sentinel when a later phase must prove a specific command ran. COMM7 is a word doorbell: watch `$2000402E:2`, not its usually-zero high byte alone.
+
+19. **Separate fixture warmup from the validation window; do not loosen liveness thresholds to absorb startup transients.** The accepted VR60-005 state (`vr60_control_bypass.mds`, SHA-256 `16a007b4…eb1cb`) showed a 199-frame COMM0_HI non-zero interval immediately after restore. With the same state, ROMs, fixed input, and thresholds, a 360-frame warmup followed by 1,800 validation frames passed every liveness check and failed only the mandatory short-run rule (state stall 1; hook gap 4; framebuffer stall 1; COMM0/2/7 runs 3/2/0). This operationally qualifies the fixture recipe but does not establish the initial cmd `$02`/COMM0 root cause. Full deterministic input must therefore contain 18,360 rows: 360 warmup plus 18,000 validation.
+
+20. **A byte-identical input replay proves determinism, not gameplay liveness.** The tracked VR60-006 artifact (`tools/libretro-profiling/fixtures/vr60_006_control_replay.csv`, SHA-256 `07e71d17…94ab5`) was recorded and fully re-recorded through the real frontend with 18,360 ordered `0x0100` rows. Parser and byte-identity checks close the capture issue, but a constant held-A sequence can still enter a bad gameplay state over time. VR60-007 established bounded liveness for its exact 2,160-row prefix; the full VR60-008 run subsequently failed, proving that prefix success did not establish 18,000-frame durability.
+
+21. **A successful short preflight is still a failing validator result by design.** VR60-007 validated frames 360–2159 of the exact replay prefix with healthy scene/state/hook/framebuffer/SH2/COMM signals, but `result.json` correctly has `passed: false` and the sole finding `short_control_window`. Call this a successful bounded preflight, never a control PASS; do not remove the finding, lower the 18,000-frame minimum, or promote its ten windows into a full-run claim.
+
+22. **Neither validator finding-list order nor end-of-frame samples are exact write chronology.** VR60-009's complete trace proves the apparent frame-4536 `$C87E` `$0000->$0008` jump contains two ordinary writes: `$884CF2` writes `$0004`, then `$884D0C` writes `$0008` in the same frame. The fixture's `$C050` timer expires and the display state machine intentionally writes results scene `$0088FB98` from `$8843D0` at frame 5128. Later COMM/hook/framebuffer/Slave findings are out-of-scene observations, not skipped-state effects. Use sampled values for window liveness and the exact writer tracer for intra-frame chronology. Evidence: `analysis/evidence/vr60-009-write-trace/README.md`.
+
+23. **Do not obtain exact PCs by changing FAME into single-instruction execution batches.** That rejected VR60-009 attempt shifted the results transition from frame 5128 to frame 4981, so it is not acceptance evidence. The accepted tracer uses a nullable callback immediately before opcode fetch in the normal FAME loop, preserves the existing approximately 32-cycle profiling batches, and byte-matches the trace-disabled 5,160-frame control.
+
+24. **A visual replay needs two independent qualifications: format identity and gameplay
+liveness.** The pinned RetroArch 1.22.2 v2 bridge converted a real 899-frame capture (replay
+SHA-256 `665d710f…f1724`) to canonical CSV (SHA-256 `6c51ad27…cf08`), and the headless frontend
+re-recorded identical bytes from the matching raw state. That closes only the format/input bridge.
+A manifest also binds the replay, exact raw state, hook-bypass ROM, and CSV hashes after checking
+the replay header's content CRC32 against that ROM.
+A later 4,680-frame capture from a state saved 32 seconds into Big Forest still left normal 1P at
+frame 3984. Never promote replay parse/re-record success into fixture durability.
+
+25. **RetroArch's standalone `.state` and the canonical frontend's raw core state are not the
+same outer container.** RetroArch 1.22.2 saved the core serialization inside a `RASTATE` `MEM `
+block; feeding the wrapper directly to `retro_unserialize` failed with `bad header`, while its
+exact `MEM ` payload loaded. Preserve and hash the raw payload used by the validator, and do not
+substitute a replay's embedded state as acceptance evidence.
+
+26. **Fixture derivation must use the validator's execution mode, not merely the same ROM, state,
+input, and nominal frame.** A VR60-010 state derived after frame 897 under PicoDrive's DRC replayed
+the same input but diverged when the validator enabled `VRD_PROFILE_PC=1` and forced the SH2
+interpreter: `$C87E` omitted state `$000C` in later windows and COMM0_HI stayed non-zero for 1,617
+frames. Re-deriving at the same `K = 898` boundary under the PC/interpreter configuration produced
+a byte-replayable 2,160-frame prefix whose unchanged bounded validator had
+`short_control_window` as its only finding. Preserve execution mode across discovery, state
+serialization, replay verification, and acceptance.
+
+27. **Lifecycle aggregation is a separate acceptance shape, not a disguised continuous run.**
+VR60-011 counts only frames after the fixed 360-frame warmup and before the predeclared exact
+tracer PC/source offset `$006C38` write of `$C07C=$0014`; its corresponding high 68K mapping is
+`$00886C38`. Finish-display and results frames count zero. Each lifecycle,
+aligned window, final rolling window, and substantial tail must pass independently. Duplicate
+source/state/input provenance is rejected, and aggregate coverage is reported beside the
+per-lifecycle and longest-contiguous floors. The reviewed constants are 3 complete lifecycles,
+1,800 active frames each, one 3,960-frame span, and 18,000 aggregate frames. Big Forest,
+Bay Bridge, and Acropolis passed with 10,906/9,263/10,968 active frames and 31,137 aggregate.
+Capture and offline analysis also apply the canonical `control_fixtures.json` blacklist and bind
+its exact path, hash, and matched entry into `run.json`. Terminal acceptance pins the full word
+write chain: `$006C38:$0000->$0014`, then `$88427A/$8842CE/$884322/$884336/$884384/$884398/$8843CA`
+through `$0030`; the surprising initial zero comes from archived VR60-009 watch frames 4533/4534.
+The trace parser accepts only one init, the exact ordered indexed targets, one header, data, and
+one final `COMPLETE` record. Fresh Auditor review approved these boundaries after reproducing
+and closing the prior blacklist, duplicate-record, and arbitrary-terminal-writer bypasses.
+
+28. **DRC lifecycle acceptance must prove its mode and liveness without interpreter-only PC
+budgets.** Both raw trace headers and `run.json` attest SH2 DRC enabled, `VRD_PROFILE_PC` absent,
+normal 68K batching, one composed exact instruction hook, and uncapped caller capture. Every
+window contains exact `$C87E` writes `$0000->$0004->$0008->$000C->$0000`; the V-INT
+`$000C->$0000` write occurs only after fresh Master COMM1 completion. Non-zero total executed
+cycles prove both SH2s run. Sampled COMM0_HI longest runs remain informational, while COMM2/COMM7
+retain their reviewed failure limit. Two fresh runs of every accepted fixture byte-match for
+frames, watches, caller chronology, exact state/terminal writes, and framebuffer hashes.
+
+29. **Q-020 mode 0 is accepted; do not generalize it to mode 1.** A hash-pinned debugger
+preflight reads scene `$00884CBC`, flag/mode/sentinel zero at session frame 0 without advancing.
+The exact 12-slot ACTIVE/STAGE-CONTROL matrix proves 320 bytes from `$FF6A00` reach
+`$0600F20C`, with raw PC `$00884D6A` and exact VR60-011 chronology. Big Forest and Acropolis
+have one paired state-8 CRC mismatch at H+3; Bay Bridge has none, and all later frames through
+the inclusive terminal match. This is a one-frame sampled framebuffer divergence consistent
+with render/display scheduling; HBLK/FEN is inference not causal proof. The ordinary default is
+exact ACTIVE SHA `6f2768f2…2523900`. Mode 1 remains disabled pending scene reset/re-entry,
+COMM ownership/dummy-read, and four-word FIFO FULL instrumentation. Item 32 records the later
+isolated mode-1 pass; mode 1 still remains disabled in this ordinary default.
+
+30. **The rejected 2026-07-27 COMM1 ACK was superseded, but the then-current mode 1 remained
+blocked (superseded by item 32).** Commit
+`6597d3d` replaced it with a statically eligible COMM0_LO readiness candidate, fixed DMAC0 TE
+read-1/write-0 and re-arm ordering, and repaired the reset-manifest enum. The active/control
+hashes are `84454360…3066402` / `715f11de…ebbd17`; the ordinary mode-0 ROM remains
+`6f2768f2…2523900`. The 68000 readiness poll can still overlap Master COMM0_LO publication,
+Gate-B runtime evidence is `MISSING`, and all eight reset-route captures are empty. Static
+eligibility cannot promote mode 1.
+
+31. **The 2026-08-10 CMDINT probe passes only as isolated diagnostic feasibility.** Probe ROM
+`8766714e…6a91e7` proves cold initialization, normal writer `$0088E0D4`, a Master level-8 CMD
+ISR, VRES plus stock reset-flow CMD, dual-SH2 liveness, and seeded name writer `$00891822`.
+The ISR applies the FRT workaround, CMD-only masking, same-address clear/readback, exact mask
+restore/readback, and unexpected-level fail-stop. Literal users, tool/core hashes, route traces,
+and an exact 15-artifact archive are pinned; 20 focused tests pass. The name fixture is
+non-organic, PicoDrive proof uses a separate parity-patched core, and the clear-register
+zero-value assertion is stricter than the manual's synchronization rule. Integrate the
+interrupt handshake into a fresh mode-1 pair before collecting canonical Gate-B, exact 64B,
+FULL/TE/re-arm, reset, and lifecycle evidence. Do not proceed to mode 2 or cmd `$3F` first.
+
+32. **Q-020 mode 1 passes only as a composed isolated validation stage.** ACTIVE
+`96365860…ff4470`, STAGE-CONTROL `39177456…34e9fd`, and ISR `6316a0d2…146916` use two Master
+CMD edges and zero COMM0-COMM7 accesses. Two normal repeats per arm prove six exact 64-byte
+`$FF6B00 -> $0600F30C` transactions per ACTIVE run, eight FULL-checked FIFO groups, complete
+DMAC/TE/re-arm and CMD-mask chronology, and zero CONTROL transport. Two seeded name repeats per
+arm prove the authentic `C80E.bit3` replay route `$00885618`, one-shot `1 -> 0`, and correctly
+zero transport; they are not organic gameplay. Frame-1241 VRES passes, while frame-1280 busy-
+Slave reset fails identically in ACTIVE, CONTROL, and default and remains excluded diagnostic
+evidence. `composition.json` binds static, capture/result, lifecycle, and reset-diagnostic
+manifests. The ordinary default stays `6f2768f2…2523900`; mode 1 is not promoted, arbitrary VRES
+and real hardware are unproven. Mode 2 was subsequently tested separately in item 33.
+
+33. **Q-021 mode 2 passes only as an isolated first-post-transfer validation stage.** ACTIVE
+`96d79e3f…ee276`, STAGE-CONTROL `da5ce4ec…309b8`, and ISR `b7fc5726…aaaa7` preserve the
+ordinary default and all accepted mode-1 identities exactly. Both arms stage the authoritative
+3,840-byte AI table at `$FF6B40`; two ACTIVE normal repeats prove all 1,920 FIFO words in 480
+FULL-checked four-word groups equal physical destination `$06010000-$06010EFF` at frame 1260,
+with terminal DAR `$06010F00`, TCR0=0, TE acknowledgement, balanced two-edge CMD counts, and
+zero COMM access. Controls and the seeded name/replay route record zero transport. At that same
+boundary Slave R15 is exactly `$06010000`, and both stock/ISR stacks grow downward below the
+upward payload. Later execution mutates the destination through an unidentified writer, so the
+pass does not establish persistent allocation, a consumer, later-frame ownership, promotion,
+authority, arbitrary reset, organic name entry, or real hardware. The next independent work is
+Q-023's `$2200BC00 -> $2600BC00` cmd-`$3F` mailbox correction, then observable shadow execution.
+
+34. **Q-023 passes only as a source-built inactive mailbox-literal correction.** ACTIVE
+`8709aed4…5a59ef` changes file `$301638` from `$22` to `$26`, yielding `$2600BC00`; its
+STAGE-CONTROL is the exact ordinary default `6f2768f2…2523900`. Both 428-byte handler binaries
+retain opcode `$D449` at relative `$012`, with that instruction as the sole executable user of
+the aligned literal at relative `$138`. The cmd `$3F` jump and all accepted mode-1/mode-2
+identities remain exact. Neither arm enables cmd `$3F`; runtime mailbox, COMM, shadow execution,
+renderer, authority, cadence, FPS, reset, and real-hardware claims remain open.
+
+35. **Q-026 passes only as a bounded direct player-physics CMDINT precursor.** ACTIVE
+`c9358ad4…b76f8` and STAGE-CONTROL `240dfd0a…a66d` differ only at the exact eight-byte CMD
+edge and preserve every ordinary/Q-020/Q-021/Q-023 identity. Two trustworthy normal-1P repeats
+per arm prove one exact 320-byte seed, one ACTIVE entry/completion and zero CONTROL direct work,
+allowed-only writes, preserved `+$CE/+$D2/+$D6/+$DA`, unchanged COMM1/2/7, COMM2_HI zero at
+the exact admission edge, and exact continuing pair/repeat evidence. A failed pilot disproved
+startup-canary persistence; the accepted ISR refreshes and reads it at admission before switching
+stacks, then checks it after return. This does not validate cmd `$3F`, collision/equivalence,
+renderer bridging, authority, cadence, FPS, arbitrary interrupts, or real hardware.
+
 ---
 
 ## Section 4: Where-to-Find Cross-Reference
@@ -470,6 +922,12 @@ $020476: NOP
 | Slave SH2 behavior (polling, dispatch, pixel processing) | analysis/ARCHITECTURAL_BOTTLENECK_ANALYSIS.md | analysis/SYSTEM_EXECUTION_FLOW.md |
 | Frame execution flow (V-INT, main loop, state dispatch) | analysis/SYSTEM_EXECUTION_FLOW.md | analysis/ARCHITECTURAL_BOTTLENECK_ANALYSIS.md |
 | Profiling methodology + tool usage | tools/libretro-profiling/README_68K_PC_PROFILING.md | analysis/profiling/68K_BOTTLENECK_ANALYSIS.md |
+| Normal-1P durable control validation | tools/libretro-profiling/VRD_PROFILING.md §§ Normal-1P control validator; VR60-011 lifecycle suite | `analysis/evidence/vr60-011-lifecycle-suite/README.md`; the three-fixture DRC suite passed and cleared the baseline blocker |
+| Q-020 cmd `$3E` mode-0 acceptance | tools/libretro-profiling/validate_mode0_gate.py | analysis/evidence/vr60-q020-mode0-gate/README.md |
+| Q-020 cmd `$3E` mode-1 isolated validation gate | VR60_STATUS.md § Q-020 mode 1 passed its isolated validation stage on 2026-08-11 | `analysis/evidence/vr60-q020-mode1-cmdint-gate/README.md`; `tools/libretro-profiling/validate_mode1_gate_composition.py`; `disasm/modules/68k/sh2/vr60_mode1_validation.asm`; `disasm/sh2/expansion/cmd3e_mode1_validation.asm` |
+| Q-021 cmd `$3E` mode-2 isolated first-boundary gate | VR60_STATUS.md § Q-021 mode 2 passed its isolated validation stage on 2026-08-12 | `analysis/evidence/vr60-q021-mode2-cmdint-gate/README.md`; `tools/libretro-profiling/validate_mode2_gate_composition.py`; `tools/libretro-profiling/mode2_cmdint_runtime.py`; `disasm/sh2/expansion/cmd3e_mode2_validation.asm` |
+| Q-023 cmd `$3F` inactive mailbox correction | VR60_ROADMAP.md Q-023 | `analysis/evidence/vr60-q023-mailbox-correction/README.md`; `tools/libretro-profiling/verify_q023_mailbox_rom_pair.py`; `disasm/sh2/expansion/cmd3f_vr60_gameframe.asm` |
+| Q-026 bounded player-physics direct-CMDINT gate | VR60_STATUS.md § Q-026 passed its bounded direct-CMDINT validation stage | `analysis/evidence/vr60-q026-player-cmdint-gate/README.md`; `tools/libretro-profiling/verify_q026_player_rom_pair.py`; `tools/libretro-profiling/q026_player_runtime.py`; `disasm/sh2/expansion/q026_external_isr.s` |
 | Expansion ROM layout + active handlers | disasm/sections/expansion_300000.asm | BACKLOG.md §B-003/B-004 |
 | B-003 async cmd_27 design | BACKLOG.md §B-003 | analysis/68K_SH2_COMMUNICATION.md §B-003 |
 | B-004 single-shot cmd_22 design | BACKLOG.md §B-004 | analysis/68K_SH2_COMMUNICATION.md §B-004 |

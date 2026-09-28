@@ -91,6 +91,10 @@ object_table_sprite_param_update:
 ; Clobbers: D0-D3 (already trashed by mars_dma_xfer_vdp_fill)
 ; ============================================================================
 camera_snapshot_wrapper:
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        jmp     $00880000+vr60_interp_state0_submit
+        dcb.b   40,$FF                         ; retain the wrapper's 46-byte footprint
+        else
         ; Snapshot current $FF6100 BEFORE DMA (these are this frame's camera params)
         ; Step 1: curr → prev
         lea     $00FF6090,a0
@@ -105,6 +109,7 @@ camera_snapshot_wrapper:
         ; Step 3: call original DMA function
         jsr     mars_dma_xfer_vdp_fill(pc)
         rts
+        endif
 
 ; ============================================================================
 ; camera_avg_and_redma — Average camera and re-send DMA to SH2
@@ -114,6 +119,9 @@ camera_snapshot_wrapper:
 ; Size: 38 bytes
 ; ============================================================================
 camera_avg_and_redma:
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        dcb.b   38,$FF                         ; old $FF6080/$FF6090 path is absent
+        else
         lea     $00FF6080,a0                   ; prev snapshot
         lea     $00FF6090,a1                   ; curr snapshot
         lea     $00FF6100,a2                   ; camera buffer output
@@ -126,50 +134,71 @@ camera_avg_and_redma:
         dbra    d7,.avg_loop
         jsr     mars_dma_xfer_vdp_fill(pc)     ; re-DMA to SH2
         rts
+        endif
 
 ; ============================================================================
-; state4_epilogue — State 4 tail: block-copy + swap + interpolation + re-DMA
+; state4_epilogue — State 4 tail: async fire-and-forget (VR60 Phase 2B)
 ; Tail-jumped from frame_update_orch_005070 (state 4 handler).
 ;
-; 1. Sends 2 sh2_send_cmd block copies to capture the CURRENT SH2 render
-;    (camera N) to the framebuffer before re-DMA overwrites SDRAM.
-; 2. Swaps frame buffer → displays camera N render (first swap = 40 FPS).
-; 3. Averages camera, re-DMAs → SH2 re-renders with interpolated camera.
-;    State 8's existing block copies + swap will display this second render.
+; Phase 2B: Block copies moved to cmd $3F SH2 handler (fire-and-forget).
+; V-INT $54 (vdp_dma_frame_swap_037) gates frame swap via COMM1_LO bit 0.
+; See: analysis/ASYNC_PIPELINE_ARCHITECTURE.md
 ;
-; Size: 102 bytes
+; 1. camera_avg_and_redma — interpolate camera + re-DMA (uses COMM0, must
+;    complete before cmd $3F trigger)
+; 2. vr60_comm_trigger — fire-and-forget cmd $3F (SH2 does block copies in
+;    background while 68K runs state 8 game logic)
+; 3. State advance + V-INT state + RTS (68K continues immediately)
+;
+; Size: 24 bytes
 ; ============================================================================
 state4_epilogue:
-; --- Block-copy current SH2 render (camera N) to framebuffer ---
-; Same params as sh2_geometry_transfer_and_palette_cycle_handler
-        movea.l #$06038000,a0                  ; 3D geometry source (SDRAM)
-        movea.l #$04012010,a1                  ; framebuffer dest
-        move.w  #$0120,d0                      ; width = 288 pixels
-        move.w  #$0030,d1                      ; height = 48 rows
-        jsr     $0088E35A                      ; sh2_send_cmd (abs.l, PC-rel too far)
-        movea.l #$0603B600,a0                  ; sprite data source (SDRAM)
-        movea.l #$0401B010,a1                  ; framebuffer dest
-        move.w  #$0120,d0                      ; width = 288 pixels
-        move.w  #$0018,d1                      ; height = 24 rows
-        jsr     $0088E35A                      ; sh2_send_cmd
-; --- Swap frame buffer (COMM1_LO bit 0 set after last block copy) ---
-        btst    #0,COMM1_LO                    ; SH2 block copy done?
-        beq.s   .no_swap                       ; no → skip (shouldn't happen)
-        bclr    #0,COMM1_LO                    ; clear done flag
-        bchg    #0,($FFFFC80C).w               ; flip frame toggle
-        bchg    #0,$00A1518B                   ; toggle FS bit (swap display)
-.no_swap:
-; --- Interpolate camera and trigger second SH2 render ---
-        jsr     camera_avg_and_redma(pc)
-; --- Original state 4 epilogue ---
-        addq.w  #4,($FFFFC87E).w               ; advance game_state
-        move.w  #$001C,$00FF0008               ; V-INT state = sprite_cfg
+; --- VR60 Phase 3B: conditional entity staging + globals transfer ---
+; First racing frame ($C8D2 = 0): stage entity (256B) + globals (64B) = 320B
+; Subsequent frames ($C8D2 != 0): globals only (64B), entity persists in SDRAM
+; $C8D2 is zeroed at boot (WRAM init) and re-zeroed when state dispatcher
+; resets $C87E to 0 (every new scene). Since state4_epilogue only runs at
+; $C87E=4, and $C87E resets to 0 at scene start, the first state 4 after
+; any scene change will find $C8D2=0 (seeded by scene init's WRAM clear).
+;
+; SAFETY: If $C8D2 is NOT cleared by game init (edge case), the entity
+; staging just re-seeds SDRAM with WRAM data on every race start. The SH2
+; physics overwrites it within 1 frame. No correctness impact.
+        tst.b   ($FFFFC8D2).w                   ; 4B — entity seeded in SDRAM?
+        bne.s   .globals_only                    ; 2B — yes: skip entity staging
+; --- First frame: full entity + globals + AI staging ---
+        jsr     vr60_entity_stage               ; 6B — 256B player WRAM→$FF6A00
+        jsr     vr60_globals_stage              ; 6B — 64B scattered→$FF6B00
+        jsr     vr60_entity_transfer            ; 6B — DREQ 320B→SDRAM (cmd $3E mode 0)
+        jsr     vr60_ai_entity_stage            ; 6B — 3840B AI WRAM→$FF6B40 (Phase 4)
+        jsr     vr60_ai_entity_transfer         ; 6B — DREQ 3840B→SDRAM (cmd $3E mode 2)
+        move.b  #$01,($FFFFC8D2).w              ; 6B — mark entities seeded
+        bra.s   .camera                          ; 2B
+.globals_only:
+; --- Subsequent frames: globals only ---
+        jsr     vr60_globals_stage              ; 6B — 64B scattered→$FF6B00
+        jsr     vr60_globals_transfer           ; 6B — DREQ 64B→SDRAM (cmd $3E mode 1)
+.camera:
+; --- VR60 Phase 7: camera interpolation REMOVED (60 FPS physics handles it) ---
+; --- Sound + viewport pickup from previous frame's cmd $3F ---
+; COMM6_HI = sound trigger byte ($B1/$B2/$B4 or $00)
+; COMM4 = viewport left scale (lateral_drift_B shimmer)
+; COMM5 = viewport right scale (lateral_drift_B shimmer)
+; 1-frame delay is imperceptible at 20 FPS.
+        move.b  COMM6,($FFFFC8A4).w             ; 6B — sound trigger
+        clr.b   COMM6                            ; 4B — clear
+        move.w  COMM4,$00FF617A                  ; 6B — viewport left
+        move.w  COMM5,$00FF618E                  ; 6B — viewport right
+; --- Fire-and-forget: async block copies + physics via cmd $3F ---
+; cmd $3F triggers Slave internally (after render state patcher completes)
+        jsr     vr60_comm_trigger               ; 6B — writes COMM3-5 + triggers cmd $3F
+; --- VR60 Phase 8: state advance REMOVED (dispatcher runs all states per frame) ---
+; --- V-INT state write REMOVED (dispatcher writes $0054 after all states complete) ---
         rts
 
-; Padding to maintain 216-byte total trampoline size.
-; Code = 6 (JMP) + 46 (snapshot) + 38 (avg) + 102 (epilogue) = 192 bytes.
-; Padding = 216 - 192 = 24 bytes.
-        dcb.b   24,$FF
+; Auto-pad to next module at $0037B6 (object_proximity_check_jump_table_dispatch).
+; state4_epilogue grew with conditional staging (Phase 3B).
+        dcb.b   ($0037B6-*),$FF
         include "modules/68k/game/collision/object_proximity_check_jump_table_dispatch.asm"
         include "modules/68k/game/state/conditional_return_on_disp_flag.asm"
         include "modules/68k/game/collision/proximity_check_with_sine_billboard.asm"

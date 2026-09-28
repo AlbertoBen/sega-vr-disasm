@@ -29,12 +29,12 @@ input_dispatch_table_and_controller_port_init:
         or.b    d0,d1                   ; $8200
         DC.W    $0088                           ; $0016C2
         DC.W    $1A6E                           ; $0016C4
-        DC.W    $0088                           ; $0016C6
-        DC.W    $1A72                           ; $0016C8
+        DC.W    $0089                           ; $0016C6  VR60: → vint_vdp_sync_with_swap (60 FPS)
+        DC.W    $C30E                           ; $0016C8  (was $0088/$1A72 → original vdp sync)
         DC.W    $0088                           ; $0016CA
         DC.W    $1C66                           ; $0016CC
-        DC.W    $0088                           ; $0016CE
-        DC.W    $1ACA                           ; $0016D0
+        DC.W    $0089                           ; $0016CE  VR60: → vint_sprite_cfg_with_swap (60 FPS)
+        DC.W    $C350                           ; $0016D0  (was $0088/$1ACA → original sprite cfg)
         DC.W    $0088                           ; $0016D2
         DC.W    $19FE                           ; $0016D4
         DC.W    $0088                           ; $0016D6
@@ -51,14 +51,34 @@ input_dispatch_table_and_controller_port_init:
         DC.W    $1F4A                           ; $0016EC
         DC.W    $0088                           ; $0016EE
         MOVE.L  (A0),D0                         ; $0016F0
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        dc.l    $00880000+vr60_interp_vint_after_state0 ; $0016F2 slot $40
+        else
+        ifd     VR60_EXPERIMENTAL_60FPS_ROUTING
+        dc.l    $00880000+vr60_vint_substep_0_route ; $0016F2 slot $40, 1P-private
+        else
         ORI.B  #$01,D0                          ; $0016F2
+        endif
+        endif
         DC.W    $0088                           ; $0016F6
         DC.W    $1DBE                           ; $0016F8
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        dc.l    $00880000+vr60_interp_vint_commit_current ; $0016FA slot $48
+        else
+        ifd     VR60_EXPERIMENTAL_60FPS_ROUTING
+        dc.l    $00880000+vr60_vint_substep_4_route ; $0016FA slot $48, 1P-private
+        else
         ORI.B  #$01,D0                          ; $0016FA
+        endif
+        endif
         ORI.B  #$01,D0                          ; $0016FE
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        dc.l    $00880000+vr60_interp_vint_after_state8 ; $001702 slot $50
+        else
         ORI.B  #$01,D0                          ; $001702
-        DC.W    $0088                           ; $001706
-        DC.W    $1D0C                           ; $001708
+        endif
+        DC.W    $0089                           ; $001706  VR60 Phase 8: → vint_unified_60fps
+        DC.W    $C392                           ; $001708  (was $0088/$1D0C → vdp_dma_frame_swap_037)
         RTE                                     ; $00170A
         MOVE.B  #$00,(-366).W                   ; $00170C
         MOVE.B  #$00,(-365).W                   ; $001712

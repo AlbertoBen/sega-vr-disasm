@@ -1,0 +1,183 @@
+{
+  "allowed_diff_ranges": [
+    {
+      "end_exclusive": "0x00E0DE",
+      "start": "0x00E0D4"
+    },
+    {
+      "end_exclusive": "0x01182C",
+      "start": "0x011822"
+    },
+    {
+      "end_exclusive": "0x01C94A",
+      "start": "0x01C914"
+    },
+    {
+      "end_exclusive": "0x020140",
+      "start": "0x020100"
+    },
+    {
+      "end_exclusive": "0x020484",
+      "start": "0x020480"
+    },
+    {
+      "end_exclusive": "0x303CC4",
+      "start": "0x303B00"
+    }
+  ],
+  "build_defines": [
+    "VR60_MODE0_ONLY=1",
+    "VR60_Q020_CMDINT_PROBE=1"
+  ],
+  "changed_bytes": 572,
+  "cmd3f_enabled": false,
+  "external_vectors": {
+    "count": 16,
+    "file_range": "0x020100-0x02013F",
+    "target": "0x02303B00"
+  },
+  "images": {
+    "default": {
+      "path": "build/vr_rebuild.32x",
+      "sha256": "6f2768f2cffc85cdc815a67c9f13837112829edac3f0921a57454e79e2523900",
+      "size": 4128768
+    },
+    "isr_bin": {
+      "path": "build/sh2/q020_cmdint_probe_isr.bin",
+      "sha256": "be3e5a944ad46b48533bc80f76452e768fad0f3a929d1dcbb54b4caf30b621c3",
+      "size": 452
+    },
+    "isr_elf": {
+      "path": "build/sh2/q020_cmdint_probe_isr.elf",
+      "sha256": "b2ce12dd61f655a5b4e5b0591c0658cb75bfe7b86ee7e71516289aa05de421ef"
+    },
+    "probe": {
+      "path": "build/vr60_q020_cmdint_probe.32x",
+      "sha256": "8766714e5bdfc4cb9a8dcecb1a0ce23e1d3e67a54cdfc7473e3b9cbecb6a91e7",
+      "size": 4128768
+    }
+  },
+  "isr": {
+    "file_range": "0x303B00-0x303CC3",
+    "literal_pool_file_range": "0x303C88-0x303CC3",
+    "literal_users": [
+      {
+        "target": "0x303CB4",
+        "user": "0x3039FC"
+      },
+      {
+        "target": "0x303C98",
+        "user": "0x303B0C"
+      },
+      {
+        "target": "0x303C9C",
+        "user": "0x303B28"
+      },
+      {
+        "target": "0x303CAC",
+        "user": "0x303B48"
+      },
+      {
+        "target": "0x303C9C",
+        "user": "0x303B4E"
+      },
+      {
+        "target": "0x303CA0",
+        "user": "0x303B78"
+      },
+      {
+        "target": "0x303CA8",
+        "user": "0x303B8C"
+      },
+      {
+        "target": "0x303CA0",
+        "user": "0x303B98"
+      },
+      {
+        "target": "0x303CA0",
+        "user": "0x303BCA"
+      },
+      {
+        "target": "0x303CB0",
+        "user": "0x303BCC"
+      },
+      {
+        "target": "0x303CB8",
+        "user": "0x303BD6"
+      },
+      {
+        "target": "0x303CBC",
+        "user": "0x303BDE"
+      },
+      {
+        "target": "0x303CA4",
+        "user": "0x303BF6"
+      },
+      {
+        "target": "0x303CC0",
+        "user": "0x303C1E"
+      },
+      {
+        "target": "0x303C9C",
+        "user": "0x303C28"
+      },
+      {
+        "target": "0x303CC0",
+        "user": "0x303C38"
+      },
+      {
+        "target": "0x303C88",
+        "user": "0x303C52"
+      },
+      {
+        "target": "0x303C8C",
+        "user": "0x303C56"
+      },
+      {
+        "target": "0x303C90",
+        "user": "0x303C5E"
+      },
+      {
+        "target": "0x303C8C",
+        "user": "0x303C72"
+      },
+      {
+        "target": "0x303C90",
+        "user": "0x303C76"
+      },
+      {
+        "target": "0x303C94",
+        "user": "0x303C82"
+      }
+    ],
+    "sh2_range": "0x02303B00-0x02303CC3"
+  },
+  "m68k_wrapper_helper": {
+    "file_range": "0x01C914-0x01C949",
+    "oneshot_operand_offsets": [
+      "0x01C916",
+      "0x01C920"
+    ],
+    "oneshot_wram": "0xFFFF7B41"
+  },
+  "master_startup_shim": {
+    "literal_file_offset": "0x020480",
+    "literal_users": [
+      {
+        "target": "0x020480",
+        "user": "0x020438"
+      }
+    ],
+    "sh2_address": "0x02303C50",
+    "symbol": "q020_cmdint_probe_init",
+    "vres_init_count_delta": 2
+  },
+  "mode1_enabled": false,
+  "non_promotable": true,
+  "route_installers": [
+    "0x00E0D4",
+    "0x011822"
+  ],
+  "schema": "vrd-vr60-q020-cmdint-probe-v2",
+  "status": "verified"
+}

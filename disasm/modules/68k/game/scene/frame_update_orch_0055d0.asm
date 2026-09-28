@@ -31,6 +31,11 @@ frame_update_orch_0055d0:
         jsr     scene_menu_init_and_input_handler+118(pc); $4EBA $64EE
         jsr     animated_seq_player+10(pc); $4EBA $60F0
         jsr     object_update(pc)       ; $4EBA $6096
+        ifd     VR60_30_DEMO
+        jmp     $00880000+vr60_30_demo_state8   ; snapshots + state 4 / V-INT $50
+        dcb.w   4,$4E71                         ; keep the stock 14-byte tail
+        else
         addq.w  #4,($FFFFC87E).w               ; $0055F0  advance game_state
         move.w  #$0054,$00FF0008               ; $0055F4  display mode = $0054
         rts                                     ; $0055FC
+        endif

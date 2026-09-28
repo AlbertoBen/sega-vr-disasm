@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vrd.local/schemas/mode1-lifecycle-v2.json",
+  "title": "VR60 mode-1 lifecycle and reset evidence reference",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "validation_stage_eligible",
+    "non_promotable",
+    "organic_gameplay",
+    "roms",
+    "capture_matrix",
+    "routes",
+    "safe_vres",
+    "busy_slave_vres",
+    "runtime_capture",
+    "runtime_result",
+    "reset_diagnostic"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vrd-vr60-q020-mode1-lifecycle-v2"
+    },
+    "status": {
+      "const": "VALIDATION_STAGE_PASS"
+    },
+    "validation_stage_eligible": {
+      "const": true
+    },
+    "non_promotable": {
+      "const": true
+    },
+    "organic_gameplay": {
+      "const": false
+    },
+    "roms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["active", "control", "default"],
+      "properties": {
+        "active": {"$ref": "#/$defs/sha256"},
+        "control": {"$ref": "#/$defs/sha256"},
+        "default": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "capture_matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["arms", "routes", "repeats_per_arm_route", "independent_run_count"],
+      "properties": {
+        "arms": {"const": ["active", "control"]},
+        "routes": {"const": ["normal", "name"]},
+        "repeats_per_arm_route": {"const": 2},
+        "independent_run_count": {"const": 8}
+      }
+    },
+    "routes": {
+      "type": "object",
+      "required": ["normal", "name"]
+    },
+    "safe_vres": {
+      "type": "object",
+      "required": ["frame", "vres_count", "init_count", "scope"]
+    },
+    "busy_slave_vres": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "status", "accepted"],
+      "properties": {
+        "frame": {"const": 1280},
+        "status": {"const": "UNPROVEN_BASELINE_PICODRIVE_RESET_DEFECT"},
+        "accepted": {"const": false}
+      }
+    },
+    "runtime_capture": {"$ref": "#/$defs/component"},
+    "runtime_result": {"$ref": "#/$defs/component"},
+    "reset_diagnostic": {"$ref": "#/$defs/component"}
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

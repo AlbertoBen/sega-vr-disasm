@@ -89,7 +89,11 @@
         dc.w    $1E3C
         dc.w    $1E4D
         dc.w    $60A2
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        dc.w    $D104       ; relocated PC pool: load stock $FF00FF00 at $3013C4
+        else
         dc.w    $D105
+        endif
         dc.w    $2018
         dc.w    $8B09
         dc.w    $7AFC
@@ -99,10 +103,18 @@
         dc.w    $4F26
         dc.w    $000B
         dc.w    $0009
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        dc.w    $FF00       ; high word of stock $FF00FF00 mask
+        else
         dc.w    $0000
+        endif
         dc.w    $FF00
         dc.w    $FF00
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        dc.w    $D12D       ; relocated PC pool: load stock $00FF00FF at $301480
+        else
         dc.w    $D10D
+        endif
         dc.w    $2109
         dc.w    $2A12
         dc.w    $7AFC
@@ -193,5 +205,10 @@
         dc.w    $0009
         dc.w    $0202
         dc.w    $34A0
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        dc.w    $00FF       ; stock $00FF00FF mask in unreachable pool space
+        dc.w    $00FF
+        else
         dc.w    $0009
         dc.w    $0009
+        endif

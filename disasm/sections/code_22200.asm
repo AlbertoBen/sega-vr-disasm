@@ -159,8 +159,8 @@
         dc.w    $0000        ; $02232E
         dc.w    $0000        ; $022330
         dc.w    $0000        ; $022332
-        dc.w    $0600        ; $022334
-        dc.w    $26FC        ; $022336
+        assert  *=$022334,"vertex scale/callback context table A"
+        dc.w    $0600,$26FC
         dc.w    $0600        ; $022338
         dc.w    $F400        ; $02233A
         dc.w    $0601        ; $02233C
@@ -295,8 +295,8 @@
         dc.w    $C000        ; $02243E
         dc.w    $C000        ; $022440
         dc.w    $0700        ; $022442
-        dc.w    $C000        ; $022444
-        dc.w    $01CE        ; $022446
+        assert  *=$022444,"vertex scale/callback slot G preimage"
+        dc.w    $C000,$01CE
         dc.w    $C000        ; $022448
         dc.w    $0000        ; $02244A
         dc.w    $4F22        ; $02244C
@@ -331,8 +331,8 @@
         dc.w    $C000        ; $022486
         dc.w    $C000        ; $022488
         dc.w    $0700        ; $02248A
-        dc.w    $C000        ; $02248C
-        dc.w    $01CE        ; $02248E
+        assert  *=$02248C,"vertex scale/callback slot H preimage"
+        dc.w    $C000,$01CE
         dc.w    $C000        ; $022490
         dc.w    $0000        ; $022492
         dc.w    $4F22        ; $022494
@@ -367,8 +367,8 @@
         dc.w    $C004        ; $0224CE
         dc.w    $C000        ; $0224D0
         dc.w    $0700        ; $0224D2
-        dc.w    $C000        ; $0224D4
-        dc.w    $01CE        ; $0224D6
+        assert  *=$0224D4,"vertex scale/callback slot I preimage"
+        dc.w    $C000,$01CE
         dc.w    $C000        ; $0224D8
         dc.w    $0000        ; $0224DA
         dc.w    $4F22        ; $0224DC
@@ -411,6 +411,17 @@
         dc.w    $0000        ; $022526
         dc.w    $C000        ; $022528
         dc.w    $0740        ; $02252A
+        ifd     VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST
+; Route every Master on-chip restore through the exact helper.  It copies all
+; 437 stock longs and reinstalls the split leaf tail at C00006D4.
+        dc.w    $D001        ; $02252C mov.l @(literal,pc),r0
+        dc.w    $402B        ; $02252E jmp @r0 (PR remains the stock caller)
+        dc.w    $0009        ; $022530 delay-slot nop
+        dc.w    $0009        ; $022532 literal alignment
+        dc.w    $0230        ; $022534 helper $02304800
+        dc.w    $4800        ; $022536
+        dcb.w   10,$0009     ; $022538-$02254A
+        else
         dc.w    $D105        ; $02252C
         dc.w    $D006        ; $02252E
         dc.w    $9706        ; $022530
@@ -427,6 +438,7 @@
         dc.w    $0000        ; $022546
         dc.w    $0600        ; $022548
         dc.w    $254C        ; $02254A
+        endif
         dc.w    $4F22        ; $02254C
         dc.w    $6BD5        ; $02254E
         dc.w    $B090        ; $022550
@@ -575,6 +587,9 @@
         dc.w    $1732        ; $02266E
         dc.w    $000B        ; $022670
         dc.w    $1743        ; $022672
+        ifd     VR60_EXPERIMENTAL_ONCHIP_VERTEX_FAST
+        include "sh2/experiments/onchip_vertex_fast_safe.inc"
+        else
         dc.w    $4F22        ; $022674
         dc.w    $5AEB        ; $022676
         dc.w    $5CE7        ; $022678
@@ -643,6 +658,7 @@
         dc.w    $0770        ; $0226F6
         dc.w    $C000        ; $0226F8
         dc.w    $0760        ; $0226FA
+        endif
         dc.w    $61D5        ; $0226FC
         dc.w    $4008        ; $0226FE
         dc.w    $4008        ; $022700
@@ -1353,8 +1369,8 @@
         dc.w    $C000        ; $022C82
         dc.w    $C000        ; $022C84
         dc.w    $0700        ; $022C86
-        dc.w    $0600        ; $022C88
-        dc.w    $271A        ; $022C8A
+        assert  *=$022C88,"vertex scale/callback slot J preimage"
+        dc.w    $0600,$271A
         dc.w    $4F22        ; $022C8C
         dc.w    $85E0        ; $022C8E
         dc.w    $8800        ; $022C90
@@ -1699,8 +1715,8 @@
         dc.w    $0000        ; $022F36
         dc.w    $0000        ; $022F38
         dc.w    $0000        ; $022F3A
-        dc.w    $0600        ; $022F3C
-        dc.w    $26FC        ; $022F3E
+        assert  *=$022F3C,"vertex scale/callback context table B"
+        dc.w    $0600,$26FC
         dc.w    $0600        ; $022F40
         dc.w    $F400        ; $022F42
         dc.w    $0601        ; $022F44
@@ -1877,7 +1893,14 @@
 ; vdp_init_short: VDP Init / Data Table Copy (92 bytes, $0232D4-$02332F)
 ; Source: disasm/sh2/3d_engine/vdp_init_short.asm
 ; ═══════════════════════════════════════════════════════════════════════════
+        ifd     VR60_EXPERIMENTAL_REDUCED_VIEWPORT
+        ; Rendering-only quality knob.  Keep the projection centre unchanged,
+        ; but clip the 32X polygon viewport to 256x160 (x=32..287,
+        ; y=32..191).  This does not touch simulation or SH2 communication.
+        include "sh2/experiments/vdp_init_reduced_viewport.inc"
+        else
         include "sh2/generated/vdp_init_short.inc"
+        endif
 ; func_014 + func_015: VDP Data Copy Utilities (56 bytes: $023330-$023367)
 ; func_014: 6-byte copy to VDP registers, func_015: 402-byte bulk frame copy
         include "sh2/generated/vdp_copy_short.inc"
@@ -1909,22 +1932,37 @@
 ; frustum_cull_short: Frustum Culling / Visibility Dispatcher (238 bytes: $023508-$0235F5)
 ; Core visibility testing hub - coordinates all frustum culling
 ; Calls: screen_coords_short, bounds_compare_short, func_029, scanline_setup, render_quad_short, render_dispatch_short
+; Keep these exact ROM-to-SDRAM replacements under a separate guard: the
+; interpolation target enables it only after a cold-boot video-equivalence
+; gate.  The ABI-changing on-chip vertex leaf uses a different dormant guard.
+        ifd     VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES
+        include "sh2/experiments/frustum_cull_fused_callers.inc"
+        else
         include "sh2/generated/frustum_cull_short.inc"
+        endif
 ; screen_coords_short: Screen Coordinate Calculator (62 bytes: $0235F6-$023633)
 ; Calculates screen-space coordinates for quad vertices
+        ifd     VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES
+        include "sh2/experiments/screen_bounds_visibility_fused.inc"
+        else
         include "sh2/generated/screen_coords_short.inc"
 ; coord_offset_short: Coordinate offset calculator (16 bytes: $023634-$023643)
 ; Calculates coordinate offsets from input buffer
         include "sh2/generated/coord_offset_short.inc"
 ; bounds_compare_short, func_027, func_028 (68 bytes: $023644-$023687)
 ; Bounds comparison with shared exit paths
-        include "sh2/generated/bounds_compare_short.inc"
 ; func_029, func_030, func_031 (82 bytes: $023688-$0236D9)
 ; Visibility edge classifier with shared exit paths
+        include "sh2/generated/bounds_compare_short.inc"
         include "sh2/generated/visibility_short.inc"
+        endif
 ; scanline_setup: Table Lookup / Indexed Load Loop (32 bytes, $0236DA-$0236F9)
 ; Uses indexed addressing @(R0,R8) for table lookups
+        ifd     VR60_EXPERIMENTAL_SCANLINE_LOAD_SCHEDULE
+        include "sh2/experiments/scanline_setup_load_schedule.inc"
+        else
         include "sh2/generated/scanline_setup.inc"
+        endif
 ; render_quad_short: Quad Rendering / Edge Walking (98 bytes: $0236FA-$02375B)
 ; Edge walking algorithm for polygon rasterization, calls span_filler_short
         include "sh2/generated/render_quad_short.inc"
@@ -1970,7 +2008,11 @@
         dc.w    $8000        ; $0239EE
 ; render_coord_short: Main Render Coordinator (98 bytes: $0239F0-$023A51)
 ; Coordinates render pipeline: init, data copy, GBR setup, status checks
+        ifd     VR60_EXPERIMENTAL_RENDER_POLL_SHORT
+        include "sh2/experiments/render_coord_poll_short.inc"
+        else
         include "sh2/generated/render_coord_short.inc"
+        endif
 ; data_copy_util_short: VDP Data Copy Helper (20 bytes: $023A52-$023A65)
 ; Small utility that copies data from source to destination
         include "sh2/generated/data_copy_util_short.inc"
@@ -1982,10 +2024,20 @@
         dc.w    $3A70        ; $023A6E
 ; polygon_batch_short: Polygon Batch Processor (312 bytes: $023A70-$023BA7)
 ; Core polygon batch processing with vertex interpolation and edge calculations
+        ifd     VR60_EXPERIMENTAL_SOLID_FUSION
+        assert  *=$023A70,"solid fusion overlay start"
+        include "sh2/generated/solid_fusion.inc"
+        assert  *=$023CB4,"solid fusion overlay end"
+        else
         include "sh2/generated/polygon_batch_short.inc"
 ; edge_scan_short: Edge/Scan Processor (268 bytes: $023BA8-$023CB3)
 ; Edge and scanline processing with multiple entry points
+        ifd     VR60_EXPERIMENTAL_COLD_BOOT_RENDER_PATCHES
+        include "sh2/experiments/edge_scan_raster_exact.inc"
+        else
         include "sh2/generated/edge_scan_short.inc"
+        endif
+        endif
 ; dispatch_loop_short: Dispatch Loop Processor (68 bytes: $023CB4-$023CF7)
 ; BSRF-based dispatch loop with jump table for entry type handling
         include "sh2/generated/dispatch_loop_short.inc"
@@ -2002,7 +2054,11 @@
         include "sh2/generated/bounds_check_short.inc"
 ; bounds_handler_short: Bounds Check Handler Type 7 (22 bytes: $023D3E-$023D53)
 ; Checks bounds and jumps to $023FCA
+        ifd     VR60_EXPERIMENTAL_RLE_DIRECT_FAST
+        include "sh2/experiments/bounds_handler_rle_direct.inc"
+        else
         include "sh2/generated/bounds_handler_short.inc"
+        endif
 ; bounds_entry_short: Bounds Check Entry Type 8 (26 bytes: $023D54-$023D6D)
 ; Saves PR in delay slot, enters multi_bsr_short body
         include "sh2/generated/bounds_entry_short.inc"
@@ -2073,6 +2129,9 @@
 ; Note: First NOP is shared delay slot from unrolled_data_copy
 ; Source: disasm/sh2/3d_engine/rle_decoder.asm
 ; ============================================================================
+        ifd     VR60_EXPERIMENTAL_RLE_DIRECT_FAST
+        include "sh2/experiments/rle_direct_trampolines.inc"
+        else
         include "disasm/sh2/generated/rle_decoder.inc"
 ; ============================================================================
 ; rle_entry_alt1_short: RLE Entry Point (Alternative 1) (14 bytes: $023FF4-$024001)
@@ -2084,6 +2143,7 @@
 ; Setup + BRA into rle_decoder loop
 ; ============================================================================
         include "sh2/generated/rle_entry_alt2_short.inc"
+        endif
 ; ============================================================================
 ; block_copy_stride_short: Block Copy with Stride (76 bytes: $02400E-$024059)
 ; Nested loop block copy with bounds checking

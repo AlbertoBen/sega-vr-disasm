@@ -2,21 +2,38 @@
 
 Agent briefing for Virtua Racing Deluxe 32X disassembly/reassembly project.
 
-**Last Updated**: March 16, 2026
+**Last Updated**: July 21, 2026
 
-## Agent Team (v3)
+## Agent Team (v4 — VR60)
 
-Two agents. See [agents/README.md](agents/README.md) for details.
+Two agents, redesigned for the VR60 architectural overhaul. See [agents/README.md](agents/README.md) for details.
 
-**Worker** (Sonnet or Opus) does all technical work: research, code, build, test. Spawn directly — no intermediary. Use Opus for hard problems (B-004, B-006, novel COMM work), Sonnet for routine tasks.
+**Worker** (Opus default) does all technical work: 68K→SH2 porting, SDRAM integration, build, test. Opus is the default because ALL VR60 work touches SH2/COMM/expansion. Spawn directly — no intermediary.
 
-**Auditor** (Opus) is a focused safety reviewer. Spawned fresh per concrete COMM/SH2/expansion proposal only. Returns APPROVED or BLOCKED. Not needed for 68K-only, profiling, or doc work.
+**Auditor** (Opus) is a safety reviewer with an expanded VR60 checklist: COMM safety + SDRAM addressing + bus contention + cache-through + double-buffer races + entity field preservation + ROM table translation. Spawned fresh per proposal. APPROVED or BLOCKED.
 
-**You are the task manager.** Pick a task from BACKLOG.md, spawn the Worker, review findings, spawn Auditor if flagged, approve/commit.
+**You are the task manager.** Start with [VR60_STATUS.md](VR60_STATUS.md), then use
+[VR60_ROADMAP.md](VR60_ROADMAP.md) for the detailed plan. Resolve the current validation gate
+before selecting a later phase. Spawn the Worker, review findings, spawn Auditor, approve/commit,
+and update the roadmap after every session.
 
 **Research-First Principle:** Before implementing any fix, read the relevant docs and build a mental model with citations. If a second attempt fails for related reasons, stop coding and read. Named anti-patterns: address shopping, circular investigation, modern platform assumptions, undocumented guessing — all banned.
 
-**index.md maintenance rule:** After any session where a new pitfall is discovered or a new architectural fact is established, update `analysis/agent-scratch/oracle/index.md` before closing.
+**Roadmap maintenance rule:** After any session, update `VR60_ROADMAP.md` (decisions, risks, lessons) and `analysis/agent-scratch/oracle/index.md` if new facts established.
+
+## Current VR60 Integration Status
+
+The normal 1P route is `state_disp_004cb8`; `state_disp_005020` is 2P split-screen. The
+state-8 `game_frame_orch_013` hook is valid and repeats at about 20 Hz. In that hook, cmd
+`$3E` modes 0/1 (player entity and globals) are enabled but lack trustworthy long-run
+validation. AI transfer mode 2 and cmd `$3F` are disabled. The 68000 physics, AI,
+collision, and render-preparation path remains authoritative; the SH2 physics/AI/collision
+ports are built but do not control current 1P gameplay.
+
+The former 724-framebuffer-hash acceptance claim is retracted because the saved-state
+fixture later freezes with the VR60 hook bypassed. Do not publish a current 40/45 FPS or
+CPU-budget claim from that run. Establish a durable 1P control fixture first, then validate
+each stage independently. `VR60_STATUS.md` is authoritative when older documents disagree.
 
 ## Build & Test
 
@@ -44,9 +61,9 @@ Build produces `build/vr_rebuild.32x`. Binary compatibility with the original RO
    - **COMM7 is the Slave doorbell** — never broadcast game command bytes to it (proven crash, B-006).
    - **Always use cache-through** (`$20004020`) for SH2 COMM access, never `$00004020`.
 9. **Memory Boundaries** — Always check the [hardware manual memory map](docs/32x-hardware-manual.md) before assuming an address is accessible from another CPU.
-   - **SH2 CANNOT access 68K Work RAM** (`$FF0000`) at ANY address. The region between SDRAM (`$0203FFFF`) and Frame Buffer (`$04000000`) is unmapped. Three failed B-003 attempts proved this.
-   - **SDRAM mapping**: SH2 `$0600xxxx` = ROM file offset `$20000 + xxxx`, NOT `$xxxx`. Getting this wrong produces hex dumps of 68K code instead of SH2 SDRAM.
-   - **Shared memory options** (exhaustive): COMM registers (16 bytes), SDRAM ($02000000-$0203FFFF), Frame Buffer ($04000000, FM-controlled). That's all.
+   - **SH2 CANNOT access 68K Work RAM** (`$FF0000`) at ANY address. `$02000000-$023FFFFF` is cartridge ROM, `$02400000-$03FFFFFF` is unmapped, and the frame buffer starts at `$04000000`. Three failed B-003 attempts proved this.
+   - **Region-specific SH2 aliases**: ROM `$02000000`→`$22000000`; frame buffer `$04000000`→`$24000000`; SDRAM `$06000000`→`$26000000`; system registers `$00004000`→`$20004000`. A `2` prefix means cache-through—it does not turn ROM into SDRAM.
+   - **Cross-CPU mechanisms**: COMM registers (16 bytes), DREQ FIFO for bulk 68000→SH2 data, and frame buffer under FM/access coordination. SDRAM (`$06000000-$0603FFFF`) is shared by the two SH2s but is not directly accessible by the 68000.
 10. **SH2 Patching Discipline** — SH2 code is tightly interconnected. Careless patches cause silent corruption.
     - **Literal pool sharing**: `MOV.L @(disp,PC),Rn` instructions share literal pools. Before overwriting ANY address in SH2 code, scan the entire section for `$Dnxx` opcodes that resolve to it (see [KNOWN_ISSUES.md](KNOWN_ISSUES.md) §SH2 Literal Pool Sharing).
     - **Test patches in isolation**: Interacting patches hide root causes. Never combine multiple SH2 patches without testing each one alone first (proven in B-006: reverting Patch #2 alone was insufficient).
@@ -62,7 +79,7 @@ Build produces `build/vr_rebuild.32x`. Binary compatibility with the original RO
 
 ```
 $000000-$2FFFFF  3.0 MB  Original game (68K + SH2)
-$300000-$3FFFFF  1.0 MB  SH2 expansion space (~1.5KB used, 99.9% free)
+$300000-$3FFFFF  1.0 MB  SH2 expansion space (~15KB used by code/data)
 ```
 
 ### Build Pipeline
@@ -79,8 +96,8 @@ disasm/vrd.asm (entry point)
 
 - **823 68K modules** (736 fully translated, 87 with remaining dc.w — all data, not code)
 - **All SH2 functions** integrated (92 function IDs via 89 .inc files, zero remaining)
-- **Display FPS**: ~40 (camera interpolation, stable frame pacing). Game logic at 20 FPS.
-- **60 FPS blocker**: FS swap must happen during VBlank → need swap-only V-INT handler (R-002). Design ready, 4 table slots available. See [VINT_HANDLER_ARCHITECTURE.md](analysis/VINT_HANDLER_ARCHITECTURE.md) §6.
+- **Current accepted rate**: no branch-wide 1P FPS result is accepted. The original game-logic cadence remains about 20 Hz; older 40/45 FPS observations are historical experiments pending a valid baseline.
+- **60 Hz mechanism**: incomplete. V-INT/cadence experiments exist, but true 60 Hz still requires staged SH2 integration, a verified render bridge, authority transfer, collision wiring, and fixed-step scaling.
 - **Master SH2 commands**: 7 active ($00-$06) — all disassembled. See [SH2_COMMAND_HANDLER_REFERENCE.md](analysis/sh2-analysis/SH2_COMMAND_HANDLER_REFERENCE.md)
 
 ### 68K Game Architecture
@@ -89,7 +106,10 @@ The game uses a **two-level dispatch** system. See [SCENE_HANDLER_ARCHITECTURE.m
 
 **Level 1 — Scene handler** (`$FF0002`): Self-modifying main loop at `$FF0000` calls `JSR [$FF0002]` each frame. Changing this pointer changes the game mode (loading, display init, racing, menus, etc.). Over 20 distinct handlers exist.
 
-**Level 2 — State dispatcher** (`$C87E`): Within each scene handler, a sub-dispatcher reads `$C87E` (game state, increments by 4), indexes a jump table, and executes the appropriate state handler. Five race sub-dispatchers handle countdown, active racing, results, attract, and replay.
+**Level 2 — State dispatcher** (`$C87E`): Within each scene handler, a sub-dispatcher reads
+`$C87E`, indexes a jump table, and executes the selected state handler. Key routes are normal
+1P (`004cb8`), 2P split-screen (`005020`), results (`005308`), Free Run/TT (`005586`), and
+replay (`005618`).
 
 **V-INT state** (`$C87A` via `$FF0008`): Each state handler writes a V-INT state that controls which V-INT sub-handler runs during the next VBlank. 16+ entries in the jump table at `$0016B2`. State `$0054` = frame swap handler (checks COMM1_LO "done" signal, resets `$C87E`, toggles FS bit). See [VINT_HANDLER_ARCHITECTURE.md](analysis/VINT_HANDLER_ARCHITECTURE.md).
 
@@ -99,10 +119,10 @@ The game uses a **two-level dispatch** system. See [SCENE_HANDLER_ARCHITECTURE.m
 
 **Dual independent dispatch** — Master and Slave have completely separate poll loops. See [SLAVE_SH2_DISPATCH_ARCHITECTURE.md](analysis/SLAVE_SH2_DISPATCH_ARCHITECTURE.md).
 
-| CPU | Loop | Polls | Jump Table | Utilization | Role |
+| CPU | Loop | Polls | Jump Table | Profiling status | Role |
 |-----|------|-------|-----------|-------------|------|
-| Master | $06000460 | COMM0_HI | $06000780 (16 entries) | 0-36% | Command router + block copies |
-| Slave | $06000592 | COMM2_HI | $060005C8 (8 entries) | ~73% | **ALL 3D rendering (bottleneck)** |
+| Master | $06000460 | COMM0_HI | $06000780 (16 entries) | Re-profile after validation gate | Command router + block copies |
+| Slave | $06000592 | COMM2_HI | $060005C8 (8 entries) | Re-profile after validation gate | **ALL 3D rendering** |
 
 No direct cross-trigger. 68K submits to Master (COMM0) and Slave (COMM2) independently. COMM7 = async doorbell for cmd_27 pixel work (Slave polls in idle loop). COMM1_LO bit 0 = Master "done" signal.
 
@@ -127,9 +147,9 @@ No direct cross-trigger. 68K submits to Master (COMM0) and Slave (COMM2) indepen
 ### Project Management
 | Question | File |
 |----------|------|
-| What to work on next | [BACKLOG.md](BACKLOG.md) |
+| What to work on next | [VR60_STATUS.md](VR60_STATUS.md), then [VR60_ROADMAP.md](VR60_ROADMAP.md) |
 | Known pitfalls and bugs | [KNOWN_ISSUES.md](KNOWN_ISSUES.md) |
-| Strategic optimization roadmap | [OPTIMIZATION_PLAN.md](OPTIMIZATION_PLAN.md) |
+| Historical March strategy | [OPTIMIZATION_PLAN.md](OPTIMIZATION_PLAN.md) |
 
 ### Game Architecture (start here for understanding the game)
 | Question | File |
@@ -139,6 +159,7 @@ No direct cross-trigger. 68K submits to Master (COMM0) and Slave (COMM2) indepen
 | **Game mode transitions (boot→menu→racing)** | **[analysis/GAME_MODE_TRANSITIONS.md](analysis/GAME_MODE_TRANSITIONS.md)** |
 | **V-INT dispatch table + frame swap mechanism** | **[analysis/VINT_HANDLER_ARCHITECTURE.md](analysis/VINT_HANDLER_ARCHITECTURE.md)** |
 | **Rendering pipeline (end-to-end)** | **[analysis/RENDERING_PIPELINE.md](analysis/RENDERING_PIPELINE.md)** |
+| **Async pipeline architecture (VR60 Phase 2B)** | **[analysis/ASYNC_PIPELINE_ARCHITECTURE.md](analysis/ASYNC_PIPELINE_ARCHITECTURE.md)** |
 
 ### SH2 Architecture
 | Question | File |
@@ -150,6 +171,17 @@ No direct cross-trigger. 68K submits to Master (COMM0) and Slave (COMM2) indepen
 | Master SH2 dispatch + COMM7 design | [analysis/architecture/MASTER_SH2_DISPATCH_ANALYSIS.md](analysis/architecture/MASTER_SH2_DISPATCH_ANALYSIS.md) |
 | SH2 3D pipeline (overview) | [analysis/sh2-analysis/SH2_3D_PIPELINE_ARCHITECTURE.md](analysis/sh2-analysis/SH2_3D_PIPELINE_ARCHITECTURE.md) |
 | SH2 translation guide | [analysis/sh2-analysis/SH2_TRANSLATION_INTEGRATION.md](analysis/sh2-analysis/SH2_TRANSLATION_INTEGRATION.md) |
+
+### Game Logic Subsystems
+| Question | File |
+|----------|------|
+| **Entity/object system (4 tables, 256B records)** | **[analysis/ENTITY_OBJECT_ARCHITECTURE.md](analysis/ENTITY_OBJECT_ARCHITECTURE.md)** |
+| **Physics (9-step pipeline, grip, gears, drift)** | **[analysis/PHYSICS_SYSTEM_ARCHITECTURE.md](analysis/PHYSICS_SYSTEM_ARCHITECTURE.md)** |
+| **AI (15-state machine, collision avoidance)** | **[analysis/AI_SYSTEM_ARCHITECTURE.md](analysis/AI_SYSTEM_ARCHITECTURE.md)** |
+| **Collision (binary search, 4-probe, proximity)** | **[analysis/COLLISION_SYSTEM_ARCHITECTURE.md](analysis/COLLISION_SYSTEM_ARCHITECTURE.md)** |
+| **Sound driver (FM/PSG/Z80, 18 channels)** | **[analysis/SOUND_DRIVER_ARCHITECTURE.md](analysis/SOUND_DRIVER_ARCHITECTURE.md)** |
+| Track data format (segmented spline) | [analysis/TRACK_DATA_FORMAT.md](analysis/TRACK_DATA_FORMAT.md) |
+| Memory management (WRAM layout, copy primitives) | [analysis/MEMORY_MANAGEMENT_ARCHITECTURE.md](analysis/MEMORY_MANAGEMENT_ARCHITECTURE.md) |
 
 ### Hardware & Communication
 | Question | File |
@@ -166,7 +198,7 @@ No direct cross-trigger. 68K submits to Master (COMM0) and Slave (COMM2) indepen
 ### Function Reference & Profiling
 | Question | File |
 |----------|------|
-| **ALL functions (799 entries, auto-gen)** | **[analysis/MASTER_FUNCTION_REFERENCE.md](analysis/MASTER_FUNCTION_REFERENCE.md)** |
+| **ALL named entries (auto-generated)** | **[analysis/MASTER_FUNCTION_REFERENCE.md](analysis/MASTER_FUNCTION_REFERENCE.md)** |
 | **Quick address lookup (flat, ctrl+F)** | **[analysis/FUNCTION_QUICK_LOOKUP.md](analysis/FUNCTION_QUICK_LOOKUP.md)** |
 | 68K function catalog (503+, older) | [analysis/68K_FUNCTION_REFERENCE.md](analysis/68K_FUNCTION_REFERENCE.md) |
 | Bottleneck root cause | [analysis/ARCHITECTURAL_BOTTLENECK_ANALYSIS.md](analysis/ARCHITECTURAL_BOTTLENECK_ANALYSIS.md) |
@@ -228,10 +260,18 @@ VRD_PROFILE_PC=1 VRD_PROFILE_PC_LOG=profile.csv \
 python3 analyze_pc_profile.py profile.csv
 ```
 
-**Current measurements** (March 2026, 40 FPS camera interpolation):
+**Historical measurements** — racing-isolated run from 2026-06-17, scene `0x4CBC`.
+These numbers are retained for comparison but are not a current integration baseline: cmd
+`$3F` was not active in this 1P route, and the available later savestate is not a durable
+control. Use the rebuilt tooling, scene-isolate, and apply the validity gates in
+[VRD_PROFILING.md](tools/libretro-profiling/VRD_PROFILING.md) before recording new budgets.
 
-| CPU | Cycles/Frame | Utilization | Notes |
-|-----|-------------|-------------|-------|
-| 68K | 127,986 | ~48% active, 52% STOP | Interpolation overhead negligible |
-| Master SH2 | 127,061 avg | 0-36% | Extra block copies in state 4 |
-| Slave SH2 | 299,926 | 52% (2 renders/3 TV) | 22% headroom per render |
+| CPU | Useful/Frame | Note |
+|-----|-------------|------|
+| 68K | 45,481 (36.6%) | **63% V-blank idle**; sync-wait negligible in racing |
+| Master SH2 | 158,977 | Historical total; old cmd `$3F` attribution is invalid |
+| Slave SH2 | 231,056 | ~80% util / ~60% useful render; busiest CPU |
+
+**Do not derive the next implementation step from these figures.** The current order is:
+durable control fixture, cmd `$3E` modes 0/1, mode 2, cmd `$3F` shadow execution, verified
+descriptor bridge, collision/equivalence, authority switch, and finally 60 Hz cadence/scaling.

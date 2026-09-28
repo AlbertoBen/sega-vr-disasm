@@ -54,10 +54,27 @@ game_frame_orch_013:
         move.w  A0,($FFFFC8C0).w                ; $004D5A  update controller_ptr
 .skip_record:
         jsr     race_entity_update_loop(pc); $4EBA $0BDC
-        jsr     animated_seq_player+10(pc); $4EBA $6976
-        jsr     object_update(pc)       ; $4EBA $691C
+; --- VR60 1P hook / assembly-built control selector (8B for 8B) ---
+; The default live ROM enters the staging hook. `make control-rom` defines
+; VR60_CONTROL_ROM and assembles the original two JSRs instead; this is a
+; source-level isolation build, never a raw ROM patch. Both branches are
+; exactly eight bytes, so every following address remains unchanged.
+        ifd     VR60_CONTROL_ROM
+        jsr     animated_seq_player+10(pc)              ; $4EBA $6976
+        jsr     object_update(pc)                        ; $4EBA $691C
+        else
+; Entered via JMP (no return address pushed), so the live hook must exit via
+; JMP back to game_frame_orch_013_tail, never RTS.
+        jmp     vr60_1p_staging_hook                     ; 6B abs.l
+        nop                                              ; 2B pad (8B total)
+        endif
+game_frame_orch_013_tail:
         addq.w  #4,($FFFFC87E).w                ; $004D6A  game_state += 4
+        ifd     VR60_EXPERIMENTAL_40FPS_INTERP
+        move.w  #$0050,$00FF0008                ; nonblocking render-aware V-INT
+        else
         move.w  #$0054,$00FF0008                ; $004D6E  display list cmd = $54
+        endif
         jmp     pause_menu_handler_ctrl_check+20(pc); $4EFA $0980
 ; --- path B: minimal update ---
         jsr     sound_update_disp+88(pc); $4EBA $D3B2
